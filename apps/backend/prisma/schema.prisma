@@ -1,0 +1,192 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  admin
+  racer
+  mechanic
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  IN_SERVICE
+  COMPLETED
+  CANCELLED
+}
+
+enum BayStatus {
+  AVAILABLE
+  STANDBY
+  IN_USE
+  OCCUPIED
+}
+
+enum InventoryStatus {
+  In_Stock     @map("In Stock")
+  Low_Stock    @map("Low Stock")
+  Critical_Out @map("Critical Out")
+}
+
+enum MemberTier {
+  ROOKIE
+  PRO_RACER    @map("PRO RACER")
+  ELITE_MEMBER @map("ELITE MEMBER")
+}
+
+model User {
+  id           String        @id @default(uuid())
+  email        String        @unique
+  password     String
+  name         String
+  phone        String?
+  role         Role          @default(racer)
+  avatarUrl    String?
+  racerProfile RacerProfile?
+  bookings     Booking[]
+  createdAt    DateTime      @default(now()) @map("created_at")
+  updatedAt    DateTime      @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+model RacerProfile {
+  id          String     @id @default(uuid())
+  userId      String     @unique @map("user_id")
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  racerIdCode String     @unique @map("racer_id_code") // e.g. 'AX-9924'
+  tier        MemberTier @default(ROOKIE)
+  points      Int        @default(0)
+  totalSpent  Decimal    @default(0) @map("total_spent") @db.Decimal(15, 2)
+  visits      Int        @default(0)
+  bikes       Bike[]
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+
+  @@map("racer_profiles")
+}
+
+model Bike {
+  id          String           @id @default(uuid())
+  racerId     String           @map("racer_id")
+  racer       RacerProfile     @relation(fields: [racerId], references: [id], onDelete: Cascade)
+  model       String
+  plateNumber String           @unique @map("plate_number")
+  year        Int?
+  mileage     Int              @default(0)
+  engineSpec  String?          @map("engine_spec")
+  ecuMapping  String?          @map("ecu_mapping")
+  dynoHp      Decimal          @default(0) @map("dyno_hp") @db.Decimal(5, 2)
+  dynoTorque  Decimal          @default(0) @map("dyno_torque") @db.Decimal(5, 2)
+  diagnostics BikeDiagnostics?
+  bookings    Booking[]
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+
+  @@map("bikes")
+}
+
+model BikeDiagnostics {
+  id                String   @id @default(uuid())
+  bikeId            String   @unique @map("bike_id")
+  bike              Bike     @relation(fields: [bikeId], references: [id], onDelete: Cascade)
+  oilHealth         Int      @default(100) @map("oil_health")
+  vbeltCond         Int      @default(100) @map("vbelt_cond")
+  brakePads         Int      @default(100) @map("brake_pads")
+  batteryVoltage    Decimal  @default(12.8) @map("battery_voltage") @db.Decimal(4, 2)
+  tirePressureFront Decimal  @default(29.5) @map("tire_pressure_front") @db.Decimal(4, 2)
+  tirePressureRear  Decimal  @default(33.0) @map("tire_pressure_rear") @db.Decimal(4, 2)
+  afrRatio          Decimal  @default(12.9) @map("afr_ratio") @db.Decimal(4, 2)
+  engineTemp        Int      @default(85) @map("engine_temp")
+  lastUpdated       String   @default("Just Now") @map("last_updated")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+
+  @@map("bike_diagnostics")
+}
+
+model ServicePackage {
+  id              String    @id @default(uuid())
+  name            String
+  category        String
+  durationMinutes Int       @default(60) @map("duration_minutes")
+  price           Decimal   @db.Decimal(15, 2)
+  isPopular       Boolean   @default(false) @map("is_popular")
+  description     String?
+  includesItems   Json?     @default("[]") @map("includes_items")
+  bookings        Booking[]
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+
+  @@map("service_packages")
+}
+
+model WorkshopBay {
+  id               String    @id @default(uuid())
+  bayNumber        Int       @unique @map("bay_number")
+  name             String
+  status           BayStatus @default(AVAILABLE)
+  currentBikePlate String?   @map("current_bike_plate")
+  assignedMechanic String?   @map("assigned_mechanic")
+  progress         Int       @default(0)
+  updatedAt        DateTime  @updatedAt @map("updated_at")
+
+  @@map("workshop_bays")
+}
+
+model Booking {
+  id               String         @id @default(uuid())
+  bookingCode      String         @unique @map("booking_code")
+  userId           String         @map("user_id")
+  user             User           @relation(fields: [userId], references: [id])
+  bikeId           String         @map("bike_id")
+  bike             Bike           @relation(fields: [bikeId], references: [id])
+  serviceId        String         @map("service_id")
+  service          ServicePackage @relation(fields: [serviceId], references: [id])
+  branch           String
+  bookingDate      DateTime       @map("booking_date") @db.Date
+  bookingTime      String         @map("booking_time")
+  status           BookingStatus  @default(PENDING)
+  bayNumber        Int?           @map("bay_number")
+  assignedMechanic String?        @map("assigned_mechanic")
+  totalCost        Decimal        @map("total_cost") @db.Decimal(15, 2)
+  notes            String?
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+
+  @@map("bookings")
+}
+
+model InventoryItem {
+  id           String          @id @default(uuid())
+  sku          String          @unique
+  name         String
+  category     String
+  stock        Int             @default(0)
+  minThreshold Int             @default(10) @map("min_threshold")
+  price        Decimal         @db.Decimal(15, 2)
+  supplier     String?
+  status       InventoryStatus @default(In_Stock)
+  location     String?
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt @map("updated_at")
+
+  @@map("inventory_items")
+}
+
+model EmergencyRequest {
+  id           String   @id @default(uuid())
+  userId       String   @map("user_id")
+  bikePlate    String?  @map("bike_plate")
+  locationText String   @map("location_text")
+  issueType    String?  @map("issue_type")
+  status       String   @default("PENDING")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("emergency_requests")
+}
