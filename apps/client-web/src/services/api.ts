@@ -54,6 +54,23 @@ export const apiClient = {
     return res.json();
   },
 
+  async put(endpoint: string, data: any) {
+    const token = localStorage.getItem('access_token');
+    const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': token ? `Bearer ${token}` : '',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+    if (!res.ok) {
+      const errMsg = await parseResponseError(res, endpoint);
+      throw new Error(errMsg);
+    }
+    return res.json();
+  },
+
   async patch(endpoint: string, data: any) {
     const token = localStorage.getItem('access_token');
     const res = await fetch(`${API_BASE_URL}${endpoint}`, {

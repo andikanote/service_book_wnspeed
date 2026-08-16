@@ -5,9 +5,9 @@ export class CreateBookingDto {
   @IsString()
   userId?: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
-  bikeId: string;
+  bikeId?: string;
 
   @IsNotEmpty()
   @IsString()

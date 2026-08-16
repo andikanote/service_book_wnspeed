@@ -38,6 +38,7 @@ import { GenerateReportModal } from './components/admin/GenerateReportModal';
 // Racer Components
 import { RacerSidebar } from './components/racer/RacerSidebar';
 import { RacerDashboard } from './components/racer/RacerDashboard';
+import { RacerBikes } from './components/racer/RacerBikes';
 import { RacerDiagnostics } from './components/racer/RacerDiagnostics';
 import { RacerBookings } from './components/racer/RacerBookings';
 import { RacerMembership } from './components/racer/RacerMembership';
@@ -121,12 +122,14 @@ export function App() {
           setAdminTab('overview');
         }
       } 
-      // 2. Racer Sub-page Routing (e.g. /racer/diagnostics, /racer/bookings, etc.)
+      // 2. Racer Sub-page Routing (e.g. /racer/diagnostics, /racer/bikes, /racer/bookings, etc.)
       else if (path.startsWith('/racer')) {
         setActiveSection('racer');
         setCurrentUserRole('racer');
 
-        if (path.includes('/diagnostic')) {
+        if (path.includes('/bike') || path.includes('/motor') || path.includes('/garage')) {
+          setRacerTab('bikes');
+        } else if (path.includes('/diagnostic')) {
           setRacerTab('diagnostics');
         } else if (path.includes('/booking')) {
           setRacerTab('bookings');
@@ -443,6 +446,12 @@ export function App() {
             <main className="flex-1 overflow-y-auto bg-[#131313]">
               {racerTab === 'dashboard' && (
                 <RacerDashboard onNavigateTab={handleRacerTabChange} />
+              )}
+              {racerTab === 'bikes' && (
+                <RacerBikes
+                  onNavigateToBooking={() => handleRacerTabChange('bookings')}
+                  onNavigateToDiagnostics={() => handleRacerTabChange('diagnostics')}
+                />
               )}
               {racerTab === 'diagnostics' && <RacerDiagnostics />}
               {racerTab === 'bookings' && <RacerBookings />}

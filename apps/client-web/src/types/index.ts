@@ -1,7 +1,34 @@
 export type AppRole = 'admin' | 'racer';
 
 export type AdminTab = 'overview' | 'bookings' | 'services' | 'inventory' | 'users' | 'settings';
-export type RacerTab = 'dashboard' | 'diagnostics' | 'bookings' | 'membership' | 'profile';
+export type RacerTab = 'dashboard' | 'bikes' | 'diagnostics' | 'bookings' | 'membership' | 'profile';
+
+export interface MemberBike {
+  id: string;
+  model: string;
+  brand: string;
+  plateNumber: string;
+  year: number;
+  engineCc: number;
+  mileageKm: number;
+  isPrimary: boolean;
+  status: 'READY' | 'IN_WORKSHOP' | 'NEED_SERVICE';
+  engineSpec: string;
+  ecuMapping: string;
+  dynoHp: number;
+  dynoTorque: number;
+  lastServiceDate: string;
+  diagnostics: {
+    oilHealth: number;
+    brakePads: number;
+    vbeltCond: number;
+    batteryVoltage: number;
+    tirePressureFront: number;
+    tirePressureRear: number;
+    engineTemp: number;
+  };
+  notes?: string;
+}
 
 export interface Booking {
   id: string;

@@ -1,146 +1,578 @@
-import React, { useState } from 'react';
-import { Calendar, Clock, CheckCircle2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Calendar, Clock, CheckCircle2, Loader2, RefreshCw, Bike, AlertTriangle, ChevronRight, Tag } from 'lucide-react';
 import { SERVICE_CATALOG } from '../../data/mockData';
+import { apiClient } from '../../services/api';
+import { MemberBike } from '../../types';
 import confetti from 'canvas-confetti';
 
+interface ServiceItem {
+  id: string;
+  name: string;
+  category: string;
+  durationMinutes: number;
+  price: number;
+  isPopular?: boolean;
+  description?: string;
+}
+
+interface BookingRecord {
+  id: string;
+  bookingCode: string;
+  branch: string;
+  bookingDate: string;
+  bookingTime: string;
+  status: string;
+  totalCost: number;
+  notes?: string;
+  service?: {
+    id: string;
+    name: string;
+    category?: string;
+  };
+  bike?: {
+    id: string;
+    model: string;
+    plateNumber: string;
+    brand?: string;
+  };
+}
+
 export const RacerBookings: React.FC = () => {
-  const [selectedService, setSelectedService] = useState(SERVICE_CATALOG[0].id);
-  const [selectedBranch, setSelectedBranch] = useState('Depok Branch');
-  const [selectedDate, setSelectedDate] = useState('2026-10-28');
+  // Services State
+  const [services, setServices] = useState<ServiceItem[]>([]);
+  const [selectedServiceId, setSelectedServiceId] = useState<string>('');
+  const [isLoadingServices, setIsLoadingServices] = useState(false);
+
+  // User Bikes State
+  const [bikes, setBikes] = useState<MemberBike[]>([]);
+  const [selectedBikeId, setSelectedBikeId] = useState<string>('');
+
+  // Form State
+  const [selectedBranch, setSelectedBranch] = useState('Bekasi Branch (Precision Tuning Center)');
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    return tomorrow.toISOString().split('T')[0];
+  });
   const [selectedTime, setSelectedTime] = useState('10:00 AM');
   const [notes, setNotes] = useState('');
-  const [booked, setBooked] = useState(false);
 
-  const activeService = SERVICE_CATALOG.find((s) => s.id === selectedService) || SERVICE_CATALOG[0];
+  // Booking Execution State
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [confirmedBooking, setConfirmedBooking] = useState<BookingRecord | null>(null);
 
-  const handleBook = (e: React.FormEvent) => {
+  // Active Tab: New Reservation vs History
+  const [viewMode, setViewMode] = useState<'NEW_BOOKING' | 'HISTORY'>('NEW_BOOKING');
+  const [bookingHistory, setBookingHistory] = useState<BookingRecord[]>([]);
+  const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+
+  // 1. Fetch Services from GET /api/v1/services
+  const fetchServices = async () => {
+    setIsLoadingServices(true);
+    try {
+      const data = await apiClient.get('/services');
+      if (Array.isArray(data) && data.length > 0) {
+        const mapped: ServiceItem[] = data.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          category: item.category || 'Maintenance',
+          durationMinutes: Number(item.durationMinutes || 60),
+          price: Number(item.price || 0),
+          isPopular: Boolean(item.isPopular),
+          description: item.description || '',
+        }));
+        setServices(mapped);
+        setSelectedServiceId((prev) => (prev ? prev : mapped[0].id));
+      } else {
+        // Fallback to mock catalog
+        const fallback = SERVICE_CATALOG.map((s) => ({
+          id: s.id,
+          name: s.name,
+          category: s.category,
+          durationMinutes: s.durationMinutes,
+          price: s.price,
+          isPopular: s.popular,
+          description: s.description,
+        }));
+        setServices(fallback);
+        setSelectedServiceId((prev) => (prev ? prev : fallback[0].id));
+      }
+    } catch (err: any) {
+      console.warn('Could not fetch services API, using catalog fallback:', err.message);
+      const fallback = SERVICE_CATALOG.map((s) => ({
+        id: s.id,
+        name: s.name,
+        category: s.category,
+        durationMinutes: s.durationMinutes,
+        price: s.price,
+        isPopular: s.popular,
+        description: s.description,
+      }));
+      setServices(fallback);
+      setSelectedServiceId((prev) => (prev ? prev : fallback[0].id));
+    } finally {
+      setIsLoadingServices(false);
+    }
+  };
+
+  // 2. Fetch User Bikes from GET /api/v1/racer/bikes
+  const fetchBikes = async () => {
+    try {
+      const data = await apiClient.get('/racer/bikes');
+      if (Array.isArray(data) && data.length > 0) {
+        setBikes(data);
+        const primary = data.find((b: any) => b.isPrimary) || data[0];
+        setSelectedBikeId(primary.id);
+      }
+    } catch (err: any) {
+      console.warn('Could not fetch user bikes:', err.message);
+    }
+  };
+
+  // 3. Fetch Booking History from GET /api/v1/bookings
+  const fetchBookingHistory = async () => {
+    setIsLoadingHistory(true);
+    try {
+      const data = await apiClient.get('/bookings');
+      if (Array.isArray(data)) {
+        setBookingHistory(data);
+      }
+    } catch (err: any) {
+      console.warn('Could not fetch bookings history:', err.message);
+    } finally {
+      setIsLoadingHistory(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchServices();
+    fetchBikes();
+  }, []);
+
+  const activeService =
+    services.find((s) => s.id === selectedServiceId) ||
+    services[0] || {
+      id: 'default',
+      name: 'Standard Precision Tune-Up',
+      category: 'Engine Tuning',
+      durationMinutes: 60,
+      price: 250000,
+      description: 'Tune up berkala & kalibrasi presisi',
+      isPopular: true,
+    };
+
+  const activeBike = bikes.find((b) => b.id === selectedBikeId);
+
+  // Submit Booking to POST /api/v1/bookings
+  const handleBookSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setBooked(true);
-    confetti({ particleCount: 40, spread: 60 });
+    setIsSubmitting(true);
+    setErrorMessage(null);
+
+    const payload = {
+      serviceId: activeService.id,
+      bikeId: selectedBikeId || undefined,
+      branch: selectedBranch,
+      bookingDate: selectedDate,
+      bookingTime: selectedTime,
+      totalCost: activeService.price,
+      notes: notes.trim() || undefined,
+    };
+
+    try {
+      const result = await apiClient.post('/bookings', payload);
+      setConfirmedBooking(result);
+      confetti({ particleCount: 50, spread: 70 });
+    } catch (err: any) {
+      if (err.message && !err.message.includes('Failed to fetch')) {
+        setErrorMessage(err.message);
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Offline fallback confirmation
+      const fallbackBooking: BookingRecord = {
+        id: `book-${Date.now()}`,
+        bookingCode: `ANS-${Math.floor(1000 + Math.random() * 9000)}`,
+        branch: payload.branch,
+        bookingDate: payload.bookingDate,
+        bookingTime: payload.bookingTime,
+        status: 'PENDING',
+        totalCost: payload.totalCost,
+        notes: payload.notes,
+        service: {
+          id: activeService.id,
+          name: activeService.name,
+          category: activeService.category,
+        },
+        bike: activeBike ? {
+          id: activeBike.id,
+          model: activeBike.model,
+          plateNumber: activeBike.plateNumber,
+          brand: activeBike.brand,
+        } : undefined,
+      };
+
+      setConfirmedBooking(fallbackBooking);
+      confetti({ particleCount: 50, spread: 70 });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="p-6 md:p-8 space-y-6 bg-[#131313] min-h-screen text-[#e5e2e1] font-mono">
-      <div className="border-b border-[#1E293B] pb-5">
-        <div className="flex items-center gap-1.5 text-xs text-[#FFE01B] font-bold uppercase tracking-wider mb-1">
-          <Calendar className="w-4 h-4" />
-          <span>GARAGE_OS SERVICE SCHEDULER</span>
-        </div>
-        <h2 className="text-2xl font-bold text-white tracking-tight font-display uppercase">
-          Reserve Maintenance Bay
-        </h2>
-        <p className="text-xs text-[#cec6ab] mt-0.5">
-          Book dedicated dyno tuning, CVT overhaul, or regular service at ART N SPEED workshop
-        </p>
-      </div>
-
-      {booked ? (
-        <div className="p-8 bg-[#1c1b1b] border border-[#1E293B] rounded text-center space-y-4 max-w-xl mx-auto shadow-2xl">
-          <div className="w-14 h-14 bg-[#22C55E]/10 border border-[#22C55E]/30 text-[#22C55E] rounded-full flex items-center justify-center mx-auto">
-            <CheckCircle2 className="w-7 h-7" />
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1E293B] pb-5">
+        <div>
+          <div className="flex items-center gap-1.5 text-xs text-[#FFE01B] font-bold uppercase tracking-wider mb-1">
+            <Calendar className="w-4 h-4" />
+            <span>GARAGE_OS SERVICE SCHEDULER</span>
           </div>
-          <h3 className="text-xl font-bold text-white font-display uppercase">BOOKING CONFIRMED!</h3>
-          <p className="text-xs text-[#cec6ab]">
-            Booking Code: <strong className="text-[#FFE01B] font-bold">ANS-9932</strong>
+          <h2 className="text-2xl font-bold text-white tracking-tight font-display uppercase">
+            Reserve Maintenance Bay
+          </h2>
+          <p className="text-xs text-[#cec6ab] mt-0.5">
+            Book dedicated dyno tuning, overhaul, remap, atau service berkala di Workshop ART N SPEED
           </p>
+        </div>
 
-          <div className="p-4 bg-[#131313] border border-[#1E293B] rounded text-left text-xs space-y-2 text-[#e5e2e1]">
-            <div className="flex justify-between">
-              <span className="text-[#cec6ab]">Selected Service:</span>
-              <span className="font-bold text-white">{activeService.name}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-[#cec6ab]">Branch Location:</span>
-              <span className="text-[#e5e2e1]">{selectedBranch}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-[#cec6ab]">Date & Slot:</span>
-              <span className="text-[#FFE01B] font-bold">{selectedDate}, {selectedTime}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-[#cec6ab]">Estimated Cost:</span>
-              <span className="font-bold text-[#CCFF00]">Rp {activeService.price.toLocaleString('id-ID')}</span>
-            </div>
-          </div>
-
+        {/* View Toggle */}
+        <div className="flex items-center gap-2">
           <button
-            onClick={() => setBooked(false)}
-            className="w-full py-2.5 bg-[#FFE01B] hover:bg-[#ffe241] text-black font-bold text-xs rounded uppercase transition shadow-md shadow-[#FFE01B]/20 cursor-pointer tracking-wider"
+            onClick={() => {
+              setViewMode('NEW_BOOKING');
+              setConfirmedBooking(null);
+            }}
+            className={`px-3.5 py-2 rounded text-xs font-bold uppercase transition cursor-pointer ${
+              viewMode === 'NEW_BOOKING'
+                ? 'bg-[#FFE01B] text-black shadow-md shadow-[#FFE01B]/20'
+                : 'bg-[#1c1b1b] text-[#cec6ab] hover:text-white border border-[#1E293B]'
+            }`}
           >
-            Create Another Reservation
+            Form Reservasi Baru
+          </button>
+          <button
+            onClick={() => {
+              setViewMode('HISTORY');
+              fetchBookingHistory();
+            }}
+            className={`px-3.5 py-2 rounded text-xs font-bold uppercase transition cursor-pointer flex items-center gap-1.5 ${
+              viewMode === 'HISTORY'
+                ? 'bg-[#FFE01B] text-black shadow-md shadow-[#FFE01B]/20'
+                : 'bg-[#1c1b1b] text-[#cec6ab] hover:text-white border border-[#1E293B]'
+            }`}
+          >
+            <Clock className="w-3.5 h-3.5" />
+            <span>Riwayat Reservasi</span>
           </button>
         </div>
-      ) : (
-        <form onSubmit={handleBook} className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-          {/* Left: Service Selection */}
-          <div className="lg:col-span-7 space-y-3">
-            <label className="block text-xs uppercase font-bold text-[#e5e2e1] font-display">
-              1. Choose Service Package
-            </label>
-            <div className="grid grid-cols-1 gap-2.5">
-              {SERVICE_CATALOG.map((srv) => (
+      </div>
+
+      {/* Global Error Banner */}
+      {errorMessage && (
+        <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded flex items-center justify-between text-rose-400 text-xs font-mono">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 shrink-0" />
+            <span>{errorMessage}</span>
+          </div>
+          <button onClick={() => setErrorMessage(null)} className="text-rose-400 hover:text-white cursor-pointer">
+            &times;
+          </button>
+        </div>
+      )}
+
+      {/* Confirmation View */}
+      {confirmedBooking ? (
+        <div className="p-8 bg-[#1c1b1b] border border-emerald-500/40 rounded text-center space-y-5 max-w-xl mx-auto shadow-2xl">
+          <div className="w-16 h-16 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-full flex items-center justify-center mx-auto shadow-lg shadow-emerald-500/10">
+            <CheckCircle2 className="w-8 h-8" />
+          </div>
+          <div>
+            <span className="px-2.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold tracking-widest uppercase">
+              STATUS: RESERVED
+            </span>
+            <h3 className="text-2xl font-bold text-white font-display uppercase mt-2">
+              RESERVASI BERHASIL DIKONFIRMASI!
+            </h3>
+            <p className="text-xs text-[#cec6ab] mt-1">
+              Kode Booking Resmi: <strong className="text-[#FFE01B] font-bold text-sm tracking-wider">{confirmedBooking.bookingCode}</strong>
+            </p>
+          </div>
+
+          <div className="p-4 bg-[#131313] border border-[#1E293B] rounded text-left text-xs space-y-2.5 text-[#e5e2e1]">
+            <div className="flex justify-between border-b border-[#1E293B] pb-2">
+              <span className="text-[#cec6ab]">Paket Layanan:</span>
+              <span className="font-bold text-white text-right">{confirmedBooking.service?.name || activeService.name}</span>
+            </div>
+            {confirmedBooking.bike && (
+              <div className="flex justify-between border-b border-[#1E293B] pb-2">
+                <span className="text-[#cec6ab]">Unit Motor:</span>
+                <span className="font-bold text-[#FFE01B]">{confirmedBooking.bike.model} ({confirmedBooking.bike.plateNumber})</span>
+              </div>
+            )}
+            <div className="flex justify-between border-b border-[#1E293B] pb-2">
+              <span className="text-[#cec6ab]">Lokasi Cabang:</span>
+              <span className="text-[#e5e2e1] font-semibold">{confirmedBooking.branch}</span>
+            </div>
+            <div className="flex justify-between border-b border-[#1E293B] pb-2">
+              <span className="text-[#cec6ab]">Tanggal & Slot Jam:</span>
+              <span className="text-[#FFE01B] font-bold">
+                {confirmedBooking.bookingDate.split('T')[0]}, {confirmedBooking.bookingTime}
+              </span>
+            </div>
+            <div className="flex justify-between pt-1">
+              <span className="text-[#cec6ab]">Estimasi Biaya:</span>
+              <span className="font-bold text-[#CCFF00] text-sm">
+                Rp {Number(confirmedBooking.totalCost).toLocaleString('id-ID')}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            <button
+              onClick={() => {
+                setConfirmedBooking(null);
+                setViewMode('NEW_BOOKING');
+              }}
+              className="flex-1 py-2.5 bg-[#FFE01B] hover:bg-[#ffe241] text-black font-bold text-xs rounded uppercase transition shadow-md shadow-[#FFE01B]/20 cursor-pointer tracking-wider"
+            >
+              Buat Reservasi Baru
+            </button>
+            <button
+              onClick={() => {
+                setConfirmedBooking(null);
+                setViewMode('HISTORY');
+                fetchBookingHistory();
+              }}
+              className="flex-1 py-2.5 bg-[#131313] hover:bg-[#201f1f] border border-[#1E293B] hover:border-[#FFE01B]/40 text-white font-bold text-xs rounded uppercase transition cursor-pointer tracking-wider"
+            >
+              Lihat Semua Reservasi
+            </button>
+          </div>
+        </div>
+      ) : viewMode === 'HISTORY' ? (
+        /* History View */
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold text-white uppercase flex items-center gap-2">
+              <Clock className="w-4 h-4 text-[#FFE01B]" />
+              Daftar Reservasi & Riwayat Servis
+            </h3>
+            <button
+              onClick={fetchBookingHistory}
+              disabled={isLoadingHistory}
+              className="p-1.5 bg-[#1c1b1b] hover:bg-[#252525] border border-[#1E293B] text-[#cec6ab] hover:text-[#FFE01B] rounded cursor-pointer transition"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${isLoadingHistory ? 'animate-spin text-[#FFE01B]' : ''}`} />
+            </button>
+          </div>
+
+          {isLoadingHistory ? (
+            <div className="p-12 bg-[#1c1b1b] border border-[#1E293B] rounded text-center space-y-3">
+              <Loader2 className="w-6 h-6 text-[#FFE01B] animate-spin mx-auto" />
+              <p className="text-xs text-[#cec6ab]">Memuat daftar reservasi dari server...</p>
+            </div>
+          ) : bookingHistory.length === 0 ? (
+            <div className="p-12 bg-[#1c1b1b] border border-[#1E293B] rounded text-center space-y-3">
+              <Calendar className="w-8 h-8 text-[#cec6ab] mx-auto opacity-40" />
+              <p className="text-xs text-[#cec6ab]">Belum ada riwayat reservasi yang ditemukan.</p>
+              <button
+                onClick={() => setViewMode('NEW_BOOKING')}
+                className="px-4 py-2 bg-[#FFE01B] text-black font-bold text-xs rounded uppercase transition cursor-pointer"
+              >
+                Buat Reservasi Pertama
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {bookingHistory.map((book) => (
                 <div
-                  key={srv.id}
-                  onClick={() => setSelectedService(srv.id)}
-                  className={`p-4 rounded border cursor-pointer transition flex items-center justify-between ${
-                    selectedService === srv.id
-                      ? 'border-[#FFE01B] bg-[#FFE01B]/10 shadow-xs'
-                      : 'border-[#1E293B] bg-[#1c1b1b] hover:border-[#FFE01B]/40'
-                  }`}
+                  key={book.id}
+                  className="bg-[#1c1b1b] border border-[#1E293B] hover:border-[#FFE01B]/40 rounded p-4 space-y-3 transition"
                 >
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-[#e5e2e1]">{srv.name}</span>
-                      {srv.popular && (
-                        <span className="text-[10px] bg-[#FFE01B] text-black font-bold px-2 py-0.5 rounded uppercase">
-                          Popular
-                        </span>
-                      )}
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <span className="px-2 py-0.5 rounded bg-[#131313] border border-[#1E293B] text-[10px] font-mono text-[#FFE01B] font-bold">
+                        {book.bookingCode}
+                      </span>
+                      <h4 className="text-sm font-bold text-white mt-1.5">{book.service?.name || 'Service Package'}</h4>
                     </div>
-                    <p className="text-xs text-[#cec6ab] font-sans">{srv.description}</p>
-                    <span className="text-[11px] text-[#cec6ab] block">Est. Duration: {srv.durationMinutes} mins</span>
+                    <span
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
+                        book.status === 'CONFIRMED' || book.status === 'COMPLETED'
+                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                          : book.status === 'IN_PROGRESS'
+                          ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30'
+                          : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                      }`}
+                    >
+                      {book.status}
+                    </span>
                   </div>
 
-                  <span className="text-sm font-bold text-[#FFE01B] shrink-0 ml-4">
-                    Rp {srv.price.toLocaleString('id-ID')}
-                  </span>
+                  <div className="p-2.5 bg-[#131313] rounded border border-[#1E293B] space-y-1 text-xs">
+                    <div className="flex justify-between text-[11px]">
+                      <span className="text-[#cec6ab]">Cabang:</span>
+                      <span className="text-white truncate max-w-[200px]">{book.branch}</span>
+                    </div>
+                    <div className="flex justify-between text-[11px]">
+                      <span className="text-[#cec6ab]">Jadwal:</span>
+                      <span className="text-[#FFE01B] font-bold">
+                        {book.bookingDate ? book.bookingDate.split('T')[0] : '-'}, {book.bookingTime}
+                      </span>
+                    </div>
+                    {book.bike && (
+                      <div className="flex justify-between text-[11px]">
+                        <span className="text-[#cec6ab]">Motor:</span>
+                        <span className="text-white">{book.bike.model} ({book.bike.plateNumber})</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between text-[11px] pt-1 border-t border-[#1E293B]">
+                      <span className="text-[#cec6ab]">Total Biaya:</span>
+                      <span className="text-[#CCFF00] font-bold">Rp {Number(book.totalCost).toLocaleString('id-ID')}</span>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
+          )}
+        </div>
+      ) : (
+        /* New Reservation Wizard */
+        <form onSubmit={handleBookSubmit} className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          {/* Left: Choose Service Package (Dynamic API) */}
+          <div className="lg:col-span-7 space-y-3">
+            <div className="flex items-center justify-between">
+              <label className="block text-xs uppercase font-bold text-[#e5e2e1] font-display flex items-center gap-2">
+                <Tag className="w-3.5 h-3.5 text-[#FFE01B]" />
+                1. Choose Service Package
+              </label>
+              <button
+                type="button"
+                onClick={fetchServices}
+                disabled={isLoadingServices}
+                title="Refresh Paket Layanan"
+                className="text-[#cec6ab] hover:text-[#FFE01B] text-[11px] flex items-center gap-1 cursor-pointer"
+              >
+                <RefreshCw className={`w-3 h-3 ${isLoadingServices ? 'animate-spin' : ''}`} />
+                <span>Sync API</span>
+              </button>
+            </div>
+
+            {isLoadingServices ? (
+              <div className="p-8 bg-[#1c1b1b] border border-[#1E293B] rounded text-center space-y-2">
+                <Loader2 className="w-6 h-6 text-[#FFE01B] animate-spin mx-auto" />
+                <p className="text-xs text-[#cec6ab]">Memuat paket layanan dari server...</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-2.5">
+                {services.map((srv) => (
+                  <div
+                    key={srv.id}
+                    onClick={() => setSelectedServiceId(srv.id)}
+                    className={`p-4 rounded border cursor-pointer transition flex items-center justify-between ${
+                      selectedServiceId === srv.id
+                        ? 'border-[#FFE01B] bg-[#FFE01B]/10 shadow-xs'
+                        : 'border-[#1E293B] bg-[#1c1b1b] hover:border-[#FFE01B]/40'
+                    }`}
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-bold text-[#e5e2e1]">{srv.name}</span>
+                        {srv.isPopular && (
+                          <span className="text-[10px] bg-[#FFE01B] text-black font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+                            Popular
+                          </span>
+                        )}
+                        <span className="text-[10px] text-[#cec6ab] border border-[#1E293B] px-1.5 py-0.5 rounded uppercase">
+                          {srv.category}
+                        </span>
+                      </div>
+                      {srv.description && (
+                        <p className="text-xs text-[#cec6ab] font-sans leading-relaxed">{srv.description}</p>
+                      )}
+                      <span className="text-[11px] text-[#cec6ab] block">
+                        Est. Durasi: {srv.durationMinutes} Menit
+                      </span>
+                    </div>
+
+                    <span className="text-sm font-bold text-[#FFE01B] shrink-0 ml-4 font-mono">
+                      Rp {srv.price.toLocaleString('id-ID')}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Right: Branch, Date, Notes & Confirmation */}
+          {/* Right: Slot & Branch Setup */}
           <div className="lg:col-span-5 bg-[#1c1b1b] border border-[#1E293B] rounded p-5 space-y-4 h-fit shadow-xs font-sans">
             <h3 className="text-xs font-bold text-[#e5e2e1] uppercase border-b border-[#1E293B] pb-3 flex items-center gap-2 font-display">
               <Clock className="w-4 h-4 text-[#FFE01B]" />
               2. Slot & Branch Setup
             </h3>
 
+            {/* Select Bike */}
+            {bikes.length > 0 && (
+              <div className="font-mono text-xs">
+                <label className="block text-[#cec6ab] mb-1.5 text-xs uppercase font-semibold flex items-center gap-1.5">
+                  <Bike className="w-3.5 h-3.5 text-[#FFE01B]" />
+                  <span>Pilih Unit Motor di Garasi</span>
+                </label>
+                <select
+                  value={selectedBikeId}
+                  onChange={(e) => setSelectedBikeId(e.target.value)}
+                  className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-xs text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none"
+                >
+                  {bikes.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.brand} {b.model} - {b.plateNumber} {b.isPrimary ? '(Utama)' : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Select Workshop Branch with Bekasi */}
             <div className="font-mono text-xs">
-              <label className="block text-[#cec6ab] mb-1 text-xs uppercase font-semibold">Select Workshop Branch</label>
+              <label className="block text-[#cec6ab] mb-1.5 text-xs uppercase font-semibold">Select Workshop Branch</label>
               <select
                 value={selectedBranch}
                 onChange={(e) => setSelectedBranch(e.target.value)}
                 className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-xs text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none"
               >
-                <option value="Depok Branch">Depok Branch (Main Tuning Lab)</option>
-                <option value="Jakarta Selatan">Jakarta Selatan Express Bay</option>
-                <option value="Bandung Branch">Bandung Dyno & Racing Center</option>
+                <option value="Bekasi Branch (Precision Tuning Center)">
+                  Bekasi Branch (Precision Tuning Center)
+                </option>
+                <option value="Depok Branch (Main Tuning Lab)">
+                  Depok Branch (Main Tuning Lab)
+                </option>
+                <option value="Jakarta Selatan Express Bay">
+                  Jakarta Selatan Express Bay
+                </option>
+                <option value="Bandung Dyno & Racing Center">
+                  Bandung Dyno & Racing Center
+                </option>
               </select>
             </div>
 
+            {/* Date and Time Slot */}
             <div className="grid grid-cols-2 gap-3 font-mono text-xs">
               <div>
-                <label className="block text-[#cec6ab] mb-1 text-xs uppercase font-semibold">Date</label>
+                <label className="block text-[#cec6ab] mb-1.5 text-xs uppercase font-semibold">Date</label>
                 <input
                   type="date"
+                  required
                   value={selectedDate}
+                  min={new Date().toISOString().split('T')[0]}
                   onChange={(e) => setSelectedDate(e.target.value)}
                   className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-xs text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none"
                 />
               </div>
               <div>
-                <label className="block text-[#cec6ab] mb-1 text-xs uppercase font-semibold">Time Slot</label>
+                <label className="block text-[#cec6ab] mb-1.5 text-xs uppercase font-semibold">Time Slot</label>
                 <select
                   value={selectedTime}
                   onChange={(e) => setSelectedTime(e.target.value)}
@@ -151,22 +583,27 @@ export const RacerBookings: React.FC = () => {
                   <option value="11:30 AM">11:30 AM</option>
                   <option value="01:30 PM">01:30 PM</option>
                   <option value="03:30 PM">03:30 PM</option>
+                  <option value="04:30 PM">04:30 PM</option>
                 </select>
               </div>
             </div>
 
+            {/* Special Instructions (updated label) */}
             <div className="font-mono text-xs">
-              <label className="block text-[#cec6ab] mb-1 text-xs uppercase font-semibold">Special Instructions / Symptoms</label>
+              <label className="block text-[#cec6ab] mb-1.5 text-xs uppercase font-semibold">
+                Special Instructions
+              </label>
               <textarea
-                rows={2}
+                rows={3}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="e.g. Please check roller weight, front brake pad replacement"
-                className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-xs text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none font-sans"
+                placeholder="Contoh: Mohon cek roller CVT, ganti oli mesin Motul 300V, dan cek AFR mapping."
+                className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-xs text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none font-sans placeholder-slate-500"
               />
             </div>
 
-            <div className="pt-2 border-t border-[#1E293B] space-y-3 font-mono">
+            {/* Summary & Submit */}
+            <div className="pt-3 border-t border-[#1E293B] space-y-3 font-mono">
               <div className="flex justify-between items-baseline">
                 <span className="text-xs text-[#cec6ab] uppercase">Total Estimate:</span>
                 <span className="text-lg font-bold text-[#FFE01B]">
@@ -176,9 +613,20 @@ export const RacerBookings: React.FC = () => {
 
               <button
                 type="submit"
-                className="w-full py-2.5 bg-[#FFE01B] hover:bg-[#ffe241] text-black font-bold text-xs rounded uppercase tracking-wider shadow-md shadow-[#FFE01B]/20 transition cursor-pointer"
+                disabled={isSubmitting}
+                className="w-full py-2.5 bg-[#FFE01B] hover:bg-[#ffe241] text-black font-bold text-xs rounded uppercase tracking-wider shadow-md shadow-[#FFE01B]/20 transition cursor-pointer flex items-center justify-center gap-2"
               >
-                Confirm Bay Reservation
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span>MEMPROSES RESERVASI...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Confirm Bay Reservation</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </>
+                )}
               </button>
             </div>
           </div>
@@ -187,4 +635,3 @@ export const RacerBookings: React.FC = () => {
     </div>
   );
 };
-

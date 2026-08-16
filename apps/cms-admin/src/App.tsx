@@ -24,6 +24,7 @@ import { GenerateReportModal } from './components/admin/GenerateReportModal';
 // Racer Components
 import { RacerSidebar } from './components/racer/RacerSidebar';
 import { RacerDashboard } from './components/racer/RacerDashboard';
+import { RacerBikes } from './components/racer/RacerBikes';
 import { RacerDiagnostics } from './components/racer/RacerDiagnostics';
 import { RacerBookings } from './components/racer/RacerBookings';
 import { RacerMembership } from './components/racer/RacerMembership';
@@ -186,6 +187,12 @@ export default function App() {
             <main className="flex-1 overflow-y-auto bg-[#131313]">
               {racerTab === 'dashboard' && (
                 <RacerDashboard onNavigateTab={setRacerTab} />
+              )}
+              {racerTab === 'bikes' && (
+                <RacerBikes
+                  onNavigateToBooking={() => setRacerTab('bookings')}
+                  onNavigateToDiagnostics={() => setRacerTab('diagnostics')}
+                />
               )}
               {racerTab === 'diagnostics' && <RacerDiagnostics />}
               {racerTab === 'bookings' && <RacerBookings />}
