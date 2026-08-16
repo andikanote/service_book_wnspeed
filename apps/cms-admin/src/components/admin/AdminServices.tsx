@@ -32,21 +32,21 @@ export const AdminServices: React.FC = () => {
   };
 
   return (
-    <div className="p-6 md:p-8 space-y-6 bg-[#f8fafc] min-h-screen text-slate-800">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+    <div className="p-6 md:p-8 space-y-6 bg-[#131313] min-h-screen text-[#e5e2e1] font-sans">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1E293B] pb-5">
         <div>
-          <h2 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-            <Wrench className="w-5 h-5 text-indigo-600" />
+          <h2 className="text-xl font-bold text-[#e5e2e1] tracking-tight flex items-center gap-2 font-display uppercase">
+            <Wrench className="w-5 h-5 text-[#FFE01B]" />
             Workshop Service Packages & Menu
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-[#cec6ab] mt-0.5">
             Configure tuning packages, standard rates, technician estimated times, and required procedures
           </p>
         </div>
 
         <button
           onClick={() => setIsAddOpen(true)}
-          className="flex items-center gap-2 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-mono font-bold text-xs rounded-lg transition shadow-sm"
+          className="flex items-center gap-2 px-3.5 py-2 bg-[#FFE01B] hover:bg-[#ffe241] text-black font-mono font-bold text-xs rounded transition shadow-md shadow-[#FFE01B]/20 cursor-pointer uppercase tracking-wider"
         >
           <Plus className="w-4 h-4" />
           <span>CREATE SERVICE PACKAGE</span>
@@ -58,31 +58,31 @@ export const AdminServices: React.FC = () => {
         {services.map((srv) => (
           <div
             key={srv.id}
-            className="bg-white border border-slate-200 hover:border-indigo-300 rounded-xl p-5 flex flex-col justify-between space-y-4 transition shadow-xs relative overflow-hidden"
+            className="bg-[#1c1b1b] border border-[#1E293B] hover:border-[#FFE01B]/40 rounded p-5 flex flex-col justify-between space-y-4 transition shadow-xs relative overflow-hidden"
           >
             {srv.popular && (
-              <div className="absolute top-0 right-0 bg-indigo-600 text-white text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-bl-lg uppercase tracking-wider">
+              <div className="absolute top-0 right-0 bg-[#FFE01B] text-black text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-bl uppercase tracking-wider">
                 POPULAR
               </div>
             )}
 
             <div>
-              <div className="flex items-center gap-1.5 text-[11px] font-mono text-indigo-600 uppercase font-bold">
+              <div className="flex items-center gap-1.5 text-[11px] font-mono text-[#FFE01B] uppercase font-bold">
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>{srv.category}</span>
               </div>
 
-              <h3 className="text-base font-bold text-slate-900 font-mono mt-1">{srv.name}</h3>
-              <p className="text-xs text-slate-500 font-mono mt-1.5 leading-relaxed">{srv.description}</p>
+              <h3 className="text-base font-bold text-[#e5e2e1] font-display uppercase mt-1">{srv.name}</h3>
+              <p className="text-xs text-[#cec6ab] font-sans mt-1.5 leading-relaxed">{srv.description}</p>
 
-              <div className="mt-3.5 pt-3.5 border-t border-slate-100 space-y-1.5">
-                <span className="text-[10px] font-mono text-slate-400 font-bold uppercase block">
+              <div className="mt-3.5 pt-3.5 border-t border-[#1E293B] space-y-1.5">
+                <span className="text-[10px] font-mono text-[#cec6ab] font-bold uppercase block">
                   Package Inclusions:
                 </span>
-                <ul className="space-y-1 text-xs font-mono text-slate-600">
+                <ul className="space-y-1 text-xs font-mono text-[#e5e2e1]">
                   {srv.includes.map((inc, i) => (
                     <li key={i} className="flex items-start gap-1.5">
-                      <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                      <Check className="w-3.5 h-3.5 text-[#22C55E] shrink-0 mt-0.5" />
                       <span>{inc}</span>
                     </li>
                   ))}
@@ -90,12 +90,12 @@ export const AdminServices: React.FC = () => {
               </div>
             </div>
 
-            <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between">
-              <div className="flex items-center gap-1 text-xs font-mono text-slate-400">
-                <Clock className="w-3.5 h-3.5" />
+            <div className="pt-3.5 border-t border-[#1E293B] flex items-center justify-between font-mono">
+              <div className="flex items-center gap-1 text-xs text-[#cec6ab]">
+                <Clock className="w-3.5 h-3.5 text-[#FFE01B]" />
                 <span>{srv.durationMinutes} mins</span>
               </div>
-              <span className="text-base font-black font-mono text-indigo-700">
+              <span className="text-base font-black font-mono text-[#FFE01B]">
                 Rp {srv.price.toLocaleString('id-ID')}
               </span>
             </div>
@@ -105,96 +105,96 @@ export const AdminServices: React.FC = () => {
 
       {/* Add Modal */}
       {isAddOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-white border border-slate-200 rounded-xl w-full max-w-lg p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-bold text-slate-900 font-mono text-base flex items-center gap-2">
-                <Plus className="w-5 h-5 text-indigo-600" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="bg-[#1c1b1b] border border-[#1E293B] rounded w-full max-w-lg p-6 space-y-4 shadow-2xl font-sans">
+            <div className="flex items-center justify-between border-b border-[#1E293B] pb-3">
+              <h3 className="font-bold text-[#e5e2e1] font-display text-base flex items-center gap-2 uppercase">
+                <Plus className="w-5 h-5 text-[#FFE01B]" />
                 New Workshop Service Package
               </h3>
-              <button onClick={() => setIsAddOpen(false)} className="text-slate-400 hover:text-slate-600">
+              <button onClick={() => setIsAddOpen(false)} className="text-[#cec6ab] hover:text-white cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleAddService} className="space-y-3.5 font-mono text-xs">
               <div>
-                <label className="block text-slate-600 mb-1 uppercase font-semibold">Service Title</label>
+                <label className="block text-[#cec6ab] mb-1 uppercase font-semibold">Service Title</label>
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="e.g. Master Brake Line & Caliper Bleed"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-slate-800 focus:border-indigo-500 focus:bg-white"
+                  className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none"
                 />
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-slate-600 mb-1 uppercase font-semibold">Category</label>
+                  <label className="block text-[#cec6ab] mb-1 uppercase font-semibold">Category</label>
                   <input
                     type="text"
                     required
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-slate-800 focus:border-indigo-500 focus:bg-white"
+                    className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-600 mb-1 uppercase font-semibold">Est. Minutes</label>
+                  <label className="block text-[#cec6ab] mb-1 uppercase font-semibold">Est. Minutes</label>
                   <input
                     type="number"
                     required
                     value={duration}
                     onChange={(e) => setDuration(Number(e.target.value))}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-slate-800 focus:border-indigo-500 focus:bg-white"
+                    className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-600 mb-1 uppercase font-semibold">Price (Rp)</label>
+                  <label className="block text-[#cec6ab] mb-1 uppercase font-semibold">Price (Rp)</label>
                   <input
                     type="number"
                     required
                     value={price}
                     onChange={(e) => setPrice(Number(e.target.value))}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-slate-800 focus:border-indigo-500 focus:bg-white"
+                    className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-[#FFE01B] focus:border-[#FFE01B] focus:outline-none font-bold"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-slate-600 mb-1 uppercase font-semibold">Description</label>
+                <label className="block text-[#cec6ab] mb-1 uppercase font-semibold">Description</label>
                 <textarea
                   rows={2}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Short description of procedure..."
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-slate-800 focus:border-indigo-500 focus:bg-white"
+                  className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none font-sans"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-600 mb-1 uppercase font-semibold">Included Steps (1 per line)</label>
+                <label className="block text-[#cec6ab] mb-1 uppercase font-semibold">Included Steps (1 per line)</label>
                 <textarea
                   rows={3}
                   value={includesText}
                   onChange={(e) => setIncludesText(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-slate-800 focus:border-indigo-500 focus:bg-white"
+                  className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none font-sans"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#1E293B]">
                 <button
                   type="button"
                   onClick={() => setIsAddOpen(false)}
-                  className="px-4 py-2 text-slate-500 hover:text-slate-800"
+                  className="px-4 py-2 text-[#cec6ab] hover:text-white cursor-pointer uppercase"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-indigo-600 text-white font-bold rounded-lg uppercase"
+                  className="px-5 py-2 bg-[#FFE01B] text-black font-bold rounded uppercase tracking-wider cursor-pointer"
                 >
                   Save Service
                 </button>

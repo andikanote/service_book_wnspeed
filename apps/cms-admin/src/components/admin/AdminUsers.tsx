@@ -67,27 +67,27 @@ export const AdminUsers: React.FC = () => {
   );
 
   return (
-    <div className="p-6 md:p-8 space-y-6 bg-[#f8fafc] min-h-screen text-slate-800">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+    <div className="p-6 md:p-8 space-y-6 bg-[#131313] min-h-screen text-[#e5e2e1] font-sans">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1E293B] pb-5">
         <div>
-          <h2 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-            <Users className="w-5 h-5 text-indigo-600" />
+          <h2 className="text-xl font-bold text-[#e5e2e1] tracking-tight flex items-center gap-2 font-display uppercase">
+            <Users className="w-5 h-5 text-[#FFE01B]" />
             Racer CRM & Loyalty Database
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-[#cec6ab] mt-0.5">
             Track customer telemetry, loyalty point balances, registered garages, and workshop spend
           </p>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="relative w-64">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-[#cec6ab] absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search racer ID, name..."
-              className="w-full bg-white border border-slate-200 text-xs font-mono rounded-lg pl-9 pr-3 py-1.5 text-slate-800 focus:outline-none focus:border-indigo-500 shadow-xs"
+              className="w-full bg-[#1c1b1b] border border-[#1E293B] text-xs font-mono rounded pl-9 pr-3 py-1.5 text-[#e5e2e1] placeholder-slate-500 focus:outline-none focus:border-[#FFE01B] shadow-xs"
             />
           </div>
         </div>
@@ -97,18 +97,18 @@ export const AdminUsers: React.FC = () => {
         {filteredRacers.map((racer) => (
           <div
             key={racer.id}
-            className="bg-white border border-slate-200 hover:border-indigo-300 rounded-xl p-5 transition space-y-3.5 shadow-xs"
+            className="bg-[#1c1b1b] border border-[#1E293B] hover:border-[#FFE01B]/40 rounded p-5 transition space-y-3.5 shadow-xs"
           >
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-indigo-50 border border-indigo-200 flex items-center justify-center text-indigo-700 font-bold text-base font-mono">
+                <div className="w-10 h-10 rounded bg-[#131313] border border-[#FFE01B]/30 flex items-center justify-center text-[#FFE01B] font-bold text-base font-display">
                   {racer.name.charAt(0)}
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 font-mono text-sm">{racer.name}</h3>
+                  <h3 className="font-bold text-[#e5e2e1] font-display text-sm uppercase">{racer.name}</h3>
                   <div className="flex items-center gap-2 mt-0.5">
-                    <span className="text-xs font-mono text-indigo-600 font-bold">ID: {racer.racerId}</span>
-                    <span className="text-[10px] font-mono text-slate-400">• {racer.visits} Visits</span>
+                    <span className="text-xs font-mono text-[#FFE01B] font-bold">ID: {racer.racerId}</span>
+                    <span className="text-[10px] font-mono text-[#cec6ab]">• {racer.visits} Visits</span>
                   </div>
                 </div>
               </div>
@@ -116,42 +116,42 @@ export const AdminUsers: React.FC = () => {
               <span
                 className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider ${
                   racer.tier === 'ELITE MEMBER'
-                    ? 'bg-amber-50 text-amber-700 border border-amber-200'
+                    ? 'bg-[#FFE01B]/10 text-[#FFE01B] border border-[#FFE01B]/30'
                     : racer.tier === 'PRO RACER'
-                    ? 'bg-indigo-50 text-indigo-700 border border-indigo-200'
-                    : 'bg-slate-100 text-slate-600 border border-slate-200'
+                    ? 'bg-[#CCFF00]/10 text-[#CCFF00] border border-[#CCFF00]/30'
+                    : 'bg-[#131313] text-[#cec6ab] border border-[#1E293B]'
                 }`}
               >
                 {racer.tier}
               </span>
             </div>
 
-            <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1 font-mono text-xs text-slate-600">
+            <div className="p-3 bg-[#131313] rounded border border-[#1E293B] space-y-1 font-mono text-xs text-[#cec6ab]">
               <div className="flex items-center gap-2">
-                <Bike className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
-                <span className="truncate font-semibold text-slate-800">{racer.bike}</span>
+                <Bike className="w-3.5 h-3.5 text-[#FFE01B] shrink-0" />
+                <span className="truncate font-semibold text-white">{racer.bike}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Phone className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <Phone className="w-3.5 h-3.5 text-[#cec6ab] shrink-0" />
                 <span>{racer.phone}</span>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <Mail className="w-3.5 h-3.5 text-[#cec6ab] shrink-0" />
                 <span>{racer.email}</span>
               </div>
             </div>
 
-            <div className="pt-2 flex items-center justify-between border-t border-slate-100">
+            <div className="pt-2 flex items-center justify-between border-t border-[#1E293B] font-mono">
               <div>
-                <span className="text-[10px] font-mono text-slate-400 block uppercase">LOYALTY POIN</span>
-                <span className="text-sm font-black font-mono text-indigo-600">
+                <span className="text-[10px] font-mono text-[#cec6ab] block uppercase">LOYALTY POIN</span>
+                <span className="text-sm font-black font-mono text-[#FFE01B]">
                   {racer.points.toLocaleString('id-ID')} PTS
                 </span>
               </div>
 
               <div className="text-right">
-                <span className="text-[10px] font-mono text-slate-400 block uppercase">TOTAL CMS SPEND</span>
-                <span className="text-xs font-bold font-mono text-slate-900">{racer.totalSpent}</span>
+                <span className="text-[10px] font-mono text-[#cec6ab] block uppercase">TOTAL CMS SPEND</span>
+                <span className="text-xs font-bold font-mono text-[#CCFF00]">{racer.totalSpent}</span>
               </div>
             </div>
           </div>

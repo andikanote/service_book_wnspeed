@@ -28,15 +28,15 @@ export const ServicePackages: React.FC<ServicePackagesProps> = ({
     <section className="py-8 space-y-8" id="paket-layanan">
       
       {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#2D3139] pb-5">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#1E293B] pb-5">
         <div>
-          <div className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest mb-1">
+          <div className="text-[10px] font-bold text-[#FFE01B] uppercase tracking-widest mb-1 font-mono">
             LAYANAN & SERVICE STANDAR LAB
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-white font-display tracking-tight uppercase">
+          <h2 className="text-3xl sm:text-4xl font-bold text-[#e5e2e1] font-display tracking-tight uppercase">
             PAKET SERVICE PILIHAN
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400 max-w-2xl mt-1">
+          <p className="text-xs sm:text-sm text-[#cec6ab] max-w-2xl mt-1 font-sans">
             Standardized technical protocols designed to restore peak performance to your scooter.
           </p>
         </div>
@@ -45,15 +45,15 @@ export const ServicePackages: React.FC<ServicePackagesProps> = ({
           {onViewAllServices ? (
             <button
               onClick={onViewAllServices}
-              className="text-xs font-bold text-indigo-400 hover:text-indigo-300 uppercase tracking-wider flex items-center gap-1.5 hover:underline"
+              className="text-xs font-bold text-[#FFE01B] hover:text-[#ffe241] uppercase tracking-wider flex items-center gap-1.5 hover:underline font-mono cursor-pointer"
             >
               <span>LIHAT SEMUA LAYANAN</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           ) : (
-            <div className="flex items-center gap-1.5 text-xs text-slate-400">
+            <div className="flex items-center gap-1.5 text-xs text-[#cec6ab] font-mono">
               <span>Scroll to explore</span>
-              <ArrowDown className="w-4 h-4 text-indigo-400 animate-bounce" />
+              <ArrowDown className="w-4 h-4 text-[#FFE01B] animate-bounce" />
             </div>
           )}
         </div>
@@ -69,16 +69,16 @@ export const ServicePackages: React.FC<ServicePackagesProps> = ({
           return (
             <div
               key={pkg.id}
-              className={`relative rounded-2xl flex flex-col justify-between transition-all duration-300 ${
+              className={`relative rounded flex flex-col justify-between transition-all duration-300 ${
                 isPopular
-                  ? 'bg-[#181A20] border-2 border-indigo-500 shadow-xl shadow-indigo-500/10 scale-[1.02] md:-translate-y-2'
-                  : 'bg-[#181A20] border border-[#2D3139] hover:border-slate-500'
+                  ? 'bg-[#0F172A] border-t-4 border-t-[#CCFF00] border-x border-b border-[#1E293B] shadow-xl shadow-[#CCFF00]/5 md:-translate-y-1'
+                  : 'bg-[#1c1b1b] border border-[#1E293B] hover:border-[#FFE01B]/40'
               } p-6`}
             >
               {/* Popular Flag Badge */}
               {isPopular && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-indigo-500 text-white text-[10px] font-bold tracking-widest px-4 py-1 rounded-full uppercase shadow-lg shadow-indigo-500/30">
-                  PALING POPULER
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 bg-[#CCFF00] text-black text-[10px] font-bold tracking-widest px-3 py-0.5 rounded uppercase shadow-md font-mono">
+                  SOP VERIFIED • POPULER
                 </div>
               )}
 
@@ -87,8 +87,8 @@ export const ServicePackages: React.FC<ServicePackagesProps> = ({
                 
                 {/* Icon & Title */}
                 <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                    isPopular ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20'
+                  <div className={`w-10 h-10 rounded flex items-center justify-center ${
+                    isPopular ? 'bg-[#FFE01B] text-black shadow-md shadow-[#FFE01B]/20' : 'bg-[#131313] text-[#FFE01B] border border-[#1E293B]'
                   }`}>
                     {pkg.id === 'paket-regular' && <Gauge className="w-5 h-5" />}
                     {pkg.id === 'regular-plus' && <Sliders className="w-5 h-5" />}
@@ -96,25 +96,25 @@ export const ServicePackages: React.FC<ServicePackagesProps> = ({
                   </div>
 
                   <div>
-                    <h3 className="text-base font-bold text-white">
+                    <h3 className="text-base font-bold text-[#e5e2e1] font-display uppercase tracking-wide">
                       {pkg.name}
                     </h3>
-                    <span className="text-[11px] text-slate-400 font-sans">
+                    <span className="text-[11px] text-[#cec6ab] font-mono">
                       Estimasi durasi {pkg.durationMin} menit
                     </span>
                   </div>
                 </div>
 
-                <p className="text-xs text-slate-300 leading-relaxed font-sans min-h-[36px]">
+                <p className="text-xs text-[#cec6ab] leading-relaxed font-sans min-h-[36px]">
                   {pkg.description}
                 </p>
 
                 {/* Features List */}
-                <div className="space-y-2.5 pt-3 border-t border-[#2D3139]">
+                <div className="space-y-2.5 pt-3 border-t border-[#1E293B]">
                   {pkg.features.map((feature, idx) => (
-                    <div key={idx} className="flex items-start gap-2.5 text-xs text-slate-200">
+                    <div key={idx} className="flex items-start gap-2.5 text-xs text-[#e5e2e1]">
                       <CheckCircle2 className={`w-4 h-4 shrink-0 mt-0.5 ${
-                        isPopular ? 'text-indigo-400' : 'text-emerald-400'
+                        isPopular ? 'text-[#CCFF00]' : 'text-[#22C55E]'
                       }`} />
                       <span className="leading-snug">{feature}</span>
                     </div>
@@ -124,23 +124,23 @@ export const ServicePackages: React.FC<ServicePackagesProps> = ({
               </div>
 
               {/* Package Price & Action Button */}
-              <div className="pt-6 mt-6 border-t border-[#2D3139] space-y-4">
+              <div className="pt-6 mt-6 border-t border-[#1E293B] space-y-4">
                 
                 <div>
-                  <div className="text-[10px] uppercase text-slate-500 font-bold tracking-wider">
+                  <div className="text-[10px] uppercase text-[#cec6ab] font-bold tracking-wider font-mono">
                     {isPopular ? 'INVESTMENT' : pkg.id === 'full-service' ? 'TOTAL CARE' : 'STARTS FROM'}
                   </div>
-                  <div className="text-2xl font-bold text-white font-mono tracking-tight mt-0.5">
+                  <div className="text-2xl font-bold text-[#e5e2e1] font-mono tracking-tight mt-0.5">
                     {pkg.priceFormatted}
                   </div>
                 </div>
 
                 <button
                   onClick={() => onSelectPackage(pkg)}
-                  className={`w-full py-3 px-4 rounded-xl text-xs uppercase font-bold tracking-wider transition-all flex items-center justify-center gap-2 ${
+                  className={`w-full py-3 px-4 rounded text-xs uppercase font-bold tracking-wider transition-all flex items-center justify-center gap-2 cursor-pointer font-mono ${
                     isPopular
-                      ? 'bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 hover:scale-[1.02] active:scale-[0.98]'
-                      : 'bg-[#111318] hover:bg-slate-800/60 text-slate-200 border border-[#2D3139] hover:border-slate-500'
+                      ? 'bg-[#FFE01B] hover:bg-[#ffe241] text-black shadow-md shadow-[#FFE01B]/20 hover:scale-[1.02] active:scale-[0.98]'
+                      : 'bg-[#131313] hover:bg-[#201f1f] text-[#e5e2e1] border border-[#1E293B] hover:border-[#FFE01B]/40'
                   }`}
                 >
                   <span>{isPopular ? 'Book This Package' : 'Select Package'}</span>

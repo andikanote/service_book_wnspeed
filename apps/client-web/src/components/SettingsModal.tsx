@@ -21,35 +21,35 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-[#181A20] border border-[#2D3139] rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl relative">
+    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 font-sans">
+      <div className="bg-[#1c1b1b] border border-[#1E293B] rounded max-w-md w-full p-6 space-y-5 shadow-2xl relative">
         
-        <div className="flex items-center justify-between border-b border-[#2D3139] pb-3">
+        <div className="flex items-center justify-between border-b border-[#1E293B] pb-3">
           <div className="flex items-center gap-2">
-            <Settings className="w-4 h-4 text-indigo-400" />
-            <h3 className="text-sm font-bold text-white uppercase">
+            <Settings className="w-4 h-4 text-[#FFE01B]" />
+            <h3 className="text-sm font-bold text-[#e5e2e1] uppercase font-display">
               Garage & Lab Preferences
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#111318] transition-colors"
+            className="p-1 rounded text-[#cec6ab] hover:text-white hover:bg-[#131313] transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <div className="space-y-4 text-xs">
+        <div className="space-y-4 text-xs font-sans">
           
           {/* Preferred Branch */}
           <div className="space-y-1.5">
-            <label className="text-slate-300 uppercase tracking-wider block font-bold text-[10px]">
+            <label className="text-[#cec6ab] uppercase tracking-wider block font-bold text-[10px] font-mono">
               Default Garage Branch
             </label>
             <select
               value={preferredBranch}
               onChange={(e) => setPreferredBranch(e.target.value)}
-              className="w-full bg-[#111318] text-white border border-[#2D3139] rounded-lg p-2.5 text-xs focus:outline-none focus:border-indigo-500"
+              className="w-full bg-[#131313] text-[#e5e2e1] border border-[#1E293B] rounded p-2.5 text-xs focus:outline-none focus:border-[#FFE01B] font-mono"
             >
               {BRANCH_LOCATIONS.map((b) => (
                 <option key={b.id} value={b.id}>
@@ -60,30 +60,30 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
           </div>
 
           {/* Toggle 1: Telemetry */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#111318] border border-[#2D3139]">
+          <div className="flex items-center justify-between p-3 rounded bg-[#131313] border border-[#1E293B]">
             <div>
-              <span className="text-white font-bold block">Live Telemetry Diagnostics</span>
-              <span className="text-[10px] text-slate-400 font-sans">Simulasi sensor OBD & reminder getar CVT</span>
+              <span className="text-[#e5e2e1] font-bold block font-display">Live Telemetry Diagnostics</span>
+              <span className="text-[10px] text-[#cec6ab] font-sans">Simulasi sensor OBD & reminder getar CVT</span>
             </div>
             <input
               type="checkbox"
               checked={telemetryAlerts}
               onChange={(e) => setTelemetryAlerts(e.target.checked)}
-              className="w-4 h-4 accent-indigo-500 cursor-pointer"
+              className="w-4 h-4 accent-[#FFE01B] cursor-pointer"
             />
           </div>
 
           {/* Toggle 2: WA Notifications */}
-          <div className="flex items-center justify-between p-3 rounded-xl bg-[#111318] border border-[#2D3139]">
+          <div className="flex items-center justify-between p-3 rounded bg-[#131313] border border-[#1E293B]">
             <div>
-              <span className="text-white font-bold block">WhatsApp Lab Session Updates</span>
-              <span className="text-[10px] text-slate-400 font-sans">Kirim foto inspeksi spare part saat pengerjaan</span>
+              <span className="text-[#e5e2e1] font-bold block font-display">WhatsApp Lab Session Updates</span>
+              <span className="text-[10px] text-[#cec6ab] font-sans">Kirim foto inspeksi spare part saat pengerjaan</span>
             </div>
             <input
               type="checkbox"
               checked={whatsappNotifications}
               onChange={(e) => setWhatsappNotifications(e.target.checked)}
-              className="w-4 h-4 accent-indigo-500 cursor-pointer"
+              className="w-4 h-4 accent-[#FFE01B] cursor-pointer"
             />
           </div>
 
@@ -91,7 +91,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 
         <button
           onClick={handleSave}
-          className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold text-xs py-2.5 rounded-xl uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/20"
+          className="w-full bg-[#FFE01B] hover:bg-[#ffe241] text-black font-bold text-xs py-2.5 rounded uppercase tracking-wider transition-colors flex items-center justify-center gap-2 shadow-md shadow-[#FFE01B]/20 font-mono cursor-pointer"
         >
           <Save className="w-4 h-4" />
           <span>{savedSuccess ? 'Tersimpan!' : 'Simpan Pengaturan'}</span>

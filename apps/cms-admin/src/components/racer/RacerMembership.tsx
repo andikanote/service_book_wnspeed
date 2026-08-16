@@ -46,31 +46,31 @@ export const RacerMembership: React.FC = () => {
   };
 
   return (
-    <div className="p-6 md:p-8 space-y-6 bg-[#f8fafc] min-h-screen text-slate-800 font-mono">
+    <div className="p-6 md:p-8 space-y-6 bg-[#131313] min-h-screen text-[#e5e2e1] font-mono">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-[#1E293B] pb-5">
         <div>
-          <div className="flex items-center gap-1.5 text-xs text-amber-600 font-bold uppercase tracking-wider mb-1">
-            <Star className="w-4 h-4 fill-amber-500 text-amber-500" />
+          <div className="flex items-center gap-1.5 text-xs text-[#FFE01B] font-bold uppercase tracking-wider mb-1">
+            <Star className="w-4 h-4 fill-[#FFE01B] text-[#FFE01B]" />
             <span>ART N SPEED RACING CLUB</span>
           </div>
-          <h2 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <h2 className="text-2xl font-bold text-white tracking-tight font-display uppercase">
             Elite Membership & Rewards Store
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-[#cec6ab] mt-0.5">
             Redeem loyalty reward points accumulated from workshop tuning, dyno runs, and parts purchases
           </p>
         </div>
 
-        <div className="bg-white border border-slate-200 rounded-xl p-4 flex items-center gap-4 shadow-xs">
+        <div className="bg-[#1c1b1b] border border-[#1E293B] rounded p-4 flex items-center gap-4 shadow-xs">
           <div>
-            <span className="text-[10px] text-slate-500 uppercase tracking-wider block font-semibold">AVAILABLE BALANCE</span>
-            <span className="text-2xl font-bold text-slate-900">
+            <span className="text-[10px] text-[#cec6ab] uppercase tracking-wider block font-semibold">AVAILABLE BALANCE</span>
+            <span className="text-2xl font-bold text-white">
               {points.toLocaleString('id-ID')}
             </span>
-            <span className="text-xs text-amber-600 ml-1 font-bold">POIN</span>
+            <span className="text-xs text-[#FFE01B] ml-1 font-bold">POIN</span>
           </div>
-          <span className="bg-amber-100 text-amber-800 border border-amber-200 font-bold text-[10px] px-2.5 py-1 rounded uppercase">
+          <span className="bg-[#FFE01B]/10 text-[#FFE01B] border border-[#FFE01B]/30 font-bold text-[10px] px-2.5 py-1 rounded uppercase">
             ELITE TIER
           </span>
         </div>
@@ -85,25 +85,25 @@ export const RacerMembership: React.FC = () => {
           return (
             <div
               key={perk.id}
-              className="bg-white border border-slate-200 hover:border-slate-300 rounded-xl p-5 flex flex-col justify-between space-y-4 shadow-xs transition"
+              className="bg-[#1c1b1b] border border-[#1E293B] hover:border-[#FFE01B]/40 rounded p-5 flex flex-col justify-between space-y-4 shadow-xs transition"
             >
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-indigo-700 uppercase font-bold bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100">
+                  <span className="text-[10px] text-[#FFE01B] uppercase font-bold bg-[#FFE01B]/10 px-2 py-0.5 rounded border border-[#FFE01B]/30">
                     {perk.category}
                   </span>
-                  <span className="text-xs font-bold text-amber-600">
+                  <span className="text-xs font-bold text-[#CCFF00]">
                     {perk.pointsCost.toLocaleString('id-ID')} PTS
                   </span>
                 </div>
 
-                <h3 className="text-base font-bold text-slate-900 mt-2">{perk.title}</h3>
-                <p className="text-xs text-slate-500 mt-1 leading-relaxed">{perk.desc}</p>
+                <h3 className="text-base font-bold text-white mt-2 font-display uppercase">{perk.title}</h3>
+                <p className="text-xs text-[#cec6ab] mt-1 leading-relaxed font-sans">{perk.desc}</p>
               </div>
 
-              <div className="pt-3 border-t border-slate-100">
+              <div className="pt-3 border-t border-[#1E293B]">
                 {isRedeemed ? (
-                  <div className="flex items-center justify-center gap-2 py-2 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg text-xs font-bold uppercase">
+                  <div className="flex items-center justify-center gap-2 py-2 bg-[#22C55E]/10 border border-[#22C55E]/30 text-[#22C55E] rounded text-xs font-bold uppercase">
                     <Check className="w-4 h-4" />
                     <span>CLAIM CODE: VOUCHER-ANS-{perk.id}88</span>
                   </div>
@@ -111,7 +111,7 @@ export const RacerMembership: React.FC = () => {
                   <button
                     onClick={() => handleRedeem(perk)}
                     disabled={!canAfford}
-                    className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-100 disabled:text-slate-400 text-white font-bold text-xs rounded-lg uppercase tracking-wider transition shadow-xs"
+                    className="w-full py-2 bg-[#FFE01B] hover:bg-[#ffe241] disabled:bg-[#131313] disabled:text-[#cec6ab] disabled:border disabled:border-[#1E293B] text-black font-bold text-xs rounded uppercase tracking-wider transition shadow-md shadow-[#FFE01B]/20 cursor-pointer"
                   >
                     {canAfford ? `Redeem for ${perk.pointsCost} Pts` : 'Insufficient Points'}
                   </button>

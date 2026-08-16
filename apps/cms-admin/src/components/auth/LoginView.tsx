@@ -67,33 +67,33 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
     }, 350);
   };
 
-  const handleQuickFill = (email: string) => {
-    setIdentifier(email);
+  const handleQuickFill = (targetEmail: string) => {
+    setEmail(targetEmail);
     setPassword('password123');
     setErrorMsg(null);
   };
 
   return (
-    <div className="min-h-screen bg-[#0f172a] flex flex-col justify-between text-slate-200 select-none">
-      {/* Top Bar matching CMS Header */}
-      <header className="border-b border-slate-800 bg-[#0f172a]/95 px-6 py-4 flex items-center justify-between">
+    <div className="min-h-screen bg-[#131313] flex flex-col justify-between text-[#e5e2e1] font-sans select-none">
+      {/* Top Bar matching Velocity Precision */}
+      <header className="border-b border-[#1E293B] bg-[#131313]/95 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-black text-sm shadow-md shadow-indigo-600/30">
+          <div className="w-8 h-8 rounded bg-[#FFE01B] flex items-center justify-center text-black font-black text-sm shadow-md shadow-[#FFE01B]/20">
             AS
           </div>
           <div>
-            <h1 className="text-base font-black tracking-wider text-white font-brand uppercase">
+            <h1 className="text-base font-black tracking-wider text-[#e5e2e1] font-display uppercase">
               ART N SPEED
             </h1>
-            <p className="text-[10px] font-mono text-slate-400 tracking-tight">
+            <p className="text-[10px] font-mono text-[#cec6ab] tracking-tight">
               Precision Workshop & Racing Telemetry CMS
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-mono text-slate-400 bg-slate-800/60 px-3 py-1.5 rounded-full border border-slate-700/60">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-emerald-400 font-semibold">System Online</span>
+        <div className="flex items-center gap-2 text-xs font-mono text-[#cec6ab] bg-[#1c1b1b] px-3 py-1.5 rounded border border-[#1E293B]">
+          <span className="w-2 h-2 rounded-full bg-[#CCFF00] animate-pulse" />
+          <span className="text-[#CCFF00] font-semibold">System Online</span>
           <span className="text-slate-600">•</span>
           <span>v2.4.0</span>
         </div>
@@ -103,22 +103,22 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
       <main className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           {/* Main Form Card */}
-          <div className="bg-white rounded-2xl p-7 sm:p-8 shadow-2xl border border-slate-200 text-slate-800">
-            <div className="border-b border-slate-100 pb-5 mb-6">
-              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-indigo-50 border border-indigo-100 text-indigo-700 font-mono text-[11px] font-bold uppercase mb-3">
+          <div className="bg-[#1c1b1b] rounded p-7 sm:p-8 shadow-2xl border border-[#1E293B] text-[#e5e2e1]">
+            <div className="border-b border-[#1E293B] pb-5 mb-6">
+              <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-[#FFE01B]/10 border border-[#FFE01B]/30 text-[#FFE01B] font-mono text-[11px] font-bold uppercase mb-3">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 Workshop Single Sign-On
               </div>
-              <h2 className="text-xl font-bold text-slate-900 tracking-tight">
+              <h2 className="text-xl font-bold text-[#e5e2e1] tracking-tight font-display uppercase">
                 Sign In to Account
               </h2>
-              <p className="text-xs text-slate-500 mt-1">
+              <p className="text-xs text-[#cec6ab] mt-1 font-sans">
                 Enter your credentials. The system will automatically direct you to your authorized dashboard.
               </p>
             </div>
 
             {errorMsg && (
-              <div className="mb-5 p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs font-mono flex items-center gap-2">
+              <div className="mb-5 p-3 rounded bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-mono flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{errorMsg}</span>
               </div>
@@ -126,35 +126,35 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-mono font-bold uppercase text-slate-700 mb-1.5">
+                <label className="block text-xs font-mono font-bold uppercase text-[#cec6ab] mb-1.5">
                   Email Address
                 </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                      <Mail className="w-4 h-4" />
-                    </div>
-                    <input
-                      type="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder="name@artnspeed.id"
-                      className="w-full bg-slate-50 border border-slate-300 rounded-lg pl-10 pr-3.5 py-2.5 text-xs font-mono text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition"
-                    />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#cec6ab]">
+                    <Mail className="w-4 h-4" />
                   </div>
+                  <input
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="name@artnspeed.id"
+                    className="w-full bg-[#131313] border border-[#1E293B] rounded pl-10 pr-3.5 py-2.5 text-xs font-mono text-[#e5e2e1] placeholder-slate-500 focus:outline-none focus:border-[#FFE01B] transition"
+                  />
+                </div>
               </div>
 
               <div>
                 <div className="flex justify-between items-center mb-1.5">
-                  <label className="block text-xs font-mono font-bold uppercase text-slate-700">
+                  <label className="block text-xs font-mono font-bold uppercase text-[#cec6ab]">
                     Password
                   </label>
-                  <a href="#help" onClick={(e) => { e.preventDefault(); alert("Silakan hubungi admin workshop untuk reset sandi."); }} className="text-[11px] text-indigo-600 hover:underline font-mono">
+                  <a href="#help" onClick={(e) => { e.preventDefault(); alert("Silakan hubungi admin workshop untuk reset sandi."); }} className="text-[11px] text-[#FFE01B] hover:underline font-mono">
                     Forgot?
                   </a>
                 </div>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#cec6ab]">
                     <Lock className="w-4 h-4" />
                   </div>
                   <input
@@ -163,7 +163,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full bg-slate-50 border border-slate-300 rounded-lg pl-10 pr-3.5 py-2.5 text-xs font-mono text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition"
+                    className="w-full bg-[#131313] border border-[#1E293B] rounded pl-10 pr-3.5 py-2.5 text-xs font-mono text-[#e5e2e1] placeholder-slate-500 focus:outline-none focus:border-[#FFE01B] transition"
                   />
                 </div>
               </div>
@@ -171,10 +171,10 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 disabled:opacity-50 text-white font-mono font-bold text-xs py-3 px-4 rounded-lg tracking-wider uppercase transition shadow-md shadow-indigo-600/20 flex items-center justify-center gap-2 mt-3 cursor-pointer"
+                className="w-full bg-[#FFE01B] hover:bg-[#ffe241] active:bg-[#e2c600] disabled:opacity-50 text-black font-mono font-bold text-xs py-3 px-4 rounded tracking-wider uppercase transition shadow-md shadow-[#FFE01B]/20 flex items-center justify-center gap-2 mt-3 cursor-pointer"
               >
                 {isLoading ? (
-                  <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span className="inline-block w-4 h-4 border-2 border-black/30 border-t-black rounded-full animate-spin" />
                 ) : (
                   <>
                     <span>Sign In</span>
@@ -185,36 +185,36 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
             </form>
 
             {/* Quick Demo Test Accounts */}
-            <div className="mt-6 pt-5 border-t border-slate-100">
-              <span className="block text-[10px] font-mono uppercase tracking-wider text-slate-400 mb-2.5 font-bold">
+            <div className="mt-6 pt-5 border-t border-[#1E293B]">
+              <span className="block text-[10px] font-mono uppercase tracking-wider text-[#cec6ab] mb-2.5 font-bold">
                 Quick Test Accounts (Auto Role Detect)
               </span>
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
                   onClick={() => handleQuickFill('admin@artnspeed.id')}
-                  className="flex items-center gap-2 p-2 rounded-lg border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50 text-left transition cursor-pointer group"
+                  className="flex items-center gap-2 p-2 rounded border border-[#1E293B] hover:border-[#FFE01B]/40 hover:bg-[#131313] text-left transition cursor-pointer group"
                 >
-                  <div className="w-6 h-6 rounded bg-slate-800 text-white flex items-center justify-center text-[10px] font-bold font-mono">
+                  <div className="w-6 h-6 rounded bg-[#FFE01B] text-black flex items-center justify-center text-[10px] font-bold font-mono">
                     AD
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[11px] font-bold text-slate-800 truncate font-mono">Admin CMS</p>
-                    <p className="text-[9px] text-slate-400 font-mono truncate">admin@artnspeed.id</p>
+                    <p className="text-[11px] font-bold text-[#e5e2e1] truncate font-mono">Admin CMS</p>
+                    <p className="text-[9px] text-[#cec6ab] font-mono truncate">admin@artnspeed.id</p>
                   </div>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => handleQuickFill('aldi.racer99@artnspeed.id')}
-                  className="flex items-center gap-2 p-2 rounded-lg border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50 text-left transition cursor-pointer group"
+                  className="flex items-center gap-2 p-2 rounded border border-[#1E293B] hover:border-[#FFE01B]/40 hover:bg-[#131313] text-left transition cursor-pointer group"
                 >
-                  <div className="w-6 h-6 rounded bg-indigo-600 text-white flex items-center justify-center text-[10px] font-bold font-mono">
+                  <div className="w-6 h-6 rounded bg-[#CCFF00] text-black flex items-center justify-center text-[10px] font-bold font-mono">
                     RC
                   </div>
                   <div className="min-w-0">
-                    <p className="text-[11px] font-bold text-slate-800 truncate font-mono">Racer Portal</p>
-                    <p className="text-[9px] text-slate-400 font-mono truncate">aldi.racer99@...</p>
+                    <p className="text-[11px] font-bold text-[#e5e2e1] truncate font-mono">Racer Portal</p>
+                    <p className="text-[9px] text-[#cec6ab] font-mono truncate">aldi.racer99@...</p>
                   </div>
                 </button>
               </div>
@@ -224,10 +224,10 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800/80 px-6 py-4 text-center text-xs font-mono text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <footer className="border-t border-[#1E293B] px-6 py-4 text-center text-xs font-mono text-[#cec6ab] flex flex-col sm:flex-row items-center justify-between gap-2">
         <p>&copy; {new Date().getFullYear()} ART N SPEED Precision Engineering. All rights reserved.</p>
-        <div className="flex items-center gap-4 text-slate-400">
-          <span>Workshop Dyno Link: ACTIVE</span>
+        <div className="flex items-center gap-4 text-[#cec6ab]">
+          <span className="text-[#CCFF00]">Workshop Dyno Link: ACTIVE</span>
           <span>•</span>
           <span>Security Protocol TLS 1.3</span>
         </div>

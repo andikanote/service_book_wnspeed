@@ -44,16 +44,16 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
   ];
 
   return (
-    <header className="h-16 border-b border-slate-200 bg-white px-6 md:px-8 flex items-center justify-between sticky top-0 z-30 shadow-xs">
+    <header className="h-16 border-b border-[#1E293B] bg-[#131313] px-6 md:px-8 flex items-center justify-between sticky top-0 z-30 font-sans select-none">
       {/* Title & Status */}
       <div className="flex items-center gap-3">
         <div>
-          <h2 className="text-lg font-bold tracking-tight text-slate-800">
+          <h2 className="text-lg font-bold tracking-tight text-[#e5e2e1] font-display uppercase">
             {title}
           </h2>
         </div>
-        <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-50 border border-emerald-200 text-emerald-700 text-[11px] font-mono font-semibold">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#CCFF00]/10 border border-[#CCFF00]/30 text-[#CCFF00] text-[11px] font-mono font-semibold">
+          <span className="w-1.5 h-1.5 rounded-full bg-[#CCFF00] animate-pulse"></span>
           HQ ONLINE
         </span>
       </div>
@@ -62,13 +62,13 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
       <div className="flex items-center gap-3">
         {/* Search input */}
         <div className="relative w-48 sm:w-64 md:w-72">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#cec6ab] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search systems & parts..."
-            className="w-full bg-slate-100/80 border border-slate-200 rounded-lg pl-9 pr-3 py-1.5 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:border-indigo-500 focus:bg-white transition"
+            className="w-full bg-[#1c1b1b] border border-[#1E293B] rounded pl-9 pr-3 py-1.5 text-xs text-[#e5e2e1] placeholder-slate-500 focus:outline-none focus:border-[#FFE01B] font-mono transition"
           />
         </div>
 
@@ -79,12 +79,12 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
               setShowNotifications(!showNotifications);
               if (unreadCount > 0) setUnreadCount(0);
             }}
-            className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 transition relative"
+            className="p-2 rounded text-[#cec6ab] hover:text-white hover:bg-[#1c1b1b] border border-[#1E293B] transition relative cursor-pointer"
             title="Notifications"
           >
             <Bell className="w-4 h-4" />
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#FFE01B] text-black text-[9px] font-bold rounded-full flex items-center justify-center font-mono">
                 {unreadCount}
               </span>
             )}
@@ -92,29 +92,29 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
 
           {/* Notifications Dropdown */}
           {showNotifications && (
-            <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white border border-slate-200 rounded-xl shadow-xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-1">
-              <div className="p-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-                  <Bell className="w-3.5 h-3.5 text-indigo-600" />
+            <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-[#1c1b1b] border border-[#1E293B] rounded shadow-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-1 font-sans">
+              <div className="p-3 border-b border-[#1E293B] bg-[#131313] flex items-center justify-between">
+                <span className="text-xs font-bold text-[#e5e2e1] uppercase tracking-wider flex items-center gap-1.5 font-display">
+                  <Bell className="w-3.5 h-3.5 text-[#FFE01B]" />
                   Workshop Notifications
                 </span>
-                <span className="text-[10px] text-slate-500 font-mono">Live Feed</span>
+                <span className="text-[10px] text-[#cec6ab] font-mono">Live Feed</span>
               </div>
-              <div className="divide-y divide-slate-100 max-h-80 overflow-y-auto">
+              <div className="divide-y divide-[#1E293B] max-h-80 overflow-y-auto font-sans">
                 {notifications.map((n) => (
-                  <div key={n.id} className="p-3 hover:bg-slate-50 transition space-y-1">
+                  <div key={n.id} className="p-3 hover:bg-[#131313] transition space-y-1">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-semibold text-slate-800 flex items-center gap-1.5">
+                      <span className="text-xs font-semibold text-[#e5e2e1] flex items-center gap-1.5">
                         {n.type === 'warning' ? (
-                          <AlertTriangle className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                          <AlertTriangle className="w-3.5 h-3.5 text-[#FFE01B] shrink-0" />
                         ) : (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-[#CCFF00] shrink-0" />
                         )}
                         {n.title}
                       </span>
-                      <span className="text-[10px] font-mono text-slate-400">{n.time}</span>
+                      <span className="text-[10px] font-mono text-[#cec6ab]">{n.time}</span>
                     </div>
-                    <p className="text-xs text-slate-500 pl-5">{n.desc}</p>
+                    <p className="text-xs text-[#cec6ab] pl-5">{n.desc}</p>
                   </div>
                 ))}
               </div>
@@ -125,19 +125,19 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
         {/* Help icon */}
         <button
           onClick={onOpenHelp}
-          className="p-2 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 transition"
+          className="p-2 rounded text-[#cec6ab] hover:text-white hover:bg-[#1c1b1b] border border-[#1E293B] transition cursor-pointer"
           title="CMS System Manual"
         >
           <HelpCircle className="w-4 h-4" />
         </button>
 
         {/* User Profile Block */}
-        <div className="border-l border-slate-200 pl-3">
+        <div className="border-l border-[#1E293B] pl-3">
           <button
             onClick={onOpenProfile}
-            className="flex items-center gap-2.5 p-1 rounded-lg hover:bg-slate-100 transition group"
+            className="flex items-center gap-2.5 p-1 rounded hover:bg-[#1c1b1b] transition group cursor-pointer"
           >
-            <div className="w-8 h-8 rounded-full overflow-hidden border border-indigo-200 bg-indigo-50 flex items-center justify-center text-indigo-700 font-bold text-xs">
+            <div className="w-8 h-8 rounded-full overflow-hidden border border-[#FFE01B]/40 bg-[#131313] flex items-center justify-center text-[#FFE01B] font-bold text-xs font-mono">
               <img
                 src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
                 alt="Admin Profile"
@@ -148,10 +148,10 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({
               />
             </div>
             <div className="text-left hidden md:block">
-              <p className="text-xs font-semibold text-slate-800 leading-tight">M. Reza</p>
-              <p className="text-[10px] text-slate-400 leading-tight font-mono">Lead Tuner</p>
+              <p className="text-xs font-semibold text-[#e5e2e1] leading-tight font-display">M. Reza</p>
+              <p className="text-[10px] text-[#cec6ab] leading-tight font-mono">Lead Tuner</p>
             </div>
-            <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-slate-600 hidden md:block" />
+            <ChevronDown className="w-3.5 h-3.5 text-[#cec6ab] group-hover:text-white hidden md:block" />
           </button>
         </div>
       </div>

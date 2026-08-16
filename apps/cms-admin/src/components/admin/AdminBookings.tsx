@@ -81,23 +81,23 @@ export const AdminBookings: React.FC<AdminBookingsProps> = ({
   };
 
   return (
-    <div className="p-6 md:p-8 space-y-6 bg-[#f8fafc] min-h-screen text-slate-800">
+    <div className="p-6 md:p-8 space-y-6 bg-[#131313] min-h-screen text-[#e5e2e1] font-sans">
       {/* Header Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1E293B] pb-5">
         <div>
-          <h2 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-indigo-600" />
+          <h2 className="text-xl font-bold text-[#e5e2e1] tracking-tight flex items-center gap-2 font-display uppercase">
+            <Calendar className="w-5 h-5 text-[#FFE01B]" />
             Workshop Service Bookings
           </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-[#cec6ab] mt-0.5">
             Manage customer reservation slots, technician assignments, and bay workflow
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 font-mono">
           <button
             onClick={() => setIsModalOpen(true)}
-            className="flex items-center gap-2 px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-mono font-bold text-xs rounded-lg transition shadow-sm"
+            className="flex items-center gap-2 px-3.5 py-2 bg-[#FFE01B] hover:bg-[#ffe241] text-black font-mono font-bold text-xs rounded transition shadow-md shadow-[#FFE01B]/20 cursor-pointer uppercase tracking-wider"
           >
             <Plus className="w-4 h-4" />
             <span>CREATE BOOKING</span>
@@ -106,27 +106,27 @@ export const AdminBookings: React.FC<AdminBookingsProps> = ({
       </div>
 
       {/* Filter and Search controls */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white border border-slate-200 p-3.5 rounded-xl shadow-xs">
-        <div className="flex items-center gap-2 w-full sm:w-80 relative">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3" />
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#1c1b1b] border border-[#1E293B] p-3.5 rounded shadow-xs">
+        <div className="flex items-center gap-2 w-full sm:w-80 relative font-mono">
+          <Search className="w-4 h-4 text-[#cec6ab] absolute left-3" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search customer, bike, plate, code..."
-            className="w-full bg-slate-50 border border-slate-200 text-xs font-mono rounded-lg pl-9 pr-3 py-1.5 text-slate-800 focus:outline-none focus:border-indigo-500 focus:bg-white"
+            className="w-full bg-[#131313] border border-[#1E293B] text-xs font-mono rounded pl-9 pr-3 py-1.5 text-[#e5e2e1] placeholder-slate-500 focus:outline-none focus:border-[#FFE01B]"
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
+        <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto font-mono">
           {['ALL', 'CONFIRMED', 'IN_SERVICE', 'PENDING', 'COMPLETED'].map((status) => (
             <button
               key={status}
               onClick={() => setFilterStatus(status)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition ${
+              className={`px-3 py-1.5 rounded text-xs font-mono font-semibold transition cursor-pointer uppercase ${
                 filterStatus === status
-                  ? 'bg-indigo-600 text-white font-bold shadow-xs'
-                  : 'bg-slate-100 text-slate-600 hover:text-slate-900 border border-slate-200'
+                  ? 'bg-[#FFE01B] text-black font-bold shadow-xs'
+                  : 'bg-[#131313] text-[#cec6ab] hover:text-white border border-[#1E293B]'
               }`}
             >
               {status}
@@ -138,68 +138,68 @@ export const AdminBookings: React.FC<AdminBookingsProps> = ({
       {/* Bookings List */}
       <div className="grid grid-cols-1 gap-3">
         {filteredBookings.length === 0 ? (
-          <div className="p-12 text-center bg-white border border-slate-200 rounded-xl">
-            <p className="text-sm font-mono text-slate-500">No bookings match the selected filters.</p>
+          <div className="p-12 text-center bg-[#1c1b1b] border border-[#1E293B] rounded">
+            <p className="text-sm font-mono text-[#cec6ab]">No bookings match the selected filters.</p>
           </div>
         ) : (
           filteredBookings.map((b) => (
             <div
               key={b.id}
-              className="bg-white border border-slate-200 hover:border-indigo-300 rounded-xl p-4.5 transition flex flex-col lg:flex-row lg:items-center justify-between gap-4 shadow-xs"
+              className="bg-[#1c1b1b] border border-[#1E293B] hover:border-[#FFE01B]/40 rounded p-4.5 transition flex flex-col lg:flex-row lg:items-center justify-between gap-4 shadow-xs"
             >
               {/* Left Info */}
               <div className="flex items-start gap-3.5">
-                <div className="w-11 h-11 rounded-lg bg-slate-100 border border-slate-200 flex flex-col items-center justify-center text-slate-700 shrink-0">
-                  <span className="text-[9px] font-mono text-slate-400 uppercase font-bold">BAY</span>
-                  <span className="text-sm font-black text-indigo-600 font-mono">#{b.bayNumber || '01'}</span>
+                <div className="w-11 h-11 rounded bg-[#131313] border border-[#1E293B] flex flex-col items-center justify-center text-[#e5e2e1] shrink-0 font-mono">
+                  <span className="text-[9px] text-[#cec6ab] uppercase font-bold">BAY</span>
+                  <span className="text-sm font-black text-[#FFE01B]">#{b.bayNumber || '01'}</span>
                 </div>
 
                 <div className="space-y-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-sm font-bold text-slate-900 font-mono">{b.customerName}</span>
-                    <span className="text-[11px] font-mono text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200 font-bold">
+                    <span className="text-sm font-bold text-white font-mono">{b.customerName}</span>
+                    <span className="text-[11px] font-mono text-[#FFE01B] bg-[#FFE01B]/10 px-2 py-0.5 rounded border border-[#FFE01B]/30 font-bold">
                       {b.bookingCode}
                     </span>
                     <span
                       className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded uppercase ${
                         b.status === 'CONFIRMED'
-                          ? 'bg-sky-50 text-sky-700 border border-sky-200'
+                          ? 'bg-sky-500/10 text-sky-300 border border-sky-500/30'
                           : b.status === 'IN_SERVICE'
-                          ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 animate-pulse'
+                          ? 'bg-[#CCFF00]/10 text-[#CCFF00] border border-[#CCFF00]/30 animate-pulse'
                           : b.status === 'COMPLETED'
-                          ? 'bg-slate-100 text-slate-600 border border-slate-200'
-                          : 'bg-amber-50 text-amber-700 border border-amber-200'
+                          ? 'bg-[#22C55E]/10 text-[#22C55E] border border-[#22C55E]/30'
+                          : 'bg-amber-500/10 text-amber-300 border border-amber-500/30'
                       }`}
                     >
                       {b.status}
                     </span>
                   </div>
 
-                  <div className="text-xs font-mono text-slate-600 flex flex-wrap items-center gap-x-3.5 gap-y-1">
-                    <span className="text-slate-800 font-semibold">{b.bikeModel}</span>
-                    <span className="text-slate-500">Plate: {b.plateNumber}</span>
-                    <span className="text-slate-500 flex items-center gap-1">
-                      <Clock className="w-3 h-3 text-indigo-500" />
+                  <div className="text-xs font-mono text-[#cec6ab] flex flex-wrap items-center gap-x-3.5 gap-y-1">
+                    <span className="text-white font-semibold">{b.bikeModel}</span>
+                    <span className="text-[#cec6ab]">Plate: {b.plateNumber}</span>
+                    <span className="text-[#cec6ab] flex items-center gap-1">
+                      <Clock className="w-3 h-3 text-[#FFE01B]" />
                       {b.time}, {b.date}
                     </span>
-                    <span className="text-slate-500 flex items-center gap-1">
-                      <MapPin className="w-3 h-3 text-slate-400" />
+                    <span className="text-[#cec6ab] flex items-center gap-1">
+                      <MapPin className="w-3 h-3 text-[#FFE01B]" />
                       {b.branch}
                     </span>
                   </div>
 
-                  <p className="text-xs text-slate-500 font-mono mt-0.5">
-                    <span className="text-slate-700 font-semibold">Service:</span> {b.serviceName} •{' '}
-                    <span className="text-slate-700 font-semibold">Tech:</span> {b.assignedMechanic || 'Chief Bambang'}
+                  <p className="text-xs text-[#cec6ab] font-mono mt-0.5">
+                    <span className="text-white font-semibold">Service:</span> {b.serviceName} •{' '}
+                    <span className="text-white font-semibold">Tech:</span> {b.assignedMechanic || 'Chief Bambang'}
                   </p>
                 </div>
               </div>
 
               {/* Right Action Buttons */}
-              <div className="flex flex-wrap items-center gap-2 shrink-0 border-t lg:border-t-0 border-slate-100 pt-3 lg:pt-0">
+              <div className="flex flex-wrap items-center gap-2 shrink-0 border-t lg:border-t-0 border-[#1E293B] pt-3 lg:pt-0 font-mono">
                 <div className="text-right mr-3 hidden sm:block">
-                  <span className="text-[10px] font-mono text-slate-400 block uppercase">EST. REVENUE</span>
-                  <span className="text-sm font-bold font-mono text-slate-900">
+                  <span className="text-[10px] font-mono text-[#cec6ab] block uppercase">EST. REVENUE</span>
+                  <span className="text-sm font-bold font-mono text-[#FFE01B]">
                     Rp {b.totalCost.toLocaleString('id-ID')}
                   </span>
                 </div>
@@ -207,7 +207,7 @@ export const AdminBookings: React.FC<AdminBookingsProps> = ({
                 {b.status === 'PENDING' && (
                   <button
                     onClick={() => onUpdateBookingStatus(b.id, 'CONFIRMED')}
-                    className="px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white text-xs font-mono font-bold rounded-lg transition"
+                    className="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white text-xs font-mono font-bold rounded transition cursor-pointer uppercase"
                   >
                     Confirm Bay
                   </button>
@@ -216,7 +216,7 @@ export const AdminBookings: React.FC<AdminBookingsProps> = ({
                 {b.status === 'CONFIRMED' && (
                   <button
                     onClick={() => onUpdateBookingStatus(b.id, 'IN_SERVICE')}
-                    className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-mono font-bold rounded-lg transition"
+                    className="px-3 py-1.5 bg-[#FFE01B] hover:bg-[#ffe241] text-black text-xs font-mono font-bold rounded transition shadow-sm shadow-[#FFE01B]/20 cursor-pointer uppercase"
                   >
                     Start Service
                   </button>
@@ -228,7 +228,7 @@ export const AdminBookings: React.FC<AdminBookingsProps> = ({
                       onUpdateBookingStatus(b.id, 'COMPLETED');
                       confetti({ particleCount: 30, spread: 60 });
                     }}
-                    className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-mono font-bold rounded-lg transition flex items-center gap-1"
+                    className="px-3 py-1.5 bg-[#22C55E] hover:bg-emerald-600 text-black text-xs font-mono font-bold rounded transition flex items-center gap-1 cursor-pointer uppercase"
                   >
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     <span>Complete Job</span>
@@ -237,7 +237,7 @@ export const AdminBookings: React.FC<AdminBookingsProps> = ({
 
                 <button
                   onClick={() => setSelectedBooking(b)}
-                  className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs font-mono rounded-lg transition"
+                  className="px-3 py-1.5 bg-[#131313] hover:bg-[#201f1f] border border-[#1E293B] text-[#e5e2e1] text-xs font-mono rounded transition cursor-pointer uppercase"
                 >
                   Details
                 </button>
@@ -249,47 +249,47 @@ export const AdminBookings: React.FC<AdminBookingsProps> = ({
 
       {/* Booking Details Modal */}
       {selectedBooking && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-white border border-slate-200 rounded-xl w-full max-w-lg p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-bold text-slate-900 font-mono text-base">Booking Details ({selectedBooking.bookingCode})</h3>
-              <button onClick={() => setSelectedBooking(null)} className="text-slate-400 hover:text-slate-600">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="bg-[#1c1b1b] border border-[#1E293B] rounded w-full max-w-lg p-6 space-y-4 shadow-2xl font-sans">
+            <div className="flex items-center justify-between border-b border-[#1E293B] pb-3">
+              <h3 className="font-bold text-[#e5e2e1] font-display text-base uppercase">Booking Details ({selectedBooking.bookingCode})</h3>
+              <button onClick={() => setSelectedBooking(null)} className="text-[#cec6ab] hover:text-white cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="space-y-2.5 font-mono text-xs text-slate-700">
-              <div className="flex justify-between py-1 border-b border-slate-100">
-                <span className="text-slate-500">Racer Name:</span>
-                <span className="font-bold text-slate-900">{selectedBooking.customerName}</span>
+            <div className="space-y-2.5 font-mono text-xs text-[#cec6ab]">
+              <div className="flex justify-between py-1 border-b border-[#1E293B]">
+                <span className="text-[#cec6ab]">Racer Name:</span>
+                <span className="font-bold text-white">{selectedBooking.customerName}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-slate-100">
-                <span className="text-slate-500">Phone:</span>
-                <span>{selectedBooking.customerPhone}</span>
+              <div className="flex justify-between py-1 border-b border-[#1E293B]">
+                <span className="text-[#cec6ab]">Phone:</span>
+                <span className="text-white">{selectedBooking.customerPhone}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-slate-100">
-                <span className="text-slate-500">Vehicle / Motorcycle:</span>
-                <span className="text-indigo-600 font-bold">{selectedBooking.bikeModel} ({selectedBooking.plateNumber})</span>
+              <div className="flex justify-between py-1 border-b border-[#1E293B]">
+                <span className="text-[#cec6ab]">Vehicle / Motorcycle:</span>
+                <span className="text-[#FFE01B] font-bold">{selectedBooking.bikeModel} ({selectedBooking.plateNumber})</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-slate-100">
-                <span className="text-slate-500">Service Required:</span>
-                <span className="font-bold text-slate-900">{selectedBooking.serviceName}</span>
+              <div className="flex justify-between py-1 border-b border-[#1E293B]">
+                <span className="text-[#cec6ab]">Service Required:</span>
+                <span className="font-bold text-white">{selectedBooking.serviceName}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-slate-100">
-                <span className="text-slate-500">Assigned Mechanic:</span>
-                <span>{selectedBooking.assignedMechanic || 'Chief Tuner Bambang'}</span>
+              <div className="flex justify-between py-1 border-b border-[#1E293B]">
+                <span className="text-[#cec6ab]">Assigned Mechanic:</span>
+                <span className="text-white">{selectedBooking.assignedMechanic || 'Chief Tuner Bambang'}</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-slate-100">
-                <span className="text-slate-500">Branch & Bay:</span>
-                <span>{selectedBooking.branch} (Bay #{selectedBooking.bayNumber || 2})</span>
+              <div className="flex justify-between py-1 border-b border-[#1E293B]">
+                <span className="text-[#cec6ab]">Branch & Bay:</span>
+                <span className="text-white">{selectedBooking.branch} (Bay #{selectedBooking.bayNumber || 2})</span>
               </div>
-              <div className="flex justify-between py-1 border-b border-slate-100">
-                <span className="text-slate-500">Total Price:</span>
-                <span className="font-bold text-emerald-600 text-sm">Rp {selectedBooking.totalCost.toLocaleString('id-ID')}</span>
+              <div className="flex justify-between py-1 border-b border-[#1E293B]">
+                <span className="text-[#cec6ab]">Total Price:</span>
+                <span className="font-bold text-[#CCFF00] text-sm">Rp {selectedBooking.totalCost.toLocaleString('id-ID')}</span>
               </div>
               {selectedBooking.notes && (
-                <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 text-slate-700">
-                  <span className="text-slate-500 block mb-1 font-semibold">Diagnostic Notes:</span>
+                <div className="p-3 bg-[#131313] rounded border border-[#1E293B] text-[#cec6ab]">
+                  <span className="text-[#FFE01B] block mb-1 font-semibold">Diagnostic Notes:</span>
                   {selectedBooking.notes}
                 </div>
               )}
@@ -297,7 +297,7 @@ export const AdminBookings: React.FC<AdminBookingsProps> = ({
 
             <button
               onClick={() => setSelectedBooking(null)}
-              className="w-full py-2 bg-indigo-600 text-white font-mono font-bold text-xs rounded-lg uppercase"
+              className="w-full py-2.5 bg-[#FFE01B] text-black font-mono font-bold text-xs rounded uppercase tracking-wider cursor-pointer"
             >
               Close Window
             </button>
@@ -307,14 +307,14 @@ export const AdminBookings: React.FC<AdminBookingsProps> = ({
 
       {/* Create New Booking Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-white border border-slate-200 rounded-xl w-full max-w-xl p-6 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-bold text-slate-900 font-mono text-base flex items-center gap-2">
-                <Plus className="w-5 h-5 text-indigo-600" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="bg-[#1c1b1b] border border-[#1E293B] rounded w-full max-w-xl p-6 space-y-4 shadow-2xl font-sans">
+            <div className="flex items-center justify-between border-b border-[#1E293B] pb-3">
+              <h3 className="font-bold text-[#e5e2e1] font-display text-base flex items-center gap-2 uppercase">
+                <Plus className="w-5 h-5 text-[#FFE01B]" />
                 New Workshop Service Booking
               </h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600">
+              <button onClick={() => setIsModalOpen(false)} className="text-[#cec6ab] hover:text-white cursor-pointer">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -322,61 +322,61 @@ export const AdminBookings: React.FC<AdminBookingsProps> = ({
             <form onSubmit={handleCreateBooking} className="space-y-3.5 font-mono text-xs">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-600 mb-1 uppercase font-semibold">Customer Name</label>
+                  <label className="block text-[#cec6ab] mb-1 uppercase font-semibold">Customer Name</label>
                   <input
                     type="text"
                     required
                     value={formCustomer}
                     onChange={(e) => setFormCustomer(e.target.value)}
                     placeholder="e.g. Kevin Sanjaya"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-slate-800 focus:border-indigo-500 focus:bg-white"
+                    className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-600 mb-1 uppercase font-semibold">WhatsApp Phone</label>
+                  <label className="block text-[#cec6ab] mb-1 uppercase font-semibold">WhatsApp Phone</label>
                   <input
                     type="text"
                     required
                     value={formPhone}
                     onChange={(e) => setFormPhone(e.target.value)}
                     placeholder="+62 812-xxxx-xxxx"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-slate-800 focus:border-indigo-500 focus:bg-white"
+                    className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-600 mb-1 uppercase font-semibold">Bike Model</label>
+                  <label className="block text-[#cec6ab] mb-1 uppercase font-semibold">Bike Model</label>
                   <input
                     type="text"
                     required
                     value={formBike}
                     onChange={(e) => setFormBike(e.target.value)}
                     placeholder="e.g. Yamaha Aerox 155"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-slate-800 focus:border-indigo-500 focus:bg-white"
+                    className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-600 mb-1 uppercase font-semibold">Plate Number</label>
+                  <label className="block text-[#cec6ab] mb-1 uppercase font-semibold">Plate Number</label>
                   <input
                     type="text"
                     required
                     value={formPlate}
                     onChange={(e) => setFormPlate(e.target.value)}
                     placeholder="e.g. B 4992 ELA"
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-slate-800 focus:border-indigo-500 focus:bg-white"
+                    className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none uppercase"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-600 mb-1 uppercase font-semibold">Service Package</label>
+                  <label className="block text-[#cec6ab] mb-1 uppercase font-semibold">Service Package</label>
                   <select
                     value={formService}
                     onChange={(e) => setFormService(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-slate-800 focus:border-indigo-500 focus:bg-white"
+                    className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none"
                   >
                     <option value="Regular Plus Service">Regular Plus Service (Rp 385.000)</option>
                     <option value="Full CVT Overhaul & Tuning">Full CVT Overhaul & Tuning (Rp 280.000)</option>
@@ -386,11 +386,11 @@ export const AdminBookings: React.FC<AdminBookingsProps> = ({
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-600 mb-1 uppercase font-semibold">Branch Location</label>
+                  <label className="block text-[#cec6ab] mb-1 uppercase font-semibold">Branch Location</label>
                   <select
                     value={formBranch}
                     onChange={(e) => setFormBranch(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-slate-800 focus:border-indigo-500 focus:bg-white"
+                    className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none"
                   >
                     <option value="Depok Branch">Depok Branch (Main Workshop)</option>
                     <option value="Jakarta Selatan">Jakarta Selatan Express Bay</option>
@@ -400,27 +400,27 @@ export const AdminBookings: React.FC<AdminBookingsProps> = ({
               </div>
 
               <div>
-                <label className="block text-slate-600 mb-1 uppercase font-semibold">Notes / Diagnostic Requests</label>
+                <label className="block text-[#cec6ab] mb-1 uppercase font-semibold">Notes / Diagnostic Requests</label>
                 <textarea
                   rows={2}
                   value={formNotes}
                   onChange={(e) => setFormNotes(e.target.value)}
                   placeholder="e.g. Check brake pad squeak, high RPM hiccup"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-lg p-2 text-slate-800 focus:border-indigo-500 focus:bg-white"
+                  className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none font-sans"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#1E293B]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 text-slate-500 hover:text-slate-800"
+                  className="px-4 py-2 text-[#cec6ab] hover:text-white cursor-pointer uppercase"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 bg-indigo-600 text-white font-bold rounded-lg uppercase"
+                  className="px-5 py-2 bg-[#FFE01B] text-black font-bold rounded uppercase tracking-wider cursor-pointer"
                 >
                   Save Booking
                 </button>

@@ -9,19 +9,19 @@ interface RoleSwitcherProps {
 
 export const RoleSwitcher: React.FC<RoleSwitcherProps> = ({ currentRole, onChangeRole }) => {
   return (
-    <div className="fixed bottom-4 right-4 z-50 flex items-center bg-white/95 backdrop-blur-md border border-slate-300 p-1.5 rounded-xl shadow-xl">
-      <div className="flex items-center gap-1.5 text-xs font-mono mr-2 px-2.5 py-1 text-slate-500 border-r border-slate-200 hidden sm:flex">
-        <ArrowRightLeft className="w-3.5 h-3.5 text-indigo-600" />
+    <div className="fixed bottom-4 right-4 z-50 flex items-center bg-[#1c1b1b]/95 backdrop-blur-md border border-[#1E293B] p-1.5 rounded shadow-2xl">
+      <div className="flex items-center gap-1.5 text-xs font-mono mr-2 px-2.5 py-1 text-[#cec6ab] border-r border-[#1E293B] hidden sm:flex">
+        <ArrowRightLeft className="w-3.5 h-3.5 text-[#FFE01B]" />
         <span>PORTAL VIEW:</span>
       </div>
 
       <div className="flex items-center gap-1">
         <button
           onClick={() => onChangeRole('admin')}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-3 py-1.5 rounded text-xs font-bold transition-all cursor-pointer ${
             currentRole === 'admin'
-              ? 'bg-indigo-600 text-white shadow-xs font-mono'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-mono'
+              ? 'bg-[#FFE01B] text-black shadow-md shadow-[#FFE01B]/20 font-mono'
+              : 'text-[#cec6ab] hover:text-white hover:bg-[#201f1f] font-mono'
           }`}
           title="Switch to ART N SPEED Workshop CMS (Admin Dashboard)"
         >
@@ -31,10 +31,10 @@ export const RoleSwitcher: React.FC<RoleSwitcherProps> = ({ currentRole, onChang
 
         <button
           onClick={() => onChangeRole('racer')}
-          className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+          className={`flex items-center gap-2 px-3 py-1.5 rounded text-xs font-bold transition-all cursor-pointer ${
             currentRole === 'racer'
-              ? 'bg-indigo-600 text-white shadow-xs font-mono'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 font-mono'
+              ? 'bg-[#FFE01B] text-black shadow-md shadow-[#FFE01B]/20 font-mono'
+              : 'text-[#cec6ab] hover:text-white hover:bg-[#201f1f] font-mono'
           }`}
           title="Switch to GARAGE_OS Racer Portal"
         >

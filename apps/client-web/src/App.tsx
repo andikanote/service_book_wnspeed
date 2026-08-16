@@ -55,7 +55,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0F1115] text-[#E2E8F0] flex flex-col selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-[#131313] text-[#e5e2e1] flex flex-col selection:bg-[#FFE01B] selection:text-black">
       
       {/* Top Header Navigation matching all views */}
       <HeaderNav

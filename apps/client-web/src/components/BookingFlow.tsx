@@ -97,25 +97,25 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
       
       {/* Title & Subtitle */}
       <div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white font-display tracking-tight">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-[#e5e2e1] font-display tracking-tight uppercase">
           Schedule Your Lab Session
         </h1>
-        <p className="text-xs sm:text-sm text-zinc-400 mt-1 max-w-2xl">
+        <p className="text-xs sm:text-sm text-[#cec6ab] mt-1 max-w-2xl font-sans">
           Precise mechanical care for your performance machine. Select your preferred branch and slot to get started.
         </p>
       </div>
 
-      {/* Step Indicators matching Image 3 */}
-      <div className="border-b border-[#2D3139] pb-3">
+      {/* Step Indicators matching Velocity Precision */}
+      <div className="border-b border-[#1E293B] pb-3">
         <div className="flex items-center gap-6 sm:gap-12 overflow-x-auto text-xs font-mono uppercase font-bold tracking-wider">
           
           <button
             onClick={() => setCurrentStep(1)}
-            className={`pb-2 transition-all relative ${
+            className={`pb-2 transition-all relative cursor-pointer ${
               currentStep === 1
-                ? 'text-indigo-400 border-b-2 border-indigo-500'
+                ? 'text-[#FFE01B] border-b-2 border-[#FFE01B]'
                 : currentStep > 1
-                ? 'text-emerald-400'
+                ? 'text-[#22C55E]'
                 : 'text-slate-500'
             }`}
           >
@@ -124,11 +124,11 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
           <button
             onClick={() => setCurrentStep(2)}
-            className={`pb-2 transition-all relative ${
+            className={`pb-2 transition-all relative cursor-pointer ${
               currentStep === 2
-                ? 'text-indigo-400 border-b-2 border-indigo-500'
+                ? 'text-[#FFE01B] border-b-2 border-[#FFE01B]'
                 : currentStep > 2
-                ? 'text-emerald-400'
+                ? 'text-[#22C55E]'
                 : 'text-slate-500'
             }`}
           >
@@ -137,11 +137,11 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
           <button
             onClick={() => setCurrentStep(3)}
-            className={`pb-2 transition-all relative ${
+            className={`pb-2 transition-all relative cursor-pointer ${
               currentStep === 3
-                ? 'text-indigo-400 border-b-2 border-indigo-500'
+                ? 'text-[#FFE01B] border-b-2 border-[#FFE01B]'
                 : currentStep > 3
-                ? 'text-emerald-400'
+                ? 'text-[#22C55E]'
                 : 'text-slate-500'
             }`}
           >
@@ -150,9 +150,9 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
           <button
             onClick={() => setCurrentStep(4)}
-            className={`pb-2 transition-all relative ${
+            className={`pb-2 transition-all relative cursor-pointer ${
               currentStep === 4
-                ? 'text-indigo-400 border-b-2 border-indigo-500'
+                ? 'text-[#FFE01B] border-b-2 border-[#FFE01B]'
                 : 'text-slate-500'
             }`}
           >
@@ -171,7 +171,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
           {/* STEP 1: SELECT BRANCH */}
           {currentStep === 1 && (
             <div className="space-y-4">
-              <h2 className="text-base sm:text-lg font-bold text-indigo-400 font-display">
+              <h2 className="text-base sm:text-lg font-bold text-[#FFE01B] font-display uppercase tracking-wider font-mono">
                 Step 1: Select Branch
               </h2>
 
@@ -182,25 +182,25 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                     <div
                       key={branch.id}
                       onClick={() => setSelectedBranchId(branch.id)}
-                      className={`cursor-pointer rounded-2xl p-5 border transition-all relative flex flex-col justify-between min-h-[160px] ${
+                      className={`cursor-pointer rounded p-5 border transition-all relative flex flex-col justify-between min-h-[160px] ${
                         isSelected
-                          ? 'bg-indigo-500/10 border-indigo-500 shadow-lg shadow-indigo-500/10'
-                          : 'bg-[#181A20] border-[#2D3139] hover:border-slate-500'
+                          ? 'bg-[#FFE01B]/10 border-[#FFE01B] shadow-md shadow-[#FFE01B]/10'
+                          : 'bg-[#1c1b1b] border-[#1E293B] hover:border-[#FFE01B]/40'
                       }`}
                     >
                       <div>
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex items-center gap-2">
-                            <MapPin className={`w-4 h-4 ${isSelected ? 'text-indigo-400' : 'text-slate-400'}`} />
-                            <h3 className="text-base font-bold text-white">
+                            <MapPin className={`w-4 h-4 ${isSelected ? 'text-[#FFE01B]' : 'text-[#cec6ab]'}`} />
+                            <h3 className="text-base font-bold text-[#e5e2e1] font-display">
                               {branch.name}
                             </h3>
                           </div>
 
                           {branch.badge && (
-                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded font-mono ${
                               branch.badge === 'AVAILABLE'
-                                ? 'bg-indigo-500 text-white'
+                                ? 'bg-[#CCFF00]/10 text-[#CCFF00] border border-[#CCFF00]/30'
                                 : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                             }`}>
                               {branch.badge}
@@ -208,17 +208,17 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                           )}
                         </div>
 
-                        <p className="text-xs text-slate-400 mt-2 font-sans">
+                        <p className="text-xs text-[#cec6ab] mt-2 font-sans">
                           {branch.address}
                         </p>
                       </div>
 
                       {/* Badges */}
-                      <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-[#2D3139] mt-3">
+                      <div className="flex flex-wrap items-center gap-2 pt-4 border-t border-[#1E293B] mt-3">
                         {branch.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="text-[9px] font-mono text-slate-400 bg-[#111318] border border-[#2D3139] px-2 py-0.5 rounded"
+                            className="text-[9px] font-mono text-[#cec6ab] bg-[#131313] border border-[#1E293B] px-2 py-0.5 rounded"
                           >
                             {tag}
                           </span>
@@ -234,13 +234,13 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
           {/* STEP 2: TIME SLOT */}
           {currentStep === 2 && (
             <div className="space-y-5">
-              <h2 className="text-base sm:text-lg font-bold text-indigo-400 font-display">
+              <h2 className="text-base sm:text-lg font-bold text-[#FFE01B] font-display uppercase tracking-wider font-mono">
                 Step 2: Select Date & Time Slot
               </h2>
 
               {/* Date Picker */}
-              <div className="bg-[#181A20] border border-[#2D3139] rounded-xl p-4">
-                <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">
+              <div className="bg-[#1c1b1b] border border-[#1E293B] rounded p-4 font-mono">
+                <label className="block text-xs font-bold text-[#cec6ab] uppercase tracking-wider mb-2">
                   Service Date
                 </label>
                 <input
@@ -248,12 +248,12 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   value={selectedDate}
                   min={new Date().toISOString().split('T')[0]}
                   onChange={(e) => setSelectedDate(e.target.value)}
-                  className="w-full bg-[#111318] text-white border border-[#2D3139] rounded-lg px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-indigo-500"
+                  className="w-full bg-[#131313] text-[#e5e2e1] border border-[#1E293B] rounded px-4 py-2.5 text-sm font-mono focus:outline-none focus:border-[#FFE01B]"
                 />
               </div>
 
               {/* Time Slots Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono">
                 {TIME_SLOTS.map((slot) => {
                   const isSelected = selectedTimeSlot === slot.time;
                   return (
@@ -262,28 +262,28 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                       type="button"
                       disabled={!slot.available}
                       onClick={() => setSelectedTimeSlot(slot.time)}
-                      className={`p-4 rounded-xl text-left border transition-all flex items-center justify-between ${
+                      className={`p-4 rounded text-left border transition-all flex items-center justify-between cursor-pointer ${
                         isSelected
-                          ? 'bg-indigo-500/10 border-indigo-500 text-white shadow-md shadow-indigo-500/10'
+                          ? 'bg-[#FFE01B]/10 border-[#FFE01B] text-white shadow-md shadow-[#FFE01B]/10'
                           : slot.available
-                          ? 'bg-[#181A20] border-[#2D3139] text-slate-300 hover:border-slate-500'
-                          : 'bg-[#111318] border-[#2D3139] text-slate-600 opacity-60 cursor-not-allowed'
+                          ? 'bg-[#1c1b1b] border-[#1E293B] text-[#e5e2e1] hover:border-[#FFE01B]/40'
+                          : 'bg-[#131313] border-[#1E293B] text-slate-600 opacity-60 cursor-not-allowed'
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <Clock className={`w-4 h-4 ${isSelected ? 'text-indigo-400' : 'text-slate-400'}`} />
+                        <Clock className={`w-4 h-4 ${isSelected ? 'text-[#FFE01B]' : 'text-[#cec6ab]'}`} />
                         <div>
                           <span className="text-xs sm:text-sm font-bold block">
                             {slot.time}
                           </span>
-                          <span className="text-[10px] text-slate-400 font-sans">
+                          <span className="text-[10px] text-[#cec6ab] font-sans">
                             Sesi {slot.category} • Standar SOP
                           </span>
                         </div>
                       </div>
 
                       {slot.peak && slot.available && (
-                        <span className="text-[9px] bg-indigo-500/10 text-indigo-400 border border-indigo-500/30 px-1.5 py-0.5 rounded font-mono">
+                        <span className="text-[9px] bg-[#FFE01B]/10 text-[#FFE01B] border border-[#FFE01B]/30 px-1.5 py-0.5 rounded font-mono">
                           POPULER
                         </span>
                       )}
@@ -297,16 +297,16 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
           {/* STEP 3: VEHICLE & CUSTOMER DETAILS */}
           {currentStep === 3 && (
             <div className="space-y-4">
-              <h2 className="text-base sm:text-lg font-bold text-indigo-400 font-display">
+              <h2 className="text-base sm:text-lg font-bold text-[#FFE01B] font-display uppercase tracking-wider font-mono">
                 Step 3: Vehicle & Owner Details
               </h2>
 
-              <div className="bg-[#181A20] border border-[#2D3139] rounded-2xl p-5 space-y-4">
+              <div className="bg-[#1c1b1b] border border-[#1E293B] rounded p-5 space-y-4 font-sans">
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {/* Brand Selector */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-bold text-[#cec6ab] uppercase tracking-wider mb-1.5 font-mono">
                       Merk Kendaraan
                     </label>
                     <select
@@ -316,7 +316,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                         const models = VEHICLE_DATA.find((v) => v.brand === e.target.value)?.models;
                         if (models && models.length > 0) setVehicleModel(models[0].name);
                       }}
-                      className="w-full bg-[#111318] text-white border border-[#2D3139] rounded-lg px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-indigo-500"
+                      className="w-full bg-[#131313] text-[#e5e2e1] border border-[#1E293B] rounded px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-[#FFE01B] font-mono"
                     >
                       {VEHICLE_DATA.map((v) => (
                         <option key={v.brand} value={v.brand}>{v.brand}</option>
@@ -326,13 +326,13 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
                   {/* Model */}
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-bold text-[#cec6ab] uppercase tracking-wider mb-1.5 font-mono">
                       Model / Tipe Motor
                     </label>
                     <select
                       value={vehicleModel}
                       onChange={(e) => setVehicleModel(e.target.value)}
-                      className="w-full bg-[#111318] text-white border border-[#2D3139] rounded-lg px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-indigo-500"
+                      className="w-full bg-[#131313] text-[#e5e2e1] border border-[#1E293B] rounded px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-[#FFE01B] font-mono"
                     >
                       {VEHICLE_DATA.find((v) => v.brand === vehicleBrand)?.models.map((m) => (
                         <option key={m.name} value={m.name}>{m.name} ({m.cc})</option>
@@ -341,9 +341,9 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono">
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-bold text-[#cec6ab] uppercase tracking-wider mb-1.5">
                       Plat Nomor
                     </label>
                     <input
@@ -351,12 +351,12 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                       value={plateNumber}
                       onChange={(e) => setPlateNumber(e.target.value.toUpperCase())}
                       placeholder="B 1234 XYZ"
-                      className="w-full bg-[#111318] text-white font-mono border border-[#2D3139] rounded-lg px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-indigo-500 uppercase"
+                      className="w-full bg-[#131313] text-[#e5e2e1] font-mono border border-[#1E293B] rounded px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-[#FFE01B] uppercase"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-bold text-[#cec6ab] uppercase tracking-wider mb-1.5 font-sans">
                       Nama Pemilik
                     </label>
                     <input
@@ -364,12 +364,12 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                       value={ownerName}
                       onChange={(e) => setOwnerName(e.target.value)}
                       placeholder="Nama Lengkap"
-                      className="w-full bg-[#111318] text-white border border-[#2D3139] rounded-lg px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-indigo-500"
+                      className="w-full bg-[#131313] text-[#e5e2e1] border border-[#1E293B] rounded px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-[#FFE01B] font-sans"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                    <label className="block text-xs font-bold text-[#cec6ab] uppercase tracking-wider mb-1.5">
                       No. WhatsApp
                     </label>
                     <input
@@ -377,13 +377,13 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       placeholder="08123456789"
-                      className="w-full bg-[#111318] text-white font-mono border border-[#2D3139] rounded-lg px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-indigo-500"
+                      className="w-full bg-[#131313] text-[#e5e2e1] font-mono border border-[#1E293B] rounded px-3.5 py-2.5 text-xs sm:text-sm focus:outline-none focus:border-[#FFE01B]"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-bold text-[#cec6ab] uppercase tracking-wider mb-1.5 font-sans">
                     Catatan Keluhan / Gejala Tambahan
                   </label>
                   <textarea
@@ -391,7 +391,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                     value={customSymptom}
                     onChange={(e) => setCustomSymptom(e.target.value)}
                     placeholder="Tuliskan keluhan seperti getar, bunyi kasar, atau riwayat servis..."
-                    className="w-full bg-[#111318] text-white border border-[#2D3139] rounded-lg p-3 text-xs font-sans focus:outline-none focus:border-indigo-500"
+                    className="w-full bg-[#131313] text-[#e5e2e1] border border-[#1E293B] rounded p-3 text-xs font-sans focus:outline-none focus:border-[#FFE01B]"
                   />
                 </div>
 
@@ -402,63 +402,63 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
           {/* STEP 4: FINAL CONFIRMATION */}
           {currentStep === 4 && (
             <div className="space-y-5">
-              <h2 className="text-base sm:text-lg font-bold text-indigo-400 font-display">
+              <h2 className="text-base sm:text-lg font-bold text-[#FFE01B] font-display uppercase tracking-wider font-mono">
                 Step 4: Final Booking Review
               </h2>
 
-              <div className="bg-[#181A20] border border-[#2D3139] rounded-2xl p-6 space-y-5">
+              <div className="bg-[#1c1b1b] border border-[#1E293B] rounded p-6 space-y-5">
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-[#2D3139] pb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-[#1E293B] pb-4">
                   <div>
-                    <span className="text-[10px] uppercase text-slate-400 font-bold">Cabang Lab</span>
-                    <div className="text-sm font-bold text-white flex items-center gap-1.5 mt-0.5">
-                      <MapPin className="w-3.5 h-3.5 text-indigo-400" />
+                    <span className="text-[10px] uppercase text-[#cec6ab] font-bold font-mono">Cabang Lab</span>
+                    <div className="text-sm font-bold text-[#e5e2e1] flex items-center gap-1.5 mt-0.5">
+                      <MapPin className="w-3.5 h-3.5 text-[#FFE01B]" />
                       <span>{selectedBranch.name}</span>
                     </div>
-                    <p className="text-xs text-slate-400">{selectedBranch.address}</p>
+                    <p className="text-xs text-[#cec6ab]">{selectedBranch.address}</p>
                   </div>
 
                   <div>
-                    <span className="text-[10px] uppercase text-slate-400 font-bold">Jadwal Sesi</span>
-                    <div className="text-sm font-bold text-white flex items-center gap-1.5 mt-0.5">
-                      <Calendar className="w-3.5 h-3.5 text-indigo-400" />
+                    <span className="text-[10px] uppercase text-[#cec6ab] font-bold font-mono">Jadwal Sesi</span>
+                    <div className="text-sm font-bold text-[#e5e2e1] flex items-center gap-1.5 mt-0.5 font-mono">
+                      <Calendar className="w-3.5 h-3.5 text-[#FFE01B]" />
                       <span>{selectedDate} • {selectedTimeSlot}</span>
                     </div>
-                    <p className="text-xs text-emerald-400">Garansi Tepat Waktu 100%</p>
+                    <p className="text-xs text-[#22C55E]">Garansi Tepat Waktu 100%</p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-[#2D3139] pb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-b border-[#1E293B] pb-4">
                   <div>
-                    <span className="text-[10px] uppercase text-slate-400 font-bold">Kendaraan</span>
-                    <div className="text-sm font-bold text-white flex items-center gap-1.5 mt-0.5">
-                      <Car className="w-3.5 h-3.5 text-indigo-400" />
+                    <span className="text-[10px] uppercase text-[#cec6ab] font-bold font-mono">Kendaraan</span>
+                    <div className="text-sm font-bold text-[#e5e2e1] flex items-center gap-1.5 mt-0.5">
+                      <Car className="w-3.5 h-3.5 text-[#FFE01B]" />
                       <span>{vehicleBrand} {vehicleModel}</span>
                     </div>
-                    <span className="inline-block mt-1 text-xs font-mono font-bold bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded border border-indigo-500/20">
+                    <span className="inline-block mt-1 text-xs font-mono font-bold bg-[#FFE01B]/10 text-[#FFE01B] px-2 py-0.5 rounded border border-[#FFE01B]/30">
                       {plateNumber}
                     </span>
                   </div>
 
                   <div>
-                    <span className="text-[10px] uppercase text-slate-400 font-bold">Pemilik / Kontak</span>
-                    <div className="text-sm font-bold text-white flex items-center gap-1.5 mt-0.5">
-                      <User className="w-3.5 h-3.5 text-indigo-400" />
+                    <span className="text-[10px] uppercase text-[#cec6ab] font-bold font-mono">Pemilik / Kontak</span>
+                    <div className="text-sm font-bold text-[#e5e2e1] flex items-center gap-1.5 mt-0.5">
+                      <User className="w-3.5 h-3.5 text-[#FFE01B]" />
                       <span>{ownerName} ({phone})</span>
                     </div>
-                    <p className="text-xs text-slate-400">Notifikasi WA terkirim otomatis</p>
+                    <p className="text-xs text-[#cec6ab]">Notifikasi WA terkirim otomatis</p>
                   </div>
                 </div>
 
-                <div className="bg-[#111318] border border-[#2D3139] rounded-xl p-4 flex items-center justify-between">
+                <div className="bg-[#131313] border border-[#1E293B] rounded p-4 flex items-center justify-between font-mono">
                   <div className="flex items-center gap-3">
-                    <ShieldCheck className="w-6 h-6 text-emerald-400" />
+                    <ShieldCheck className="w-6 h-6 text-[#22C55E]" />
                     <div>
-                      <span className="text-xs font-bold text-white">SOP Presisi Lab Terjamin</span>
-                      <p className="text-[11px] text-slate-400">Semua pengerjaan tercatat di database digital dan bergaransi.</p>
+                      <span className="text-xs font-bold text-[#e5e2e1] font-display">SOP Presisi Lab Terjamin</span>
+                      <p className="text-[11px] text-[#cec6ab] font-sans">Semua pengerjaan tercatat di database digital dan bergaransi.</p>
                     </div>
                   </div>
-                  <span className="text-xs font-mono text-indigo-400 font-bold">14 Hari Garansi</span>
+                  <span className="text-xs text-[#CCFF00] font-bold">14 Hari Garansi</span>
                 </div>
 
               </div>
@@ -466,10 +466,10 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
           )}
 
           {/* Action Buttons: Back & Proceed */}
-          <div className="flex items-center justify-between gap-4 pt-4">
+          <div className="flex items-center justify-between gap-4 pt-4 font-mono">
             <button
               onClick={handlePrevStep}
-              className="flex items-center gap-2 text-xs text-slate-400 hover:text-white uppercase font-bold tracking-wider px-4 py-2.5 rounded-lg border border-transparent hover:border-[#2D3139] transition-colors"
+              className="flex items-center gap-2 text-xs text-[#cec6ab] hover:text-white uppercase font-bold tracking-wider px-4 py-2.5 rounded border border-transparent hover:border-[#1E293B] transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" />
               <span>{currentStep === 1 ? 'Cancel / Back' : 'Back'}</span>
@@ -477,7 +477,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
             <button
               onClick={handleNextStep}
-              className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold text-xs sm:text-sm px-6 py-3 rounded-xl transition-all shadow-lg shadow-indigo-500/20 flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98]"
+              className="bg-[#FFE01B] hover:bg-[#ffe241] text-black font-bold text-xs sm:text-sm px-6 py-3 rounded transition-all shadow-md shadow-[#FFE01B]/20 flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] cursor-pointer uppercase tracking-wider"
             >
               <span>
                 {currentStep === 1
@@ -498,73 +498,73 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
         <div className="lg:col-span-4 space-y-4">
           
           {/* Top Elite Photo Card */}
-          <div className="relative rounded-2xl overflow-hidden border border-[#2D3139] bg-[#181A20] h-44 shadow-lg group">
+          <div className="relative rounded overflow-hidden border border-[#1E293B] bg-[#0F172A] h-44 shadow-lg group">
             <img
               src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=700&q=80"
               alt="Elite Service Experience"
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 brightness-75"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0F1115] via-[#0F1115]/40 to-transparent"></div>
-            <div className="absolute bottom-3 left-4">
-              <span className="text-[11px] font-bold text-indigo-400 tracking-wider uppercase">
+            <div className="absolute inset-0 bg-gradient-to-t from-[#131313] via-[#131313]/50 to-transparent"></div>
+            <div className="absolute bottom-3 left-4 font-mono">
+              <span className="text-[11px] font-bold text-[#FFE01B] tracking-wider uppercase">
                 ELITE SERVICE EXPERIENCE
               </span>
             </div>
           </div>
 
           {/* Selected Service Card */}
-          <div className="bg-[#181A20] border border-[#2D3139] rounded-2xl p-5 space-y-5">
+          <div className="bg-[#1c1b1b] border border-[#1E293B] rounded p-5 space-y-5">
             
             <div>
-              <span className="text-[10px] uppercase text-slate-500 font-bold tracking-wider">
+              <span className="text-[10px] uppercase text-[#cec6ab] font-bold tracking-wider font-mono">
                 SELECTED SERVICE
               </span>
-              <h3 className="text-base font-bold text-white mt-0.5">
+              <h3 className="text-base font-bold text-[#e5e2e1] mt-0.5 font-display uppercase">
                 {selectedPackage.name === 'Paket Regular' ? 'PRO Regular Tune-up' : selectedPackage.name}
               </h3>
-              <p className="text-xs text-slate-400 mt-1 font-sans">
+              <p className="text-xs text-[#cec6ab] mt-1 font-sans">
                 Full diagnostic, engine calibration, and SOP verification.
               </p>
             </div>
 
             {/* Itemized Fee Breakdown */}
-            <div className="space-y-2.5 pt-3 border-t border-[#2D3139] text-xs font-mono">
+            <div className="space-y-2.5 pt-3 border-t border-[#1E293B] text-xs font-mono">
               <div className="flex justify-between">
-                <span className="text-slate-400">Base Service</span>
-                <span className="text-indigo-400 font-semibold">
+                <span className="text-[#cec6ab]">Base Service</span>
+                <span className="text-[#FFE01B] font-semibold">
                   Rp {baseServicePrice.toLocaleString('id-ID')}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">SOP Certification</span>
-                <span className="text-indigo-400 font-semibold">
+                <span className="text-[#cec6ab]">SOP Certification</span>
+                <span className="text-[#FFE01B] font-semibold">
                   Rp {sopFee.toLocaleString('id-ID')}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Lab Fee</span>
-                <span className="text-indigo-400 font-semibold">
+                <span className="text-[#cec6ab]">Lab Fee</span>
+                <span className="text-[#FFE01B] font-semibold">
                   Rp {labFee.toLocaleString('id-ID')}
                 </span>
               </div>
             </div>
 
             {/* Estimated Total Box */}
-            <div className="bg-[#111318] border border-[#2D3139] rounded-xl p-4 flex items-center justify-between">
+            <div className="bg-[#131313] border border-[#1E293B] rounded p-4 flex items-center justify-between">
               <div>
-                <span className="text-[10px] uppercase text-slate-400 tracking-wider block font-bold">
+                <span className="text-[10px] uppercase text-[#cec6ab] tracking-wider block font-bold font-mono">
                   ESTIMATED TOTAL
                 </span>
-                <div className="text-xl font-bold text-white font-mono">
+                <div className="text-xl font-bold text-[#e5e2e1] font-mono">
                   Rp {estimatedTotal.toLocaleString('id-ID')}
                 </div>
               </div>
-              <Receipt className="w-6 h-6 text-indigo-400" />
+              <Receipt className="w-6 h-6 text-[#FFE01B]" />
             </div>
 
             {/* Information Notice */}
-            <div className="bg-[#111318] border border-[#2D3139] rounded-lg p-3 flex items-start gap-2 text-[11px] text-slate-400">
-              <AlertCircle className="w-4 h-4 shrink-0 text-indigo-400/80 mt-0.5" />
+            <div className="bg-[#131313] border border-[#1E293B] rounded p-3 flex items-start gap-2 text-[11px] text-[#cec6ab] font-sans">
+              <AlertCircle className="w-4 h-4 shrink-0 text-[#FFE01B]/80 mt-0.5" />
               <p className="leading-relaxed">
                 Prices are estimates. Final billing depends on actual parts used during the service session at the lab.
               </p>
@@ -577,17 +577,17 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
       </div>
 
       {/* Bottom Section: WHY BOOK WITH ART N SPEED? */}
-      <section className="pt-10 border-t border-[#2D3139] space-y-6">
+      <section className="pt-10 border-t border-[#1E293B] space-y-6">
         
         <div>
-          <span className="text-[10px] text-indigo-400 font-bold uppercase tracking-widest block">
+          <span className="text-[10px] text-[#CCFF00] font-bold uppercase tracking-widest block font-mono">
             DIGITAL DIAGNOSIS
           </span>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <h2 className="text-2xl sm:text-3xl font-bold text-white font-display tracking-tight uppercase">
+            <h2 className="text-2xl sm:text-3xl font-bold text-[#e5e2e1] font-display tracking-tight uppercase">
               WHY BOOK WITH ART N SPEED?
             </h2>
-            <p className="text-xs text-slate-400 max-w-md">
+            <p className="text-xs text-[#cec6ab] max-w-md font-sans">
               Our lab uses the latest telemetry data to ensure your vehicle performs at peak efficiency.
             </p>
           </div>
@@ -595,38 +595,38 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           
-          <div className="bg-[#181A20] border border-[#2D3139] rounded-xl p-5 space-y-3">
-            <div className="w-9 h-9 rounded-lg bg-indigo-500 text-white flex items-center justify-center font-bold shadow-sm shadow-indigo-500/20">
+          <div className="bg-[#1c1b1b] border border-[#1E293B] rounded p-5 space-y-3">
+            <div className="w-9 h-9 rounded bg-[#FFE01B] text-black flex items-center justify-center font-bold shadow-sm shadow-[#FFE01B]/20">
               <Activity className="w-5 h-5" />
             </div>
-            <h3 className="text-sm font-bold text-white uppercase">
+            <h3 className="text-sm font-bold text-[#e5e2e1] uppercase font-display">
               Precision Labs
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed font-sans">
+            <p className="text-xs text-[#cec6ab] leading-relaxed font-sans">
               Climate-controlled environments with surgical-grade cleanliness for engine work.
             </p>
           </div>
 
-          <div className="bg-[#181A20] border border-[#2D3139] rounded-xl p-5 space-y-3">
-            <div className="w-9 h-9 rounded-lg bg-indigo-500 text-white flex items-center justify-center font-bold shadow-sm shadow-indigo-500/20">
+          <div className="bg-[#1c1b1b] border border-[#1E293B] rounded p-5 space-y-3">
+            <div className="w-9 h-9 rounded bg-[#FFE01B] text-black flex items-center justify-center font-bold shadow-sm shadow-[#FFE01B]/20">
               <Sparkles className="w-5 h-5" />
             </div>
-            <h3 className="text-sm font-bold text-white uppercase">
+            <h3 className="text-sm font-bold text-[#e5e2e1] uppercase font-display">
               Real-time Telemetry
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed font-sans">
+            <p className="text-xs text-[#cec6ab] leading-relaxed font-sans">
               Track your service progress and performance gains via the mobile app in real-time.
             </p>
           </div>
 
-          <div className="bg-[#181A20] border border-[#2D3139] rounded-xl p-5 space-y-3">
-            <div className="w-9 h-9 rounded-lg bg-indigo-500 text-white flex items-center justify-center font-bold shadow-sm shadow-indigo-500/20">
+          <div className="bg-[#1c1b1b] border border-[#1E293B] rounded p-5 space-y-3">
+            <div className="w-9 h-9 rounded bg-[#FFE01B] text-black flex items-center justify-center font-bold shadow-sm shadow-[#FFE01B]/20">
               <ShieldCheck className="w-5 h-5" />
             </div>
-            <h3 className="text-sm font-bold text-white uppercase">
+            <h3 className="text-sm font-bold text-[#e5e2e1] uppercase font-display">
               SOP Verified
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed font-sans">
+            <p className="text-xs text-[#cec6ab] leading-relaxed font-sans">
               Every technician follows a strict 45-point checklist for guaranteed quality assurance.
             </p>
           </div>
@@ -637,37 +637,37 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
       {/* Confirmation Modal */}
       {bookingConfirmed && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-[#181A20] border border-[#2D3139] rounded-3xl max-w-md w-full p-6 text-center space-y-5 shadow-2xl relative overflow-hidden">
+        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-[#1c1b1b] border border-[#1E293B] rounded max-w-md w-full p-6 text-center space-y-5 shadow-2xl relative overflow-hidden">
             
-            <div className="w-16 h-16 rounded-full bg-indigo-500/10 border border-indigo-500 flex items-center justify-center mx-auto text-indigo-400">
-              <CheckCircle2 className="w-8 h-8 text-indigo-400" />
+            <div className="w-16 h-16 rounded-full bg-[#22C55E]/10 border border-[#22C55E] flex items-center justify-center mx-auto text-[#22C55E]">
+              <CheckCircle2 className="w-8 h-8 text-[#22C55E]" />
             </div>
 
             <div>
-              <span className="text-[10px] font-mono text-indigo-400 font-bold uppercase tracking-wider">
+              <span className="text-[10px] font-mono text-[#CCFF00] font-bold uppercase tracking-wider">
                 BOOKING CONFIRMED • PASS ACTIVE
               </span>
-              <h3 className="text-2xl font-bold text-white font-display mt-1">
+              <h3 className="text-2xl font-bold text-[#e5e2e1] font-display mt-1 uppercase">
                 Lab Session Scheduled!
               </h3>
-              <p className="text-xs text-slate-300 mt-1">
-                Booking ID: <strong className="text-indigo-400 font-mono">{bookingCode}</strong>
+              <p className="text-xs text-[#cec6ab] mt-1">
+                Booking ID: <strong className="text-[#FFE01B] font-mono">{bookingCode}</strong>
               </p>
             </div>
 
-            <div className="bg-[#111318] border border-[#2D3139] rounded-xl p-4 text-left text-xs font-mono space-y-2">
+            <div className="bg-[#131313] border border-[#1E293B] rounded p-4 text-left text-xs font-mono space-y-2">
               <div className="flex justify-between">
-                <span className="text-slate-400">Cabang:</span>
-                <span className="text-white font-bold">{selectedBranch.name}</span>
+                <span className="text-[#cec6ab]">Cabang:</span>
+                <span className="text-[#e5e2e1] font-bold">{selectedBranch.name}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Waktu:</span>
-                <span className="text-white font-bold">{selectedDate} • {selectedTimeSlot}</span>
+                <span className="text-[#cec6ab]">Waktu:</span>
+                <span className="text-[#e5e2e1] font-bold">{selectedDate} • {selectedTimeSlot}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-400">Kendaraan:</span>
-                <span className="text-indigo-400 font-bold">{vehicleBrand} {vehicleModel} ({plateNumber})</span>
+                <span className="text-[#cec6ab]">Kendaraan:</span>
+                <span className="text-[#FFE01B] font-bold">{vehicleBrand} {vehicleModel} ({plateNumber})</span>
               </div>
             </div>
 
@@ -676,7 +676,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
                 setBookingConfirmed(false);
                 onBackToDashboard();
               }}
-              className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold text-xs py-3 rounded-xl uppercase tracking-wider shadow-lg shadow-indigo-500/20"
+              className="w-full bg-[#FFE01B] hover:bg-[#ffe241] text-black font-bold text-xs py-3 rounded uppercase tracking-wider shadow-md shadow-[#FFE01B]/20 font-mono cursor-pointer"
             >
               Back to Garage Hub
             </button>

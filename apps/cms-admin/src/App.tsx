@@ -105,7 +105,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] text-slate-800 flex flex-col antialiased">
+    <div className="min-h-screen bg-[#131313] text-[#e5e2e1] flex flex-col antialiased font-sans">
       {/* Role 1: ART N SPEED Admin CMS */}
       {currentUserRole === 'admin' && (
         <div className="flex flex-1 min-h-screen">
@@ -119,7 +119,7 @@ export default function App() {
           />
 
           {/* Admin Main Content */}
-          <div className="flex-1 flex flex-col min-w-0">
+          <div className="flex-1 flex flex-col min-w-0 bg-[#131313]">
             <AdminHeader
               title={
                 adminTab === 'overview'
@@ -140,7 +140,7 @@ export default function App() {
               onOpenHelp={() => setIsHelpModalOpen(true)}
             />
 
-            <main className="flex-1 overflow-y-auto">
+            <main className="flex-1 overflow-y-auto bg-[#131313]">
               {adminTab === 'overview' && (
                 <AdminDashboard
                   onNavigateTab={setAdminTab}
@@ -182,8 +182,8 @@ export default function App() {
           />
 
           {/* Racer Main Content */}
-          <div className="flex-1 flex flex-col min-w-0">
-            <main className="flex-1 overflow-y-auto">
+          <div className="flex-1 flex flex-col min-w-0 bg-[#131313]">
+            <main className="flex-1 overflow-y-auto bg-[#131313]">
               {racerTab === 'dashboard' && (
                 <RacerDashboard onNavigateTab={setRacerTab} />
               )}
@@ -210,31 +210,31 @@ export default function App() {
 
       {/* Admin Help / Manual Modal */}
       {isHelpModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
-          <div className="bg-white border border-slate-200 rounded-xl w-full max-w-lg p-6 space-y-4 shadow-2xl font-mono text-xs">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-                <HelpCircle className="w-4 h-4 text-indigo-600" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="bg-[#1c1b1b] border border-[#1E293B] rounded w-full max-w-lg p-6 space-y-4 shadow-2xl font-sans text-xs">
+            <div className="flex items-center justify-between border-b border-[#1E293B] pb-3">
+              <h3 className="font-bold text-[#e5e2e1] text-sm flex items-center gap-2 font-display uppercase">
+                <HelpCircle className="w-4 h-4 text-[#FFE01B]" />
                 ART N SPEED CMS Documentation
               </h3>
-              <button onClick={() => setIsHelpModalOpen(false)} className="text-slate-400 hover:text-slate-700 cursor-pointer">
+              <button onClick={() => setIsHelpModalOpen(false)} className="text-[#cec6ab] hover:text-white cursor-pointer">
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <div className="space-y-3 text-slate-600">
+            <div className="space-y-3 text-[#cec6ab]">
               <p>
-                Welcome to <strong className="text-slate-900">ART N SPEED Precision Workshop CMS</strong>. This software coordinates workshop bays, live telemetry from client motorcycles, inventory replenishment, and customer loyalty rewards.
+                Welcome to <strong className="text-white">ART N SPEED Precision Workshop CMS</strong>. This software coordinates workshop bays, live telemetry from client motorcycles, inventory replenishment, and customer loyalty rewards.
               </p>
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1.5 text-[11px]">
-                <p>• <strong>Overview:</strong> High-level financial KPIs, active bays, and critical restock warnings.</p>
-                <p>• <strong>Bookings:</strong> View and transition customer reservations from Pending to Completed.</p>
-                <p>• <strong>Inventory:</strong> Real-time spare parts stock tracking with instant purchase orders.</p>
-                <p>• <strong>Users & CRM:</strong> Customer database, racing telemetry records, and loyalty tiers.</p>
+              <div className="p-3 bg-[#131313] rounded border border-[#1E293B] space-y-1.5 text-[11px] font-mono">
+                <p>• <strong className="text-[#FFE01B]">Overview:</strong> High-level financial KPIs, active bays, and critical restock warnings.</p>
+                <p>• <strong className="text-[#FFE01B]">Bookings:</strong> View and transition customer reservations from Pending to Completed.</p>
+                <p>• <strong className="text-[#FFE01B]">Inventory:</strong> Real-time spare parts stock tracking with instant purchase orders.</p>
+                <p>• <strong className="text-[#FFE01B]">Users & CRM:</strong> Customer database, racing telemetry records, and loyalty tiers.</p>
               </div>
             </div>
             <button
               onClick={() => setIsHelpModalOpen(false)}
-              className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg uppercase shadow-xs transition cursor-pointer"
+              className="w-full py-2.5 bg-[#FFE01B] hover:bg-[#ffe241] text-black font-bold font-mono rounded uppercase shadow-md shadow-[#FFE01B]/20 transition cursor-pointer"
             >
               Close Manual
             </button>
@@ -244,20 +244,20 @@ export default function App() {
 
       {/* Admin Support Modal */}
       {isSupportModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
-          <div className="bg-white border border-slate-200 rounded-xl w-full max-w-md p-6 space-y-4 shadow-2xl font-mono text-xs">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h3 className="font-bold text-slate-900 text-sm flex items-center gap-2">
-                <PhoneCall className="w-4 h-4 text-indigo-600" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="bg-[#1c1b1b] border border-[#1E293B] rounded w-full max-w-md p-6 space-y-4 shadow-2xl font-sans text-xs">
+            <div className="flex items-center justify-between border-b border-[#1E293B] pb-3">
+              <h3 className="font-bold text-[#e5e2e1] text-sm flex items-center gap-2 font-display uppercase">
+                <PhoneCall className="w-4 h-4 text-[#FFE01B]" />
                 Workshop Technical Desk
               </h3>
-              <button onClick={() => setIsSupportModalOpen(false)} className="text-slate-400 hover:text-slate-700 cursor-pointer">
+              <button onClick={() => setIsSupportModalOpen(false)} className="text-[#cec6ab] hover:text-white cursor-pointer">
                 <X className="w-4 h-4" />
               </button>
             </div>
-            <div className="space-y-2 text-slate-600">
+            <div className="space-y-2 text-[#cec6ab]">
               <p>For urgent system issues, Dyno hardware link failures, or cloud sync errors:</p>
-              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-1 text-slate-700">
+              <div className="p-3 bg-[#131313] rounded border border-[#1E293B] space-y-1 text-[#e5e2e1] font-mono">
                 <p><strong>Hotline:</strong> 021-8899-SPEED (021-8899-7733)</p>
                 <p><strong>WhatsApp:</strong> +62 812-9900-8800</p>
                 <p><strong>Email:</strong> support@artnspeed.id</p>
@@ -265,7 +265,7 @@ export default function App() {
             </div>
             <button
               onClick={() => setIsSupportModalOpen(false)}
-              className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg uppercase shadow-xs transition cursor-pointer"
+              className="w-full py-2.5 bg-[#FFE01B] hover:bg-[#ffe241] text-black font-bold font-mono rounded uppercase shadow-md shadow-[#FFE01B]/20 transition cursor-pointer"
             >
               Close
             </button>

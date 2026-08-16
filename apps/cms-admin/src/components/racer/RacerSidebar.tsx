@@ -32,19 +32,19 @@ export const RacerSidebar: React.FC<RacerSidebarProps> = ({
   ];
 
   return (
-    <aside className="w-60 bg-white border-r border-slate-200 flex flex-col justify-between h-screen shrink-0 sticky top-0">
+    <aside className="w-60 bg-[#131313] border-r border-[#1E293B] flex flex-col justify-between h-screen shrink-0 sticky top-0 font-sans">
       {/* Brand */}
       <div>
-        <div className="p-5 border-b border-slate-100 flex items-center justify-between">
+        <div className="p-5 border-b border-[#1E293B] flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-mono font-bold text-sm shadow-xs">
+            <div className="w-8 h-8 rounded bg-[#FFE01B] flex items-center justify-center text-black font-mono font-black text-sm shadow-md shadow-[#FFE01B]/20">
               G
             </div>
             <div>
-              <h1 className="text-sm font-bold tracking-tight text-slate-900 font-mono uppercase">
+              <h1 className="text-sm font-bold tracking-tight text-[#e5e2e1] font-display uppercase">
                 GARAGE_OS
               </h1>
-              <p className="text-[10px] font-mono text-slate-400">
+              <p className="text-[10px] font-mono text-[#cec6ab]">
                 v2.0.4 • Racer Portal
               </p>
             </div>
@@ -60,13 +60,13 @@ export const RacerSidebar: React.FC<RacerSidebarProps> = ({
               <button
                 key={item.id}
                 onClick={() => onTabChange(item.id)}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg font-mono text-xs font-semibold tracking-wide transition text-left uppercase ${
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded font-mono text-xs font-semibold tracking-wide transition text-left uppercase cursor-pointer ${
                   isActive
-                    ? 'bg-indigo-50 text-indigo-700 font-bold'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                    ? 'bg-[#FFE01B] text-black font-bold shadow-xs'
+                    : 'text-[#cec6ab] hover:text-white hover:bg-[#1c1b1b]'
                 }`}
               >
-                <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-indigo-600' : 'text-slate-400'}`} />
+                <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-black' : 'text-[#cec6ab]'}`} />
                 <span>{item.label}</span>
               </button>
             );
@@ -75,20 +75,20 @@ export const RacerSidebar: React.FC<RacerSidebarProps> = ({
       </div>
 
       {/* Bottom Emergency Button & Logout */}
-      <div className="p-3 space-y-2 border-t border-slate-100">
+      <div className="p-3 space-y-2 border-t border-[#1E293B]">
         <button
           onClick={onOpenEmergency}
-          className="w-full bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 font-mono font-bold text-xs py-2 px-3 rounded-lg tracking-wide uppercase transition flex items-center justify-center gap-2"
+          className="w-full bg-rose-500/10 border border-rose-500/30 text-rose-300 hover:bg-rose-500/20 font-mono font-bold text-xs py-2 px-3 rounded tracking-wide uppercase transition flex items-center justify-center gap-2 cursor-pointer"
         >
-          <Headphones className="w-3.5 h-3.5 text-rose-600" />
+          <Headphones className="w-3.5 h-3.5 text-rose-400" />
           <span>EMERGENCY SUPPORT</span>
         </button>
 
         <button
           onClick={onLogout}
-          className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-mono text-slate-500 hover:text-slate-800 transition text-left uppercase cursor-pointer"
+          className="w-full flex items-center gap-2.5 px-3 py-1.5 text-xs font-mono text-[#cec6ab] hover:text-white transition text-left uppercase cursor-pointer"
         >
-          <LogOut className="w-3.5 h-3.5 text-slate-400" />
+          <LogOut className="w-3.5 h-3.5 text-[#cec6ab]" />
           <span>LOG OUT</span>
         </button>
       </div>

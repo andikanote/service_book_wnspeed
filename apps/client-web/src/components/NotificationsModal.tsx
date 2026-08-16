@@ -38,19 +38,19 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-[#181A20] border border-[#2D3139] rounded-2xl max-w-md w-full p-6 space-y-4 shadow-2xl relative">
+    <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 font-sans">
+      <div className="bg-[#1c1b1b] border border-[#1E293B] rounded max-w-md w-full p-6 space-y-4 shadow-2xl relative">
         
-        <div className="flex items-center justify-between border-b border-[#2D3139] pb-3">
+        <div className="flex items-center justify-between border-b border-[#1E293B] pb-3">
           <div className="flex items-center gap-2">
-            <Bell className="w-4 h-4 text-indigo-400" />
-            <h3 className="text-sm font-bold text-white uppercase">
+            <Bell className="w-4 h-4 text-[#FFE01B]" />
+            <h3 className="text-sm font-bold text-[#e5e2e1] uppercase font-display">
               Notifikasi Lab System
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-[#111318] transition-colors"
+            className="p-1 rounded text-[#cec6ab] hover:text-white hover:bg-[#131313] transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -60,24 +60,24 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
           {notifications.map((n) => (
             <div
               key={n.id}
-              className={`p-3.5 rounded-xl border transition-all ${
+              className={`p-3.5 rounded border transition-all ${
                 n.isNew
-                  ? 'bg-[#111318] border-indigo-500/30'
-                  : 'bg-[#111318]/60 border-[#2D3139] opacity-80'
+                  ? 'bg-[#131313] border-[#FFE01B]/40'
+                  : 'bg-[#131313]/60 border-[#1E293B] opacity-80'
               }`}
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="text-xs font-bold text-white">
+                <span className="text-xs font-bold text-[#e5e2e1] font-display">
                   {n.title}
                 </span>
                 {n.isNew && (
-                  <span className="w-2 h-2 rounded-full bg-indigo-400 shrink-0" />
+                  <span className="w-2 h-2 rounded-full bg-[#FFE01B] shrink-0" />
                 )}
               </div>
-              <p className="text-xs text-slate-400 mt-1 leading-relaxed font-sans">
+              <p className="text-xs text-[#cec6ab] mt-1 leading-relaxed font-sans">
                 {n.desc}
               </p>
-              <div className="text-[10px] text-slate-500 font-mono mt-2 flex items-center gap-1">
+              <div className="text-[10px] text-[#cec6ab] font-mono mt-2 flex items-center gap-1">
                 <Clock className="w-3 h-3" />
                 <span>{n.time}</span>
               </div>
@@ -90,7 +90,7 @@ export const NotificationsModal: React.FC<NotificationsModalProps> = ({
             onClose();
             onNavigateToBooking();
           }}
-          className="w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold text-xs py-2.5 rounded-xl uppercase tracking-wider transition-colors shadow-lg shadow-indigo-500/20"
+          className="w-full bg-[#FFE01B] hover:bg-[#ffe241] text-black font-bold text-xs py-2.5 rounded uppercase tracking-wider transition-colors shadow-md shadow-[#FFE01B]/20 font-mono cursor-pointer"
         >
           Book Sesi Servis Berdasarkan Pengingat
         </button>

@@ -41,22 +41,22 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({ isOpen
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-white border border-slate-200 rounded-xl w-full max-w-2xl overflow-hidden shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200 font-sans">
+      <div className="bg-[#1c1b1b] border border-[#1E293B] rounded w-full max-w-2xl overflow-hidden shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 bg-slate-50">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-[#1E293B] bg-[#131313]">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+            <div className="p-2 bg-[#FFE01B]/10 text-[#FFE01B] border border-[#FFE01B]/30 rounded">
               <FileText className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-base text-slate-900 font-mono uppercase tracking-wider">Generate Workshop Report</h3>
-              <p className="text-xs text-slate-500">ART N SPEED Analytics & Intelligence Engine</p>
+              <h3 className="font-bold text-base text-[#e5e2e1] font-display uppercase tracking-wider">Generate Workshop Report</h3>
+              <p className="text-xs text-[#cec6ab]">ART N SPEED Analytics & Intelligence Engine</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-700 p-1 rounded-lg hover:bg-slate-200 transition"
+            className="text-[#cec6ab] hover:text-white p-1 rounded hover:bg-[#201f1f] transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -66,7 +66,7 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({ isOpen
         <div className="p-6 space-y-5">
           {/* Report Type Selector */}
           <div>
-            <label className="block text-xs font-mono text-slate-600 uppercase font-semibold mb-2">Select Report Category</label>
+            <label className="block text-xs font-mono text-[#cec6ab] uppercase font-semibold mb-2">Select Report Category</label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
               {[
                 { id: 'financial', label: 'Financial & Revenue', icon: TrendingUp, metric: 'Rp 142.5M' },
@@ -83,17 +83,17 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({ isOpen
                       setReportType(item.id as any);
                       setGenerated(false);
                     }}
-                    className={`p-3 rounded-xl border text-left transition flex flex-col justify-between ${
+                    className={`p-3 rounded border text-left transition flex flex-col justify-between cursor-pointer ${
                       active
-                        ? 'border-indigo-600 bg-indigo-50/50 text-slate-900 shadow-xs'
-                        : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
+                        ? 'border-[#FFE01B] bg-[#FFE01B]/10 text-white shadow-xs'
+                        : 'border-[#1E293B] bg-[#131313] text-[#cec6ab] hover:border-[#FFE01B]/40'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
-                      <Icon className={`w-4 h-4 ${active ? 'text-indigo-600' : 'text-slate-400'}`} />
-                      <span className="text-[10px] font-mono text-slate-400">{item.metric}</span>
+                      <Icon className={`w-4 h-4 ${active ? 'text-[#FFE01B]' : 'text-[#cec6ab]'}`} />
+                      <span className="text-[10px] font-mono text-[#cec6ab]">{item.metric}</span>
                     </div>
-                    <span className="text-xs font-bold text-slate-800">{item.label}</span>
+                    <span className="text-xs font-bold font-mono">{item.label}</span>
                   </button>
                 );
               })}
@@ -103,11 +103,11 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({ isOpen
           {/* Filters */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-mono text-slate-600 uppercase font-semibold mb-1.5">Date Range</label>
+              <label className="block text-xs font-mono text-[#cec6ab] uppercase font-semibold mb-1.5">Date Range</label>
               <select
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg px-3 py-2 text-xs font-mono focus:outline-none focus:border-indigo-500 focus:bg-white"
+                className="w-full bg-[#131313] border border-[#1E293B] text-[#e5e2e1] rounded px-3 py-2 text-xs font-mono focus:outline-none focus:border-[#FFE01B]"
               >
                 <option value="today">Today (Real-time)</option>
                 <option value="week">This Week (Last 7 Days)</option>
@@ -118,11 +118,11 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({ isOpen
             </div>
 
             <div>
-              <label className="block text-xs font-mono text-slate-600 uppercase font-semibold mb-1.5">Workshop Branch</label>
+              <label className="block text-xs font-mono text-[#cec6ab] uppercase font-semibold mb-1.5">Workshop Branch</label>
               <select
                 value={branch}
                 onChange={(e) => setBranch(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 text-slate-800 rounded-lg px-3 py-2 text-xs font-mono focus:outline-none focus:border-indigo-500 focus:bg-white"
+                className="w-full bg-[#131313] border border-[#1E293B] text-[#e5e2e1] rounded px-3 py-2 text-xs font-mono focus:outline-none focus:border-[#FFE01B]"
               >
                 <option value="all">All Branches (Depok, Jakarta, Bandung)</option>
                 <option value="depok">Depok Central HQ (Main Workshop)</option>
@@ -134,31 +134,31 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({ isOpen
 
           {/* Generated Preview Card */}
           {generated && (
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5 animate-in fade-in zoom-in-95">
+            <div className="p-4 rounded bg-[#131313] border border-[#1E293B] space-y-2.5 animate-in fade-in zoom-in-95 font-mono">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-emerald-700 font-mono text-xs font-bold">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <div className="flex items-center gap-2 text-[#22C55E] text-xs font-bold">
+                  <CheckCircle2 className="w-4 h-4 text-[#22C55E]" />
                   <span>REPORT COMPILED SUCCESSFULLY</span>
                 </div>
-                <span className="text-[11px] font-mono text-slate-400">UUID: REP-2026-ANS-884</span>
+                <span className="text-[11px] text-[#cec6ab]">UUID: REP-2026-ANS-884</span>
               </div>
 
-              <div className="bg-white p-3 rounded-lg border border-slate-200 text-xs font-mono space-y-1.5 text-slate-700">
+              <div className="bg-[#1c1b1b] p-3 rounded border border-[#1E293B] text-xs space-y-1.5 text-[#e5e2e1]">
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Total Workshop Revenue:</span>
-                  <span className="font-bold text-indigo-600">Rp 142,500,000 (+12.5%)</span>
+                  <span className="text-[#cec6ab]">Total Workshop Revenue:</span>
+                  <span className="font-bold text-[#FFE01B]">Rp 142,500,000 (+12.5%)</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">Total Completed Bookings:</span>
-                  <span className="font-bold text-slate-800">48 Jobs</span>
+                  <span className="text-[#cec6ab]">Total Completed Bookings:</span>
+                  <span className="font-bold text-white">48 Jobs</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">High Risk Inventory:</span>
-                  <span className="text-rose-600 font-bold">V-Belts (2), Brake Pads (3)</span>
+                  <span className="text-[#cec6ab]">High Risk Inventory:</span>
+                  <span className="text-rose-400 font-bold">V-Belts (2), Brake Pads (3)</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-slate-500">CSAT Score:</span>
-                  <span className="text-emerald-600 font-bold">4.9 / 5.0 (894 reviews)</span>
+                  <span className="text-[#cec6ab]">CSAT Score:</span>
+                  <span className="text-[#CCFF00] font-bold">4.9 / 5.0 (894 reviews)</span>
                 </div>
               </div>
             </div>
@@ -166,10 +166,10 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({ isOpen
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between px-6 py-4 border-t border-slate-200 bg-slate-50">
+        <div className="flex items-center justify-between px-6 py-4 border-t border-[#1E293B] bg-[#131313] font-mono">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-xs font-mono text-slate-500 hover:text-slate-800 transition"
+            className="px-4 py-2 text-xs text-[#cec6ab] hover:text-white transition cursor-pointer uppercase"
           >
             CANCEL
           </button>
@@ -179,14 +179,14 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({ isOpen
               <>
                 <button
                   onClick={handleDownload}
-                  className="flex items-center gap-2 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-mono font-bold transition border border-slate-200"
+                  className="flex items-center gap-2 px-3.5 py-2 bg-[#1c1b1b] hover:bg-[#201f1f] text-[#e5e2e1] rounded text-xs font-mono font-bold transition border border-[#1E293B] cursor-pointer uppercase"
                 >
-                  <Download className="w-4 h-4" />
+                  <Download className="w-4 h-4 text-[#FFE01B]" />
                   <span>EXPORT TXT/CSV</span>
                 </button>
                 <button
                   onClick={() => window.print()}
-                  className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-mono font-bold transition shadow-xs"
+                  className="flex items-center gap-2 px-4 py-2 bg-[#FFE01B] hover:bg-[#ffe241] text-black rounded text-xs font-mono font-bold transition shadow-md shadow-[#FFE01B]/20 cursor-pointer uppercase tracking-wider"
                 >
                   <Printer className="w-4 h-4" />
                   <span>PRINT PDF</span>
@@ -196,11 +196,11 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({ isOpen
               <button
                 onClick={handleGenerate}
                 disabled={isGenerating}
-                className="flex items-center gap-2 px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-mono font-bold transition shadow-xs disabled:opacity-50"
+                className="flex items-center gap-2 px-5 py-2 bg-[#FFE01B] hover:bg-[#ffe241] text-black rounded text-xs font-mono font-bold transition shadow-md shadow-[#FFE01B]/20 disabled:opacity-50 cursor-pointer uppercase tracking-wider"
               >
                 {isGenerating ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
                     <span>COMPILING DATA...</span>
                   </>
                 ) : (
