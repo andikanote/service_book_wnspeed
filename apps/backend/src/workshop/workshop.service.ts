@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { BayStatus } from '@prisma/client';
 
@@ -56,6 +56,10 @@ export class WorkshopService {
   }
 
   async updateBay(bayNumber: number, data: { status?: BayStatus; currentBikePlate?: string; mechanic?: string; progress?: number }) {
+    if (!bayNumber || isNaN(bayNumber) || bayNumber <= 0) {
+      throw new BadRequestException('Nomor Pit Bay (bayNumber) harus berupa angka positif');
+    }
+
     return this.prisma.workshopBay.upsert({
       where: { bayNumber },
       update: {
@@ -76,6 +80,15 @@ export class WorkshopService {
   }
 
   async createEmergencyRequest(data: { userId: string; bikePlate?: string; locationText: string; issueType?: string }) {
+    if (!data.userId || !data.locationText) {
+      throw new BadRequestException('ID Pengguna (userId) dan Lokasi Kejadian (locationText) wajib diisi');
+    }
+
+    const user = await this.prisma.user.findUnique({ where: { id: data.userId } });
+    if (!user) {
+      throw new NotFoundException(`User dengan ID '${data.userId}' tidak ditemukan di database`);
+    }
+
     return this.prisma.emergencyRequest.create({
       data: {
         userId: data.userId,

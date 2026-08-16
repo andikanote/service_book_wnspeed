@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { InventoryStatus } from '@prisma/client';
 
@@ -13,8 +13,14 @@ export class InventoryService {
   }
 
   async restockItem(id: string, amount: number) {
+    if (!amount || amount <= 0) {
+      throw new BadRequestException('Jumlah restock harus berupa angka positif lebih dari 0');
+    }
+
     const item = await this.prisma.inventoryItem.findUnique({ where: { id } });
-    if (!item) throw new NotFoundException('Inventory item not found');
+    if (!item) {
+      throw new NotFoundException(`Item sparepart dengan ID '${id}' tidak ditemukan`);
+    }
 
     const newStock = item.stock + amount;
     let newStatus: InventoryStatus = 'In_Stock';
@@ -43,21 +49,35 @@ export class InventoryService {
     supplier?: string;
     location?: string;
   }) {
+    if (!data.sku || !data.name || !data.category) {
+      throw new BadRequestException('Field SKU, Nama Item, dan Kategori wajib diisi');
+    }
+
+    const existing = await this.prisma.inventoryItem.findUnique({
+      where: { sku: data.sku },
+    });
+    if (existing) {
+      throw new ConflictException(`Item dengan SKU '${data.sku}' sudah terdaftar (${existing.name})`);
+    }
+
     let status: InventoryStatus = 'In_Stock';
-    if (data.stock === 0) {
+    const stock = Number(data.stock) || 0;
+    const minThreshold = Number(data.minThreshold) || 10;
+
+    if (stock === 0) {
       status = 'Critical_Out';
-    } else if (data.stock <= data.minThreshold) {
+    } else if (stock <= minThreshold) {
       status = 'Low_Stock';
     }
 
     return this.prisma.inventoryItem.create({
       data: {
-        sku: data.sku,
-        name: data.name,
-        category: data.category,
-        stock: data.stock,
-        minThreshold: data.minThreshold,
-        price: data.price,
+        sku: data.sku.trim().toUpperCase(),
+        name: data.name.trim(),
+        category: data.category.trim(),
+        stock: stock,
+        minThreshold: minThreshold,
+        price: Number(data.price) || 0,
         supplier: data.supplier,
         location: data.location,
         status: status,

@@ -21,7 +21,7 @@ const USER_DATABASE: Record<string, { role: AppRole; name: string }> = {
 };
 
 export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
-  const [identifier, setIdentifier] = useState('admin@artnspeed.id');
+  const [email, setEmail] = useState('admin@artnspeed.id');
   const [password, setPassword] = useState('password123');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -31,12 +31,12 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
     setErrorMsg(null);
     setIsLoading(true);
 
-    const trimmed = identifier.trim().toLowerCase();
+    const trimmed = email.trim().toLowerCase();
 
     try {
       // 1. Try real NestJS backend API call
       const res = await apiClient.post('/auth/login', {
-        identifier: trimmed,
+        email: trimmed,
         password: password,
       });
 
@@ -127,21 +127,21 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
                 <label className="block text-xs font-mono font-bold uppercase text-slate-700 mb-1.5">
-                  Email / Username
+                  Email Address
                 </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <Mail className="w-4 h-4" />
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                      <Mail className="w-4 h-4" />
+                    </div>
+                    <input
+                      type="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="name@artnspeed.id"
+                      className="w-full bg-slate-50 border border-slate-300 rounded-lg pl-10 pr-3.5 py-2.5 text-xs font-mono text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition"
+                    />
                   </div>
-                  <input
-                    type="text"
-                    required
-                    value={identifier}
-                    onChange={(e) => setIdentifier(e.target.value)}
-                    placeholder="name@artnspeed.id or username"
-                    className="w-full bg-slate-50 border border-slate-300 rounded-lg pl-10 pr-3.5 py-2.5 text-xs font-mono text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-none focus:border-indigo-600 focus:ring-1 focus:ring-indigo-600 transition"
-                  />
-                </div>
               </div>
 
               <div>

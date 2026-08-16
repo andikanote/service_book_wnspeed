@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
@@ -13,16 +13,11 @@ export class AuthService {
   ) {}
 
   async login(loginDto: LoginDto) {
-    const identifier = loginDto.identifier.trim().toLowerCase();
+    const email = loginDto.email.trim().toLowerCase();
 
-    // 1. Try to find user in database
-    let user = await this.prisma.user.findFirst({
-      where: {
-        OR: [
-          { email: identifier },
-          { name: { equals: identifier, mode: 'insensitive' } },
-        ],
-      },
+    // 1. Find user strictly by email
+    const user = await this.prisma.user.findUnique({
+      where: { email },
       include: {
         racerProfile: {
           include: {
@@ -34,86 +29,21 @@ export class AuthService {
       },
     });
 
-    // 2. If not found yet, auto-create/resolve for demo purposes or standard flow
     if (!user) {
-      const isStaffOrAdmin =
-        (identifier.includes('admin') || identifier.includes('staff')) &&
-        !identifier.includes('racer');
-
-      const role: Role = isStaffOrAdmin ? 'admin' : 'racer';
-      const defaultName = isStaffOrAdmin
-        ? 'Workshop Chief Admin'
-        : identifier
-            .split('@')[0]
-            .split(/[._-]/)
-            .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-            .join(' ');
-
-      const hashedPassword = await bcrypt.hash(loginDto.password || 'password123', 10);
-
-      try {
-        user = await this.prisma.user.create({
-          data: {
-            email: identifier.includes('@') ? identifier : `${identifier}@artnspeed.id`,
-            password: hashedPassword,
-            name: defaultName,
-            role: role,
-            phone: '+62 812-8899-7733',
-            racerProfile:
-              role === 'racer'
-                ? {
-                    create: {
-                      racerIdCode: `AX-${Math.floor(1000 + Math.random() * 9000)}`,
-                      tier: 'ELITE_MEMBER',
-                      points: 12450,
-                      totalSpent: 14850000,
-                      visits: 12,
-                      bikes: {
-                        create: {
-                          model: 'Yamaha All New Aerox 155 Connected',
-                          plateNumber: 'B 4992 ELA',
-                          year: 2023,
-                          mileage: 8450,
-                          engineSpec: '155cc VVA + TDR 62mm Ceramic Cylinder (183cc Kit)',
-                          ecuMapping: 'aRacer SpeedTek Super X - ART Racing Map v4',
-                          dynoHp: 21.8,
-                          dynoTorque: 18.2,
-                          diagnostics: {
-                            create: {
-                              oilHealth: 65,
-                              vbeltCond: 88,
-                              brakePads: 15,
-                              batteryVoltage: 12.8,
-                              tirePressureFront: 29.5,
-                              tirePressureRear: 33.0,
-                              afrRatio: 12.9,
-                              engineTemp: 86,
-                              lastUpdated: '2H AGO',
-                            },
-                          },
-                        },
-                      },
-                    },
-                  }
-                : undefined,
-          },
-          include: {
-            racerProfile: {
-              include: {
-                bikes: {
-                  include: { diagnostics: true },
-                },
-              },
-            },
-          },
-        });
-      } catch (err) {
-        console.error('Error auto-provisioning user:', err);
-      }
+      throw new UnauthorizedException('Kredensial tidak valid: Email tidak terdaftar');
     }
 
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+    // 2. Validate password
+    let isPasswordValid = false;
+    if (user.password.startsWith('$2b$') || user.password.startsWith('$2a$')) {
+      isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
+    } else {
+      // Fallback for plain-text seed data if any
+      isPasswordValid = user.password === loginDto.password;
+    }
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Kredensial tidak valid: Password yang Anda masukkan salah');
     }
 
     const payload = {
@@ -154,7 +84,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException('Sesi tidak valid atau Pengguna tidak ditemukan');
     }
 
     return {

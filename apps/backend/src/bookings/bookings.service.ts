@@ -32,10 +32,12 @@ export class BookingsService {
         service: true,
       },
     });
-    if (!booking) throw new NotFoundException('Booking not found');
+    if (!booking) {
+      throw new NotFoundException(`Data booking dengan ID '${id}' tidak ditemukan`);
+    }
 
     if (currentUser.role === 'racer' && booking.userId !== currentUser.id) {
-      throw new ForbiddenException('Access denied: You can only view your own bookings');
+      throw new ForbiddenException('Akses ditolak: Anda hanya dapat melihat data booking milik Anda sendiri');
     }
 
     return booking;
@@ -49,14 +51,16 @@ export class BookingsService {
     currentUser?: { id: string; role: string },
   ) {
     const booking = await this.prisma.booking.findUnique({ where: { id } });
-    if (!booking) throw new NotFoundException('Booking not found');
+    if (!booking) {
+      throw new NotFoundException(`Data booking dengan ID '${id}' tidak ditemukan`);
+    }
 
     if (currentUser && currentUser.role === 'racer') {
       if (booking.userId !== currentUser.id) {
-        throw new ForbiddenException('Access denied: You cannot modify this booking');
+        throw new ForbiddenException('Akses ditolak: Anda tidak memiliki izin untuk mengubah booking ini');
       }
       if (status !== BookingStatus.CANCELLED) {
-        throw new ForbiddenException('Racers can only cancel their own bookings');
+        throw new ForbiddenException('Akses ditolak: Racer hanya diperbolehkan membatalkan (CANCELLED) jadwal booking');
       }
     }
 
@@ -71,9 +75,28 @@ export class BookingsService {
   }
 
   async createBooking(data: CreateBookingDto, currentUser: { id: string; role: string }) {
-    const bookingCode = `ANS-${Math.floor(1000 + Math.random() * 9000)}`;
     const targetUserId =
       currentUser.role === 'admin' && data.userId ? data.userId : currentUser.id;
+
+    // Validate target user
+    const user = await this.prisma.user.findUnique({ where: { id: targetUserId } });
+    if (!user) {
+      throw new NotFoundException(`User dengan ID '${targetUserId}' tidak ditemukan di sistem`);
+    }
+
+    // Validate bike
+    const bike = await this.prisma.bike.findUnique({ where: { id: data.bikeId } });
+    if (!bike) {
+      throw new NotFoundException(`Data motor dengan ID '${data.bikeId}' tidak ditemukan di sistem`);
+    }
+
+    // Validate service package
+    const service = await this.prisma.servicePackage.findUnique({ where: { id: data.serviceId } });
+    if (!service) {
+      throw new NotFoundException(`Paket service dengan ID '${data.serviceId}' tidak ditemukan di sistem`);
+    }
+
+    const bookingCode = `ANS-${Math.floor(1000 + Math.random() * 9000)}`;
 
     return this.prisma.booking.create({
       data: {

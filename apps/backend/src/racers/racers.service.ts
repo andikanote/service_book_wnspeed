@@ -25,7 +25,9 @@ export class RacersService {
         bikes: { include: { diagnostics: true } },
       },
     });
-    if (!racer) throw new NotFoundException('Racer profile not found');
+    if (!racer) {
+      throw new NotFoundException(`Profil racer dengan ID '${id}' tidak ditemukan`);
+    }
     return racer;
   }
 
