@@ -30,6 +30,14 @@ export class RacersService {
   }
 
   async updateDiagnostics(bikeId: string, data: any) {
+    const bike = await this.prisma.bike.findUnique({
+      where: { id: bikeId },
+    });
+
+    if (!bike) {
+      throw new NotFoundException(`Data motor dengan ID '${bikeId}' tidak ditemukan di database`);
+    }
+
     return this.prisma.bikeDiagnostics.upsert({
       where: { bikeId },
       update: {

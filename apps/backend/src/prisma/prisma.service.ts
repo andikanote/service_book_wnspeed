@@ -8,7 +8,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   async onModuleInit() {
     try {
       await this.$connect();
-      this.logger.log('✅ Connected to PostgreSQL Database successfully!');
+      this.logger.log('✅ - Connected to PostgreSQL Database successfully!');
     } catch (error) {
       this.logger.warn(
         '⚠️ PostgreSQL database belum terhubung / belum aktif di DATABASE_URL. Server tetap berjalan.',

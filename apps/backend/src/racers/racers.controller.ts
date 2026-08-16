@@ -1,6 +1,8 @@
-import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { RacersService } from './racers.service';
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('racers')
 export class RacersController {
   constructor(private readonly racersService: RacersService) {}
