@@ -30,7 +30,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Kredensial tidak valid: Email tidak terdaftar');
+      throw new UnauthorizedException('Email tidak terdaftar');
     }
 
     // 2. Validate password
@@ -43,7 +43,7 @@ export class AuthService {
     }
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Kredensial tidak valid: Password yang Anda masukkan salah');
+      throw new UnauthorizedException('Password yang Anda masukkan salah');
     }
 
     const payload = {

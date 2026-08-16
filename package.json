@@ -1,0 +1,17 @@
+{
+  "name": "service-book",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "npm --prefix apps/client-web run dev",
+    "dev:backend": "npm --prefix apps/backend run start:dev",
+    "build": "npm --prefix apps/client-web run build",
+    "build:backend": "npm --prefix apps/backend run build",
+    "lint": "npm --prefix apps/client-web run lint",
+    "dev:cms-standalone": "npm --prefix apps/cms-admin run dev",
+    "build:all": "npm --prefix apps/client-web run build && npm --prefix apps/backend run build"
+  }
+}

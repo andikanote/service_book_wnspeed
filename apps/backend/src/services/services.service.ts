@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -38,6 +38,31 @@ export class ServicesService {
         description: data.description,
         includesItems: data.includesItems || [],
       },
+    });
+  }
+
+  async delete(id: string) {
+    const existing = await this.prisma.servicePackage.findUnique({
+      where: { id },
+    });
+
+    if (!existing) {
+      throw new NotFoundException(`Paket service dengan ID ${id} tidak ditemukan`);
+    }
+
+    // Check if there are active bookings associated with this service
+    const bookingCount = await this.prisma.booking.count({
+      where: { serviceId: id },
+    });
+
+    if (bookingCount > 0) {
+      throw new BadRequestException(
+        `Paket service tidak dapat dihapus karena masih terhubung dengan ${bookingCount} data reservasi/booking.`
+      );
+    }
+
+    return this.prisma.servicePackage.delete({
+      where: { id },
     });
   }
 }

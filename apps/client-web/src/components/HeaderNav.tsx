@@ -10,7 +10,8 @@ import {
   Sparkles,
   Search,
   Layers,
-  ChevronRight
+  ChevronRight,
+  LogIn
 } from 'lucide-react';
 
 interface HeaderNavProps {
@@ -21,6 +22,7 @@ interface HeaderNavProps {
   activeNotificationsCount?: number;
   onOpenNotifications: () => void;
   onOpenSettings: () => void;
+  onOpenPortal?: () => void;
 }
 
 export const HeaderNav: React.FC<HeaderNavProps> = ({
@@ -31,6 +33,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
   activeNotificationsCount = 2,
   onOpenNotifications,
   onOpenSettings,
+  onOpenPortal,
 }) => {
   return (
     <header className="sticky top-0 z-40 bg-[#131313]/90 backdrop-blur-md border-b border-[#1E293B] px-4 lg:px-8 py-3">
@@ -124,18 +127,18 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
           {/* Quick View switcher preview pill */}
           <div className="hidden lg:flex items-center bg-[#1c1b1b] border border-[#1E293B] rounded p-1 text-[11px] font-medium font-mono">
             <button 
-              onClick={() => onNavigate('dashboard')}
-              title="Service Selection & Diagnostics Dashboard"
-              className={`px-3 py-1 rounded transition-colors cursor-pointer ${currentView === 'dashboard' ? 'bg-[#FFE01B]/15 text-[#FFE01B] border border-[#FFE01B]/30 font-bold' : 'text-[#e5e2e1]/60 hover:text-white'}`}
-            >
-              Lab Hub
-            </button>
-            <button 
               onClick={() => onNavigate('landing')}
               title="Brand Landing Page"
               className={`px-3 py-1 rounded transition-colors cursor-pointer ${currentView === 'landing' ? 'bg-[#FFE01B]/15 text-[#FFE01B] border border-[#FFE01B]/30 font-bold' : 'text-[#e5e2e1]/60 hover:text-white'}`}
             >
-              Landing
+              Home
+            </button>
+            <button 
+              onClick={() => onNavigate('dashboard')}
+              title="Service Selection & Diagnostics Dashboard"
+              className={`px-3 py-1 rounded transition-colors cursor-pointer ${currentView === 'dashboard' ? 'bg-[#FFE01B]/15 text-[#FFE01B] border border-[#FFE01B]/30 font-bold' : 'text-[#e5e2e1]/60 hover:text-white'}`}
+            >
+              Services
             </button>
             <button 
               onClick={() => onNavigate('booking')}
@@ -169,7 +172,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             <Settings className="w-4 h-4" />
           </button>
 
-          {/* Book Now Main Button */}
+          {/* Book Now Main Button (Placed before Masuk) */}
           <button
             onClick={onOpenBooking}
             className="flex items-center gap-2 bg-[#FFE01B] hover:bg-[#ffe241] text-black font-bold text-xs px-4 py-2 rounded transition-all shadow-md shadow-[#FFE01B]/20 hover:scale-[1.02] active:scale-[0.98] cursor-pointer font-mono uppercase tracking-wider"
@@ -177,6 +180,19 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             <Calendar className="w-3.5 h-3.5" />
             <span>Book Now</span>
           </button>
+
+          {/* Masuk (Login / Portal Access Button) */}
+          {onOpenPortal && (
+            <button
+              onClick={onOpenPortal}
+              title="Masuk ke Portal ART N SPEED (Admin CMS & Racer Portal)"
+              className="flex items-center gap-1.5 bg-[#1c1b1b] hover:bg-[#2a2a2a] border border-[#1E293B] hover:border-[#FFE01B]/40 text-[#FFE01B] font-bold text-xs px-3.5 py-2 rounded transition-all cursor-pointer font-mono uppercase tracking-wider"
+            >
+              <LogIn className="w-3.5 h-3.5 text-[#FFE01B]" />
+              <span>Masuk</span>
+            </button>
+          )}
+
         </div>
 
       </div>
