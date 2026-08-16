@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #0F1115;
+    color: #E2E8F0;
+  }
+
+  .font-mono-tech {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .font-display {
+    font-family: 'Cabinet Grotesk', 'Plus Jakarta Sans', sans-serif;
+  }
+}
+
+/* Custom glow utilities & Elegant Dark styling */
+.glow-indigo {
+  box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.4);
+}
+
+.glow-indigo-sm {
+  box-shadow: 0 0 15px -3px rgba(99, 102, 241, 0.3);
+}
+
+.glow-indigo-lg {
+  box-shadow: 0 0 35px -5px rgba(99, 102, 241, 0.5);
+}
+
+.glow-emerald {
+  box-shadow: 0 0 15px -3px rgba(52, 211, 153, 0.4);
+}
+
+.border-cyber {
+  border-color: #2D3139;
+}
+
+.bg-dark-surface {
+  background-color: #181A20;
+}
+
+.bg-dark-card {
+  background-color: #181A20;
+}
+
+.bg-dark-card-hover:hover {
+  background-color: #1F222A;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0F1115;
+}
+::-webkit-scrollbar-thumb {
+  background: #2D3139;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #6366F1;
+}
+
+/* Carbon fiber / grid background pattern */
+.bg-grid-pattern {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.bg-carbon-pattern {
+  background: linear-gradient(27deg, #111318 5px, transparent 5px) 0 5px,
+              linear-gradient(207deg, #111318 5px, transparent 5px) 10px 0px,
+              linear-gradient(27deg, #181a20 5px, transparent 5px) 0px 10px,
+              linear-gradient(207deg, #181a20 5px, transparent 5px) 10px 5px,
+              linear-gradient(90deg, #14161d 10px, transparent 10px),
+              linear-gradient(#181a20 25%, #111318 25%, #111318 50%, #181a20 50%, #181a20 75%, #111318 75%, #111318 100%);
+  background-size: 20px 20px;
+}
