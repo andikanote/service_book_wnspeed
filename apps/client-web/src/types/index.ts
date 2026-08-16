@@ -1,7 +1,6 @@
 export type AppRole = 'admin' | 'racer';
 
-export type AdminTab = 'overview' | 'bookings' | 'services' | 'inventory' | 'users' | 'settings';
-export type RacerTab = 'dashboard' | 'bikes' | 'diagnostics' | 'bookings' | 'membership' | 'profile';
+export type RacerTab = 'dashboard' | 'bikes' | 'bookings' | 'membership' | 'profile';
 
 export interface MemberBike {
   id: string;

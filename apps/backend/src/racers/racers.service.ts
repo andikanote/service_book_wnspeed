@@ -120,11 +120,8 @@ export class RacersService {
     plateNumber: string;
     year?: number;
     engineCc?: number;
-    mileage?: number;
     engineSpec?: string;
     ecuMapping?: string;
-    dynoHp?: number;
-    dynoTorque?: number;
     isPrimary?: boolean;
     userId?: string;
   }) {
@@ -194,12 +191,9 @@ export class RacersService {
         plateNumber: cleanPlate,
         year: Number(data.year) || new Date().getFullYear(),
         engineCc: Number(data.engineCc) || 150,
-        mileage: Number(data.mileage) || 0,
         isPrimary,
         engineSpec: data.engineSpec?.trim() || 'Standar Factory Tuned',
         ecuMapping: data.ecuMapping?.trim() || 'Standar OEM Mapping',
-        dynoHp: Number(data.dynoHp) || 18.5,
-        dynoTorque: Number(data.dynoTorque) || 14.2,
         diagnostics: {
           create: {
             oilHealth: 100,
@@ -228,11 +222,8 @@ export class RacersService {
       plateNumber?: string;
       year?: number;
       engineCc?: number;
-      mileage?: number;
       engineSpec?: string;
       ecuMapping?: string;
-      dynoHp?: number;
-      dynoTorque?: number;
       isPrimary?: boolean;
     }
   ) {
@@ -271,12 +262,9 @@ export class RacersService {
         plateNumber: data.plateNumber !== undefined ? data.plateNumber.trim().toUpperCase() : existing.plateNumber,
         year: data.year !== undefined ? Number(data.year) : existing.year,
         engineCc: data.engineCc !== undefined ? Number(data.engineCc) : existing.engineCc,
-        mileage: data.mileage !== undefined ? Number(data.mileage) : existing.mileage,
         isPrimary: data.isPrimary !== undefined ? Boolean(data.isPrimary) : existing.isPrimary,
         engineSpec: data.engineSpec !== undefined ? data.engineSpec.trim() : existing.engineSpec,
         ecuMapping: data.ecuMapping !== undefined ? data.ecuMapping.trim() : existing.ecuMapping,
-        dynoHp: data.dynoHp !== undefined ? Number(data.dynoHp) : existing.dynoHp,
-        dynoTorque: data.dynoTorque !== undefined ? Number(data.dynoTorque) : existing.dynoTorque,
       },
       include: {
         diagnostics: true,

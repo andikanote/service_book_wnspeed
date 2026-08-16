@@ -212,106 +212,20 @@ export const RacerDashboard: React.FC<RacerDashboardProps> = ({ onNavigateTab })
 
       </div>
 
-      {/* Bottom Grid: System Diagnostics & Service Log */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        
-        {/* 3. SYSTEM DIAGNOSTICS CARD (7 Cols) */}
-        <div className="lg:col-span-7 bg-[#1c1b1b] border border-[#1E293B] rounded p-5 space-y-4 shadow-xs">
+      {/* Bottom Grid: Service Log */}
+      <div className="grid grid-cols-1 gap-5">
+        {/* SERVICE LOG CARD */}
+        <div className="bg-[#1c1b1b] border border-[#1E293B] rounded p-5 space-y-4 shadow-xs">
           {/* Header */}
           <div className="flex items-center justify-between border-b border-[#1E293B] pb-3">
-            <h3 className="text-base font-bold text-[#e5e2e1] tracking-tight font-display uppercase">
-              System Diagnostics
-            </h3>
-            
-            <button
-              onClick={handleRefreshDiagnostics}
-              className="flex items-center gap-1.5 text-xs font-mono text-[#cec6ab] hover:text-[#FFE01B] transition cursor-pointer"
-              title="Refresh Telemetry"
-            >
-              <RotateCw className={`w-3.5 h-3.5 ${isRefreshing ? 'animate-spin text-[#FFE01B]' : ''}`} />
-              <span className="tracking-wide">LAST UPDATED: {racerData.diagnostics.lastUpdated}</span>
-            </button>
-          </div>
-
-          {/* 3 Diagnostic Status Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-            
-            {/* 1. OIL HEALTH (65%) */}
-            <div className="p-3.5 rounded bg-[#131313] border border-[#1E293B] space-y-2.5 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between text-xs font-mono font-bold text-[#FFE01B]">
-                  <span>OIL HEALTH</span>
-                  <span>{racerData.diagnostics.oilHealth}%</span>
-                </div>
-
-                {/* Progress bar */}
-                <div className="w-full bg-[#0e0e0e] h-1.5 rounded-full mt-1.5 overflow-hidden border border-[#1E293B]">
-                  <div
-                    className="bg-[#FFE01B] h-full rounded-full"
-                    style={{ width: `${racerData.diagnostics.oilHealth}%` }}
-                  ></div>
-                </div>
-              </div>
-
-              <p className="text-[11px] font-mono text-[#cec6ab] leading-relaxed">
-                Optimal range. Change in ~1,200km.
-              </p>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-mono font-bold text-[#e5e2e1] uppercase tracking-wider font-display">
+                SERVICE LOG & RIWAYAT PERAWATAN
+              </span>
+              <span className="px-2 py-0.5 rounded bg-[#FFE01B]/10 text-[#FFE01B] font-mono text-[10px] font-bold">
+                {INITIAL_SERVICE_LOGS.length} RECORDS
+              </span>
             </div>
-
-            {/* 2. V-BELT COND. (88%) */}
-            <div className="p-3.5 rounded bg-[#131313] border border-[#1E293B] space-y-2.5 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between text-xs font-mono font-bold text-[#22C55E]">
-                  <span>V-BELT COND.</span>
-                  <span>{racerData.diagnostics.vbeltCond}%</span>
-                </div>
-
-                {/* Progress bar */}
-                <div className="w-full bg-[#0e0e0e] h-1.5 rounded-full mt-1.5 overflow-hidden border border-[#1E293B]">
-                  <div
-                    className="bg-[#22C55E] h-full rounded-full"
-                    style={{ width: `${racerData.diagnostics.vbeltCond}%` }}
-                  ></div>
-                </div>
-              </div>
-
-              <p className="text-[11px] font-mono text-[#cec6ab] leading-relaxed">
-                Excellent condition. Minimal wear.
-              </p>
-            </div>
-
-            {/* 3. BRAKE PADS (15%) */}
-            <div className="p-3.5 rounded bg-[#131313] border border-rose-500/30 space-y-2.5 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between text-xs font-mono font-bold text-rose-400">
-                  <span>BRAKE PADS</span>
-                  <span>{racerData.diagnostics.brakePads}%</span>
-                </div>
-
-                {/* Progress bar */}
-                <div className="w-full bg-[#0e0e0e] h-1.5 rounded-full mt-1.5 overflow-hidden border border-[#1E293B]">
-                  <div
-                    className="bg-rose-500 h-full rounded-full"
-                    style={{ width: `${racerData.diagnostics.brakePads}%` }}
-                  ></div>
-                </div>
-              </div>
-
-              <p className="text-[11px] font-mono text-rose-300 leading-relaxed">
-                Critical wear. Service immediately.
-              </p>
-            </div>
-
-          </div>
-        </div>
-
-        {/* 4. SERVICE LOG CARD (5 Cols) */}
-        <div className="lg:col-span-5 bg-[#1c1b1b] border border-[#1E293B] rounded p-5 space-y-4 shadow-xs flex flex-col justify-between">
-          {/* Header */}
-          <div className="flex items-center justify-between border-b border-[#1E293B] pb-3">
-            <span className="text-xs font-mono font-bold text-[#e5e2e1] uppercase tracking-wider font-display">
-              SERVICE LOG
-            </span>
             <button
               onClick={() => onNavigateTab('profile')}
               className="text-xs font-mono font-bold text-[#FFE01B] hover:underline uppercase tracking-wider cursor-pointer"
@@ -320,10 +234,10 @@ export const RacerDashboard: React.FC<RacerDashboardProps> = ({ onNavigateTab })
             </button>
           </div>
 
-          {/* Service Log Entries */}
-          <div className="space-y-3">
+          {/* Service Log Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
             {INITIAL_SERVICE_LOGS.slice(0, 3).map((log) => (
-              <div key={log.id} className="space-y-1">
+              <div key={log.id} className="p-3.5 bg-[#131313] rounded border border-[#1E293B] space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-[#22C55E] shrink-0"></span>
@@ -336,9 +250,12 @@ export const RacerDashboard: React.FC<RacerDashboardProps> = ({ onNavigateTab })
                   </span>
                 </div>
 
-                <div className="pl-4">
+                <div className="flex items-center justify-between pt-1">
                   <span className="inline-block px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase bg-[#22C55E]/10 border border-[#22C55E]/30 text-[#22C55E]">
                     {log.status}
+                  </span>
+                  <span className="text-[11px] font-mono text-[#CCFF00] font-bold">
+                    Rp {log.cost.toLocaleString('id-ID')}
                   </span>
                 </div>
               </div>
@@ -346,16 +263,15 @@ export const RacerDashboard: React.FC<RacerDashboardProps> = ({ onNavigateTab })
           </div>
 
           {/* Bottom Prompt */}
-          <div className="pt-1">
+          <div className="pt-2 flex justify-end">
             <button
               onClick={() => onNavigateTab('bookings')}
-              className="w-full py-2 bg-[#131313] hover:bg-[#201f1f] border border-[#1E293B] text-[#e5e2e1] hover:text-white rounded text-xs font-mono font-bold transition uppercase tracking-wider text-center cursor-pointer"
+              className="px-5 py-2.5 bg-[#FFE01B] hover:bg-[#ffe241] text-black rounded text-xs font-mono font-bold transition uppercase tracking-wider text-center cursor-pointer shadow-md shadow-[#FFE01B]/20"
             >
               Schedule New Maintenance Slot
             </button>
           </div>
         </div>
-
       </div>
 
       {/* Modals */}

@@ -81,12 +81,9 @@ model Bike {
   plateNumber String           @unique @map("plate_number")
   year        Int?
   engineCc    Int?             @default(150) @map("engine_cc")
-  mileage     Int              @default(0)
   isPrimary   Boolean          @default(false) @map("is_primary")
   engineSpec  String?          @map("engine_spec")
   ecuMapping  String?          @map("ecu_mapping")
-  dynoHp      Decimal          @default(0) @map("dyno_hp") @db.Decimal(5, 2)
-  dynoTorque  Decimal          @default(0) @map("dyno_torque") @db.Decimal(5, 2)
   diagnostics BikeDiagnostics?
   bookings    Booking[]
   createdAt   DateTime         @default(now()) @map("created_at")

@@ -2,8 +2,7 @@ import React from 'react';
 import { RacerTab } from '../../types';
 import { 
   Gauge, 
-  Bike,
-  Cpu, 
+  Bike, 
   Calendar, 
   Star, 
   User, 
@@ -27,7 +26,6 @@ export const RacerSidebar: React.FC<RacerSidebarProps> = ({
   const navItems = [
     { id: 'dashboard' as RacerTab, label: 'DASHBOARD', icon: Gauge },
     { id: 'bikes' as RacerTab, label: 'MOTOR MEMBER', icon: Bike },
-    { id: 'diagnostics' as RacerTab, label: 'DIAGNOSTICS', icon: Cpu },
     { id: 'bookings' as RacerTab, label: 'BOOKINGS', icon: Calendar },
     { id: 'membership' as RacerTab, label: 'MEMBERSHIP', icon: Star },
     { id: 'profile' as RacerTab, label: 'PROFILE', icon: User },

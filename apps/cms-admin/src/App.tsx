@@ -25,7 +25,6 @@ import { GenerateReportModal } from './components/admin/GenerateReportModal';
 import { RacerSidebar } from './components/racer/RacerSidebar';
 import { RacerDashboard } from './components/racer/RacerDashboard';
 import { RacerBikes } from './components/racer/RacerBikes';
-import { RacerDiagnostics } from './components/racer/RacerDiagnostics';
 import { RacerBookings } from './components/racer/RacerBookings';
 import { RacerMembership } from './components/racer/RacerMembership';
 import { RacerProfile } from './components/racer/RacerProfile';
@@ -191,10 +190,8 @@ export default function App() {
               {racerTab === 'bikes' && (
                 <RacerBikes
                   onNavigateToBooking={() => setRacerTab('bookings')}
-                  onNavigateToDiagnostics={() => setRacerTab('diagnostics')}
                 />
               )}
-              {racerTab === 'diagnostics' && <RacerDiagnostics />}
               {racerTab === 'bookings' && <RacerBookings />}
               {racerTab === 'membership' && <RacerMembership />}
               {racerTab === 'profile' && <RacerProfile />}

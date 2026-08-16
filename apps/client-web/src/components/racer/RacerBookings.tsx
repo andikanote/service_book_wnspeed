@@ -82,7 +82,7 @@ export const RacerBookings: React.FC = () => {
   const [selectedBikeId, setSelectedBikeId] = useState<string>('');
 
   // Form State
-  const [selectedBranch, setSelectedBranch] = useState('Bekasi Branch (Precision Tuning Center)');
+  const [selectedBranch, setSelectedBranch] = useState('Branch Bekasi');
   const [selectedDate, setSelectedDate] = useState(() => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
@@ -649,7 +649,7 @@ export const RacerBookings: React.FC = () => {
               </div>
             )}
 
-            {/* Select Workshop Branch (Bekasi Branch Focused) */}
+            {/* Select Workshop Branch (Only Bekasi Branch) */}
             <div className="font-mono text-xs">
               <label className="block text-[#cec6ab] mb-1.5 text-xs uppercase font-semibold">Select Workshop Branch</label>
               <select
@@ -657,17 +657,8 @@ export const RacerBookings: React.FC = () => {
                 onChange={(e) => setSelectedBranch(e.target.value)}
                 className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-xs text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none"
               >
-                <option value="Bekasi Branch (Precision Tuning Center)">
-                  Bekasi Branch (Precision Tuning Center)
-                </option>
-                <option value="Depok Branch (Main Tuning Lab)">
-                  Depok Branch (Main Tuning Lab)
-                </option>
-                <option value="Jakarta Selatan Express Bay">
-                  Jakarta Selatan Express Bay
-                </option>
-                <option value="Bandung Dyno & Racing Center">
-                  Bandung Dyno & Racing Center
+                <option value="Branch Bekasi">
+                  Branch Bekasi (Precision Tuning Center)
                 </option>
               </select>
             </div>
