@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingStatusDto } from './dto/update-booking-status.dto';
@@ -12,6 +12,15 @@ export class BookingsController {
   @Get()
   async getAll(@Request() req: any) {
     return this.bookingsService.getAllBookings(req.user);
+  }
+
+  @Get('occupied-slots')
+  async getOccupiedSlots(
+    @Request() req: any,
+  ) {
+    const date = req.query?.date;
+    const branch = req.query?.branch;
+    return this.bookingsService.getOccupiedSlots(date, branch);
   }
 
   @Get(':id')
@@ -37,5 +46,10 @@ export class BookingsController {
   @Post()
   async create(@Body() body: CreateBookingDto, @Request() req: any) {
     return this.bookingsService.createBooking(body, req.user);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id') id: string, @Request() req: any) {
+    return this.bookingsService.deleteBooking(id, req.user);
   }
 }

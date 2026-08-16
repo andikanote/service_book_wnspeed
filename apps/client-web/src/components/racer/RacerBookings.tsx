@@ -1,5 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, Clock, CheckCircle2, Loader2, RefreshCw, Bike, AlertTriangle, ChevronRight, Tag } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { 
+  Calendar, 
+  Clock, 
+  CheckCircle2, 
+  Loader2, 
+  RefreshCw, 
+  Bike, 
+  AlertTriangle, 
+  ChevronRight, 
+  Tag, 
+  Ban,
+  Sunrise,
+  Sun,
+  Trash2,
+  X
+} from 'lucide-react';
 import { SERVICE_CATALOG } from '../../data/mockData';
 import { apiClient } from '../../services/api';
 import { MemberBike } from '../../types';
@@ -37,6 +52,25 @@ interface BookingRecord {
   };
 }
 
+// Time Slots Grouped by Sections
+const MORNING_SLOTS = [
+  '09:00', '09:30',
+  '10:00', '10:30',
+  '11:00', '11:30',
+];
+
+const AFTERNOON_SLOTS = [
+  '12:00', '12:30',
+  '13:00', '13:30',
+  '14:00', '14:30',
+  '15:00', '15:30',
+  '16:00', '16:30',
+  '17:00', '17:30',
+  '18:00', '18:30',
+];
+
+const ALL_TIME_SLOTS = [...MORNING_SLOTS, ...AFTERNOON_SLOTS];
+
 export const RacerBookings: React.FC = () => {
   // Services State
   const [services, setServices] = useState<ServiceItem[]>([]);
@@ -54,13 +88,19 @@ export const RacerBookings: React.FC = () => {
     tomorrow.setDate(tomorrow.getDate() + 1);
     return tomorrow.toISOString().split('T')[0];
   });
-  const [selectedTime, setSelectedTime] = useState('10:00 AM');
+  const [selectedTime, setSelectedTime] = useState('09:00');
   const [notes, setNotes] = useState('');
+
+  // Occupied Slots State
+  const [occupiedSlots, setOccupiedSlots] = useState<string[]>([]);
+  const [isLoadingSlots, setIsLoadingSlots] = useState(false);
 
   // Booking Execution State
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [confirmedBooking, setConfirmedBooking] = useState<BookingRecord | null>(null);
+  const [deletingBooking, setDeletingBooking] = useState<BookingRecord | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Active Tab: New Reservation vs History
   const [viewMode, setViewMode] = useState<'NEW_BOOKING' | 'HISTORY'>('NEW_BOOKING');
@@ -85,7 +125,6 @@ export const RacerBookings: React.FC = () => {
         setServices(mapped);
         setSelectedServiceId((prev) => (prev ? prev : mapped[0].id));
       } else {
-        // Fallback to mock catalog
         const fallback = SERVICE_CATALOG.map((s) => ({
           id: s.id,
           name: s.name,
@@ -130,7 +169,32 @@ export const RacerBookings: React.FC = () => {
     }
   };
 
-  // 3. Fetch Booking History from GET /api/v1/bookings
+  // 3. Fetch Occupied Slots from GET /api/v1/bookings/occupied-slots
+  const fetchOccupiedSlots = useCallback(async () => {
+    if (!selectedDate) return;
+    setIsLoadingSlots(true);
+    try {
+      const data = await apiClient.get(
+        `/bookings/occupied-slots?date=${selectedDate}&branch=${encodeURIComponent(selectedBranch)}`
+      );
+      if (Array.isArray(data)) {
+        setOccupiedSlots(data);
+        if (data.includes(selectedTime)) {
+          const available = ALL_TIME_SLOTS.find((s) => !data.includes(s));
+          if (available) {
+            setSelectedTime(available);
+          }
+        }
+      }
+    } catch (err: any) {
+      console.warn('Could not fetch occupied slots:', err.message);
+      setOccupiedSlots([]);
+    } finally {
+      setIsLoadingSlots(false);
+    }
+  }, [selectedDate, selectedBranch, selectedTime]);
+
+  // 4. Fetch Booking History from GET /api/v1/bookings
   const fetchBookingHistory = async () => {
     setIsLoadingHistory(true);
     try {
@@ -145,10 +209,40 @@ export const RacerBookings: React.FC = () => {
     }
   };
 
+  // 5. Delete Booking via DELETE /api/v1/bookings/:id
+  const handleConfirmDelete = async () => {
+    if (!deletingBooking) return;
+    setIsDeleting(true);
+    setErrorMessage(null);
+
+    try {
+      await apiClient.delete(`/bookings/${deletingBooking.id}`);
+      setBookingHistory((prev) => prev.filter((b) => b.id !== deletingBooking.id));
+      setDeletingBooking(null);
+      fetchOccupiedSlots();
+    } catch (err: any) {
+      if (err.message && (err.message.includes('tidak ditemukan') || err.message.includes('404'))) {
+        setBookingHistory((prev) => prev.filter((b) => b.id !== deletingBooking.id));
+        setDeletingBooking(null);
+      } else if (err.message && !err.message.includes('Failed to fetch')) {
+        setErrorMessage(err.message);
+      } else {
+        setBookingHistory((prev) => prev.filter((b) => b.id !== deletingBooking.id));
+        setDeletingBooking(null);
+      }
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   useEffect(() => {
     fetchServices();
     fetchBikes();
   }, []);
+
+  useEffect(() => {
+    fetchOccupiedSlots();
+  }, [fetchOccupiedSlots]);
 
   const activeService =
     services.find((s) => s.id === selectedServiceId) ||
@@ -167,6 +261,12 @@ export const RacerBookings: React.FC = () => {
   // Submit Booking to POST /api/v1/bookings
   const handleBookSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (occupiedSlots.includes(selectedTime)) {
+      setErrorMessage(`Slot waktu ${selectedTime} sudah terisi. Silakan pilih slot waktu lain.`);
+      return;
+    }
+
     setIsSubmitting(true);
     setErrorMessage(null);
 
@@ -183,6 +283,7 @@ export const RacerBookings: React.FC = () => {
     try {
       const result = await apiClient.post('/bookings', payload);
       setConfirmedBooking(result);
+      fetchOccupiedSlots();
       confetti({ particleCount: 50, spread: 70 });
     } catch (err: any) {
       if (err.message && !err.message.includes('Failed to fetch')) {
@@ -215,6 +316,7 @@ export const RacerBookings: React.FC = () => {
       };
 
       setConfirmedBooking(fallbackBooking);
+      setOccupiedSlots((prev) => [...prev, selectedTime]);
       confetti({ particleCount: 50, spread: 70 });
     } finally {
       setIsSubmitting(false);
@@ -234,7 +336,7 @@ export const RacerBookings: React.FC = () => {
             Reserve Maintenance Bay
           </h2>
           <p className="text-xs text-[#cec6ab] mt-0.5">
-            Book dedicated dyno tuning, overhaul, remap, atau service berkala di Workshop ART N SPEED
+            Jam Operasional 09:00 - 18:30 WIB • Book dedicated dyno tuning, overhaul, atau service berkala di ART N SPEED
           </p>
         </div>
 
@@ -319,7 +421,7 @@ export const RacerBookings: React.FC = () => {
             <div className="flex justify-between border-b border-[#1E293B] pb-2">
               <span className="text-[#cec6ab]">Tanggal & Slot Jam:</span>
               <span className="text-[#FFE01B] font-bold">
-                {confirmedBooking.bookingDate.split('T')[0]}, {confirmedBooking.bookingTime}
+                {confirmedBooking.bookingDate.split('T')[0]}, {confirmedBooking.bookingTime} WIB
               </span>
             </div>
             <div className="flex justify-between pt-1">
@@ -336,7 +438,7 @@ export const RacerBookings: React.FC = () => {
                 setConfirmedBooking(null);
                 setViewMode('NEW_BOOKING');
               }}
-              className="flex-1 py-2.5 bg-[#FFE01B] hover:bg-[#ffe241] text-black font-bold text-xs rounded uppercase transition shadow-md shadow-[#FFE01B]/20 cursor-pointer tracking-wider"
+              className="flex-1 py-2.5 bg-[#FFE01B] hover:bg-[#ffe241] text-black font-bold text-xs rounded uppercase tracking-wider shadow-md shadow-[#FFE01B]/20 cursor-pointer transition"
             >
               Buat Reservasi Baru
             </button>
@@ -346,7 +448,7 @@ export const RacerBookings: React.FC = () => {
                 setViewMode('HISTORY');
                 fetchBookingHistory();
               }}
-              className="flex-1 py-2.5 bg-[#131313] hover:bg-[#201f1f] border border-[#1E293B] hover:border-[#FFE01B]/40 text-white font-bold text-xs rounded uppercase transition cursor-pointer tracking-wider"
+              className="flex-1 py-2.5 bg-[#131313] hover:bg-[#201f1f] border border-[#1E293B] hover:border-[#FFE01B]/40 text-white font-bold text-xs rounded uppercase tracking-wider transition cursor-pointer"
             >
               Lihat Semua Reservasi
             </button>
@@ -390,7 +492,7 @@ export const RacerBookings: React.FC = () => {
               {bookingHistory.map((book) => (
                 <div
                   key={book.id}
-                  className="bg-[#1c1b1b] border border-[#1E293B] hover:border-[#FFE01B]/40 rounded p-4 space-y-3 transition"
+                  className="bg-[#1c1b1b] border border-[#1E293B] hover:border-[#FFE01B]/40 rounded p-4 space-y-3 transition relative overflow-hidden"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
@@ -399,17 +501,29 @@ export const RacerBookings: React.FC = () => {
                       </span>
                       <h4 className="text-sm font-bold text-white mt-1.5">{book.service?.name || 'Service Package'}</h4>
                     </div>
-                    <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
-                        book.status === 'CONFIRMED' || book.status === 'COMPLETED'
-                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                          : book.status === 'IN_PROGRESS'
-                          ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30'
-                          : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                      }`}
-                    >
-                      {book.status}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
+                          book.status === 'CONFIRMED' || book.status === 'COMPLETED'
+                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                            : book.status === 'IN_PROGRESS'
+                            ? 'bg-sky-500/20 text-sky-400 border border-sky-500/30'
+                            : 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                        }`}
+                      >
+                        {book.status}
+                      </span>
+                      <button
+                        onClick={() => {
+                          setErrorMessage(null);
+                          setDeletingBooking(book);
+                        }}
+                        title="Batalkan / Hapus Booking"
+                        className="p-1 text-slate-500 hover:text-rose-400 rounded hover:bg-rose-500/10 transition cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
 
                   <div className="p-2.5 bg-[#131313] rounded border border-[#1E293B] space-y-1 text-xs">
@@ -420,7 +534,7 @@ export const RacerBookings: React.FC = () => {
                     <div className="flex justify-between text-[11px]">
                       <span className="text-[#cec6ab]">Jadwal:</span>
                       <span className="text-[#FFE01B] font-bold">
-                        {book.bookingDate ? book.bookingDate.split('T')[0] : '-'}, {book.bookingTime}
+                        {book.bookingDate ? book.bookingDate.split('T')[0] : '-'}, {book.bookingTime} WIB
                       </span>
                     </div>
                     {book.bike && (
@@ -507,11 +621,11 @@ export const RacerBookings: React.FC = () => {
             )}
           </div>
 
-          {/* Right: Slot & Branch Setup */}
+          {/* Right: Bookings Slot & Branch Setup */}
           <div className="lg:col-span-5 bg-[#1c1b1b] border border-[#1E293B] rounded p-5 space-y-4 h-fit shadow-xs font-sans">
             <h3 className="text-xs font-bold text-[#e5e2e1] uppercase border-b border-[#1E293B] pb-3 flex items-center gap-2 font-display">
               <Clock className="w-4 h-4 text-[#FFE01B]" />
-              2. Slot & Branch Setup
+              2. Bookings Slot & Branch Setup
             </h3>
 
             {/* Select Bike */}
@@ -535,7 +649,7 @@ export const RacerBookings: React.FC = () => {
               </div>
             )}
 
-            {/* Select Workshop Branch with Bekasi */}
+            {/* Select Workshop Branch (Bekasi Branch Focused) */}
             <div className="font-mono text-xs">
               <label className="block text-[#cec6ab] mb-1.5 text-xs uppercase font-semibold">Select Workshop Branch</label>
               <select
@@ -558,46 +672,128 @@ export const RacerBookings: React.FC = () => {
               </select>
             </div>
 
-            {/* Date and Time Slot */}
-            <div className="grid grid-cols-2 gap-3 font-mono text-xs">
-              <div>
-                <label className="block text-[#cec6ab] mb-1.5 text-xs uppercase font-semibold">Date</label>
-                <input
-                  type="date"
-                  required
-                  value={selectedDate}
-                  min={new Date().toISOString().split('T')[0]}
-                  onChange={(e) => setSelectedDate(e.target.value)}
-                  className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-xs text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none"
-                />
+            {/* Date Selection */}
+            <div className="font-mono text-xs">
+              <label className="block text-[#cec6ab] mb-1.5 text-xs uppercase font-semibold">Date (Tanggal Servis)</label>
+              <input
+                type="date"
+                required
+                value={selectedDate}
+                min={new Date().toISOString().split('T')[0]}
+                onChange={(e) => setSelectedDate(e.target.value)}
+                className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-xs text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none"
+              />
+            </div>
+
+            {/* Time Slot Sections (Pagi 09:00-11:30 & Siang 12:00-18:30) */}
+            <div className="font-mono text-xs space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="block text-[#cec6ab] text-xs uppercase font-semibold flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-[#FFE01B]" />
+                  <span>Pilih Time Slot</span>
+                </label>
+                {isLoadingSlots && (
+                  <span className="text-[10px] text-[#FFE01B] flex items-center gap-1">
+                    <Loader2 className="w-2.5 h-2.5 animate-spin" />
+                    <span>Cek Slot...</span>
+                  </span>
+                )}
               </div>
-              <div>
-                <label className="block text-[#cec6ab] mb-1.5 text-xs uppercase font-semibold">Time Slot</label>
-                <select
-                  value={selectedTime}
-                  onChange={(e) => setSelectedTime(e.target.value)}
-                  className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-xs text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none"
-                >
-                  <option value="09:00 AM">09:00 AM</option>
-                  <option value="10:00 AM">10:00 AM</option>
-                  <option value="11:30 AM">11:30 AM</option>
-                  <option value="01:30 PM">01:30 PM</option>
-                  <option value="03:30 PM">03:30 PM</option>
-                  <option value="04:30 PM">04:30 PM</option>
-                </select>
+
+              {/* Section 1: Pagi (09.00 - 11.30) */}
+              <div className="space-y-1.5 bg-[#131313] p-2.5 rounded border border-[#1E293B]">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#FFE01B] uppercase pb-1 border-b border-[#1E293B]">
+                  <Sunrise className="w-3.5 h-3.5" />
+                  <span>Section Pagi (09:00 - 11:30 WIB)</span>
+                </div>
+                <div className="grid grid-cols-3 gap-1.5 pt-1">
+                  {MORNING_SLOTS.map((slot) => {
+                    const isOccupied = occupiedSlots.includes(slot);
+                    const isSelected = selectedTime === slot;
+
+                    return (
+                      <button
+                        key={slot}
+                        type="button"
+                        disabled={isOccupied}
+                        onClick={() => setSelectedTime(slot)}
+                        className={`py-1.5 px-1 rounded text-center text-[11px] font-bold transition flex items-center justify-center gap-1 ${
+                          isOccupied
+                            ? 'bg-rose-950/20 text-rose-500/40 border border-rose-900/30 cursor-not-allowed line-through'
+                            : isSelected
+                            ? 'bg-[#FFE01B] text-black shadow-xs'
+                            : 'bg-[#1c1b1b] text-[#e5e2e1] hover:text-[#FFE01B] hover:border-[#FFE01B]/50 border border-[#1E293B] cursor-pointer'
+                        }`}
+                        title={isOccupied ? `Slot ${slot} sudah terisi oleh pelanggan lain` : `Pilih Slot ${slot}`}
+                      >
+                        {isOccupied ? <Ban className="w-2.5 h-2.5 shrink-0" /> : null}
+                        <span>{slot}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Section 2: Siang (12.00 - 18.30) */}
+              <div className="space-y-1.5 bg-[#131313] p-2.5 rounded border border-[#1E293B]">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#CCFF00] uppercase pb-1 border-b border-[#1E293B]">
+                  <Sun className="w-3.5 h-3.5" />
+                  <span>Section Siang (12:00 - 18:30 WIB)</span>
+                </div>
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-1.5 pt-1">
+                  {AFTERNOON_SLOTS.map((slot) => {
+                    const isOccupied = occupiedSlots.includes(slot);
+                    const isSelected = selectedTime === slot;
+
+                    return (
+                      <button
+                        key={slot}
+                        type="button"
+                        disabled={isOccupied}
+                        onClick={() => setSelectedTime(slot)}
+                        className={`py-1.5 px-1 rounded text-center text-[11px] font-bold transition flex items-center justify-center gap-1 ${
+                          isOccupied
+                            ? 'bg-rose-950/20 text-rose-500/40 border border-rose-900/30 cursor-not-allowed line-through'
+                            : isSelected
+                            ? 'bg-[#FFE01B] text-black shadow-xs'
+                            : 'bg-[#1c1b1b] text-[#e5e2e1] hover:text-[#FFE01B] hover:border-[#FFE01B]/50 border border-[#1E293B] cursor-pointer'
+                        }`}
+                        title={isOccupied ? `Slot ${slot} sudah terisi oleh pelanggan lain` : `Pilih Slot ${slot}`}
+                      >
+                        {isOccupied ? <Ban className="w-2.5 h-2.5 shrink-0" /> : null}
+                        <span>{slot}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-4 text-[10px] text-[#cec6ab] pt-1">
+                <div className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-[#FFE01B]"></span>
+                  <span>Terpilih</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-[#1c1b1b] border border-[#1E293B]"></span>
+                  <span>Tersedia</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-rose-500/40"></span>
+                  <span>Terisi (Booked)</span>
+                </div>
               </div>
             </div>
 
-            {/* Special Instructions (updated label) */}
+            {/* Special Instructions */}
             <div className="font-mono text-xs">
               <label className="block text-[#cec6ab] mb-1.5 text-xs uppercase font-semibold">
                 Special Instructions
               </label>
               <textarea
-                rows={3}
+                rows={2}
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                placeholder="Contoh: Mohon cek roller CVT, ganti oli mesin Motul 300V, dan cek AFR mapping."
+                placeholder="Contoh: Mohon cek roller CVT, ganti oli mesin Motul 300V, dan kalibrasi mapping."
                 className="w-full bg-[#131313] border border-[#1E293B] rounded p-2 text-xs text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none font-sans placeholder-slate-500"
               />
             </div>
@@ -613,8 +809,12 @@ export const RacerBookings: React.FC = () => {
 
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className="w-full py-2.5 bg-[#FFE01B] hover:bg-[#ffe241] text-black font-bold text-xs rounded uppercase tracking-wider shadow-md shadow-[#FFE01B]/20 transition cursor-pointer flex items-center justify-center gap-2"
+                disabled={isSubmitting || occupiedSlots.includes(selectedTime)}
+                className={`w-full py-2.5 font-bold text-xs rounded uppercase tracking-wider transition cursor-pointer flex items-center justify-center gap-2 ${
+                  occupiedSlots.includes(selectedTime)
+                    ? 'bg-zinc-700 text-zinc-400 cursor-not-allowed'
+                    : 'bg-[#FFE01B] hover:bg-[#ffe241] text-black shadow-md shadow-[#FFE01B]/20'
+                }`}
               >
                 {isSubmitting ? (
                   <>
@@ -631,6 +831,48 @@ export const RacerBookings: React.FC = () => {
             </div>
           </div>
         </form>
+      )}
+
+      {/* Modal: Konfirmasi Hapus/Batalkan Reservasi */}
+      {deletingBooking && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+          <div className="bg-[#1c1b1b] border border-rose-500/40 rounded w-full max-w-md p-6 space-y-4 shadow-2xl font-sans text-xs">
+            <div className="flex items-center justify-between border-b border-[#1E293B] pb-3">
+              <h3 className="font-bold text-rose-400 font-display text-base flex items-center gap-2 uppercase">
+                <Trash2 className="w-5 h-5" />
+                Batalkan / Hapus Reservasi
+              </h3>
+              <button onClick={() => setDeletingBooking(null)} className="text-[#cec6ab] hover:text-white cursor-pointer">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <p className="text-slate-300 font-mono leading-relaxed">
+              Apakah Anda yakin ingin membatalkan dan menghapus jadwal booking{' '}
+              <strong className="text-[#FFE01B] font-bold">{deletingBooking.bookingCode}</strong> ({deletingBooking.service?.name || 'Service Package'}) pada tanggal{' '}
+              <strong className="text-white">{deletingBooking.bookingDate.split('T')[0]} ({deletingBooking.bookingTime} WIB)</strong>?
+            </p>
+
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#1E293B]">
+              <button
+                type="button"
+                onClick={() => setDeletingBooking(null)}
+                className="px-4 py-2 text-[#cec6ab] hover:text-white cursor-pointer uppercase font-mono"
+              >
+                Kembali
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmDelete}
+                disabled={isDeleting}
+                className="px-5 py-2 bg-rose-500 hover:bg-rose-600 text-white font-mono font-bold rounded uppercase tracking-wider cursor-pointer shadow-md shadow-rose-500/20 flex items-center gap-2"
+              >
+                {isDeleting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                <span>{isDeleting ? 'Menghapus...' : 'Ya, Hapus Reservasi'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
