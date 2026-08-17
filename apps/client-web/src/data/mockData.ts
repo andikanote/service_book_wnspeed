@@ -3,7 +3,9 @@ import { Booking, InventoryItem, RacerProfile, ServiceHistoryItem, ServicePackag
 export const INITIAL_RACER: RacerProfile = {
   id: 'racer-01',
   name: 'Aldi Taher Prasetyo',
-  racerId: 'AX-9924',
+  racerId: 'WNS-849201',
+  racerUuid: 'WNS-849201',
+  joinedDate: 'Agustus 2026',
   tier: 'ELITE MEMBER',
   points: 12450,
   phone: '+62 812-8901-7721',

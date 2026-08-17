@@ -82,6 +82,8 @@ export interface RacerProfile {
   id: string;
   name: string;
   racerId: string;
+  racerUuid?: string;
+  joinedDate?: string;
   tier: 'ROOKIE' | 'PRO RACER' | 'ELITE MEMBER';
   points: number;
   phone: string;

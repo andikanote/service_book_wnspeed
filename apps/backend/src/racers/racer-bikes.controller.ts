@@ -24,6 +24,12 @@ export class RacerBikesController {
     return this.racersService.getAllBikes(userId);
   }
 
+  @Get('primary')
+  async getPrimary(@Req() req: any) {
+    const userId = req.user?.id;
+    return this.racersService.getPrimaryBike(userId);
+  }
+
   @Get(':id')
   async getOne(@Param('id') id: string) {
     return this.racersService.getBikeById(id);

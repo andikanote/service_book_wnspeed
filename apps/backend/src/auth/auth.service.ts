@@ -60,6 +60,8 @@ export class AuthService {
       token,
       user: {
         id: user.id,
+        racerUuid: user.racerUuid,
+        joinedAt: user.joinedAt,
         email: user.email,
         name: user.name,
         phone: user.phone,
@@ -89,6 +91,8 @@ export class AuthService {
 
     return {
       id: user.id,
+      racerUuid: user.racerUuid,
+      joinedAt: user.joinedAt,
       email: user.email,
       name: user.name,
       phone: user.phone,
