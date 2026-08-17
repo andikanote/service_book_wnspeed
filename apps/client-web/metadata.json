@@ -1,5 +1,5 @@
 {
-  "name": "Art N Speed - Mechanical Lab",
+  "name": "We n Speed - Mechanical Lab",
   "description": "Bengkel spesialis motor matic dengan diagnosa presisi berbasis data, booking service digital, dan standar mechanical lab.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

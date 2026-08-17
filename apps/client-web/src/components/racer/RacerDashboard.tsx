@@ -1,20 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Star, 
   Zap, 
   Truck, 
   Flame, 
   RotateCw, 
-  ArrowRight 
+  ArrowRight,
+  Loader2 
 } from 'lucide-react';
-import { 
-  INITIAL_RACER, 
-  INITIAL_UPCOMING_SERVICE, 
-  INITIAL_SERVICE_LOGS 
-} from '../../data/mockData';
+import { apiClient } from '../../services/api';
 import { EmergencySupportModal } from './EmergencySupportModal';
 import { PriorityQueueModal } from './PriorityQueueModal';
 import { ManageServiceModal } from './ManageServiceModal';
+
+const DEFAULT_RACER_STATE = {
+  name: 'Aldi Taher Prasetyo',
+  email: 'aldi.racer99@wenspeed.my.id',
+  racerId: 'WNS-849201',
+  tier: 'ELITE MEMBER',
+  loyaltyVaultPoints: 12450,
+};
 
 interface RacerDashboardProps {
   onNavigateTab: (tab: any) => void;
@@ -25,20 +30,65 @@ export const RacerDashboard: React.FC<RacerDashboardProps> = ({ onNavigateTab })
   const [isPriorityOpen, setIsPriorityOpen] = useState(false);
   const [manageServiceModal, setManageServiceModal] = useState<'manage' | 'details' | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [racerData, setRacerData] = useState(INITIAL_RACER);
+  const [racerData, setRacerData] = useState<any>(DEFAULT_RACER_STATE);
+  const [primaryBike, setPrimaryBike] = useState<any>(null);
+  const [upcomingBooking, setUpcomingBooking] = useState<any>(null);
+  const [serviceLogs, setServiceLogs] = useState<any[]>([]);
 
-  const handleRefreshDiagnostics = () => {
+  const fetchRacerData = async () => {
+    try {
+      const [profileRes, primaryBikeRes, bookingsRes] = await Promise.allSettled([
+        apiClient.get('/racer/profile'),
+        apiClient.get('/racer/bikes/primary'),
+        apiClient.get('/bookings'),
+      ]);
+
+      if (profileRes.status === 'fulfilled' && profileRes.value) {
+        const p = profileRes.value;
+        setRacerData((prev: any) => ({
+          ...prev,
+          name: p.name || prev.name,
+          email: p.email || prev.email,
+          racerId: p.racerUuid || p.racerIdCode || prev.racerId,
+          tier: p.tier?.replace('_', ' ') || prev.tier,
+          loyaltyVaultPoints: p.points || prev.loyaltyVaultPoints,
+        }));
+      }
+
+      if (primaryBikeRes.status === 'fulfilled' && primaryBikeRes.value) {
+        setPrimaryBike(primaryBikeRes.value);
+      }
+
+      if (bookingsRes.status === 'fulfilled' && Array.isArray(bookingsRes.value)) {
+        const b = bookingsRes.value;
+        const upcoming = b.find((item: any) => item.status === 'IN_SERVICE' || item.status === 'CONFIRMED' || item.status === 'PENDING');
+        if (upcoming) {
+          setUpcomingBooking(upcoming);
+        }
+        const completed = b.filter((item: any) => item.status === 'COMPLETED').map((item: any) => ({
+          id: item.id,
+          serviceName: item.service?.name || item.servicePackage || 'Precision Maintenance',
+          date: item.bookingDate ? new Date(item.bookingDate).toLocaleDateString('id-ID', { month: 'short', day: 'numeric', year: 'numeric' }) : '10 Agu 2026',
+          status: 'COMPLETED',
+          cost: Number(item.totalCost || item.estimatedCost || 385000),
+        }));
+        if (completed.length > 0) {
+          setServiceLogs(completed);
+        }
+      }
+    } catch (e) {
+      console.warn('Could not fetch live racer dashboard:', e);
+    }
+  };
+
+  useEffect(() => {
+    fetchRacerData();
+  }, []);
+
+  const handleRefreshDiagnostics = async () => {
     setIsRefreshing(true);
-    setTimeout(() => {
-      setIsRefreshing(false);
-      setRacerData((prev) => ({
-        ...prev,
-        diagnostics: {
-          ...prev.diagnostics,
-          lastUpdated: 'JUST NOW',
-        },
-      }));
-    }, 600);
+    await fetchRacerData();
+    setIsRefreshing(false);
   };
 
   return (
@@ -76,7 +126,7 @@ export const RacerDashboard: React.FC<RacerDashboardProps> = ({ onNavigateTab })
 
           <div className="mt-1.5 flex items-baseline gap-2">
             <span className="text-3xl font-bold text-white font-mono tracking-tight">
-              12.450
+              {Number(racerData.loyaltyVaultPoints || 12450).toLocaleString('id-ID')}
             </span>
             <span className="text-xs font-bold font-mono text-[#FFE01B] uppercase">
               POIN
@@ -85,7 +135,7 @@ export const RacerDashboard: React.FC<RacerDashboardProps> = ({ onNavigateTab })
 
           <div className="mt-2">
             <span className="inline-block bg-[#FFE01B]/10 text-[#FFE01B] border border-[#FFE01B]/30 font-mono font-bold text-[10px] px-2.5 py-0.5 rounded uppercase tracking-wider">
-              {racerData.tier}
+              {racerData.tier || 'ELITE MEMBER'}
             </span>
           </div>
         </div>
@@ -105,7 +155,7 @@ export const RacerDashboard: React.FC<RacerDashboardProps> = ({ onNavigateTab })
             </div>
 
             <h2 className="text-xl sm:text-2xl font-bold text-[#e5e2e1] font-display uppercase">
-              {INITIAL_UPCOMING_SERVICE.serviceName}
+              {upcomingBooking?.service?.name || upcomingBooking?.servicePackage || '21-Point Precision Lab Service'}
             </h2>
           </div>
 
@@ -119,8 +169,8 @@ export const RacerDashboard: React.FC<RacerDashboardProps> = ({ onNavigateTab })
                 className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex items-end p-2.5">
-                <span className="text-[10px] font-mono text-[#FFE01B] bg-black/80 px-2 py-0.5 rounded border border-[#1E293B]">
-                  Yamaha Aerox 155 VVA
+                <span className="text-[10px] font-mono text-[#FFE01B] bg-black/80 px-2 py-0.5 rounded border border-[#1E293B] truncate max-w-full">
+                  {primaryBike ? `${primaryBike.brand} ${primaryBike.model}` : 'Yamaha Aerox 155 VVA'}
                 </span>
               </div>
             </div>
@@ -132,7 +182,7 @@ export const RacerDashboard: React.FC<RacerDashboardProps> = ({ onNavigateTab })
                   LOCATION
                 </span>
                 <p className="text-sm font-bold text-[#e5e2e1] mt-0.5">
-                  {INITIAL_UPCOMING_SERVICE.location}
+                  {upcomingBooking?.branch || 'WE N SPEED - Bekasi HQ (Bay 01)'}
                 </p>
               </div>
 
@@ -141,7 +191,7 @@ export const RacerDashboard: React.FC<RacerDashboardProps> = ({ onNavigateTab })
                   SCHEDULE
                 </span>
                 <p className="text-sm font-bold text-[#e5e2e1] mt-0.5">
-                  {INITIAL_UPCOMING_SERVICE.schedule}
+                  {upcomingBooking ? `${new Date(upcomingBooking.bookingDate).toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' })} • ${upcomingBooking.bookingTime}` : 'Senin, 17 Agu 2026 • 10:00 WIB'}
                 </p>
               </div>
 
@@ -223,7 +273,7 @@ export const RacerDashboard: React.FC<RacerDashboardProps> = ({ onNavigateTab })
                 SERVICE LOG & RIWAYAT PERAWATAN
               </span>
               <span className="px-2 py-0.5 rounded bg-[#FFE01B]/10 text-[#FFE01B] font-mono text-[10px] font-bold">
-                {INITIAL_SERVICE_LOGS.length} RECORDS
+                {serviceLogs.length} RECORDS
               </span>
             </div>
             <button
@@ -236,7 +286,7 @@ export const RacerDashboard: React.FC<RacerDashboardProps> = ({ onNavigateTab })
 
           {/* Service Log Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
-            {INITIAL_SERVICE_LOGS.slice(0, 3).map((log) => (
+            {serviceLogs.slice(0, 3).map((log: any) => (
               <div key={log.id} className="p-3.5 bg-[#131313] rounded border border-[#1E293B] space-y-2">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -255,7 +305,7 @@ export const RacerDashboard: React.FC<RacerDashboardProps> = ({ onNavigateTab })
                     {log.status}
                   </span>
                   <span className="text-[11px] font-mono text-[#CCFF00] font-bold">
-                    Rp {log.cost.toLocaleString('id-ID')}
+                    Rp {Number(log.cost || 0).toLocaleString('id-ID')}
                   </span>
                 </div>
               </div>

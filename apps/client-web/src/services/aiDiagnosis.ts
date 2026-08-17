@@ -31,7 +31,7 @@ export async function runGeminiDiagnosis(
     try {
       const ai = new GoogleGenAI({ apiKey });
       const prompt = `
-Anda adalah Chief Mechanical Engineer di ART N SPEED Mechanical Lab, bengkel spesialis motor matic berstandar lab data dan presisi tinggi di Indonesia.
+Anda adalah Chief Mechanical Engineer di WE N SPEED Mechanical Lab, bengkel spesialis motor matic berstandar lab data dan presisi tinggi di Indonesia.
 Analisis data kendaraan berikut:
 - Merk: ${brand}
 - Model: ${model || 'Motor Matic'}

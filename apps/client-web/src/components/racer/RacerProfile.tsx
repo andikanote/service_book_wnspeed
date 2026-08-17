@@ -16,7 +16,6 @@ import {
   ShieldCheck
 } from 'lucide-react';
 import { apiClient } from '../../services/api';
-import { INITIAL_RACER, INITIAL_SERVICE_LOGS } from '../../data/mockData';
 import confetti from 'canvas-confetti';
 
 interface ProfileData {
@@ -47,26 +46,28 @@ interface ProfileData {
 
 export const RacerProfile: React.FC = () => {
   const [profile, setProfile] = useState<ProfileData>({
-    name: INITIAL_RACER.name,
-    phone: INITIAL_RACER.phone,
-    email: INITIAL_RACER.email,
-    racerId: INITIAL_RACER.racerUuid || INITIAL_RACER.racerId || 'WNS-849201',
-    racerUuid: INITIAL_RACER.racerUuid || 'WNS-849201',
-    tier: INITIAL_RACER.tier,
-    points: INITIAL_RACER.points,
+    name: 'Aldi Taher Prasetyo',
+    phone: '+62 812-8901-7721',
+    email: 'aldi.racer99@wenspeed.my.id',
+    racerId: 'WNS-849201',
+    racerUuid: 'WNS-849201',
+    tier: 'ELITE MEMBER',
+    points: 12450,
     joinedDate: 'Agustus 2026',
     primaryBike: {
       id: 'bike-01',
       brand: 'Yamaha',
-      model: INITIAL_RACER.primaryBike.model,
-      plate: INITIAL_RACER.primaryBike.plate,
-      year: INITIAL_RACER.primaryBike.year,
+      model: 'All New Aerox 155 Connected Cyber City',
+      plate: 'B 4992 ELA',
+      year: 2024,
       engineCc: 155,
-      engineSpec: INITIAL_RACER.primaryBike.engineSpec,
-      ecuMapping: INITIAL_RACER.primaryBike.ecuMapping,
+      engineSpec: 'Standar Factory Tuned (155cc 4-Valve VVA)',
+      ecuMapping: 'Standar OEM Mapping (Peak 15.4 HP @ 8000 RPM)',
     },
     bikes: [],
   });
+
+  const [serviceLogs, setServiceLogs] = useState<any[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -114,7 +115,7 @@ export const RacerProfile: React.FC = () => {
           id: data.id,
           name: data.name || 'Aldi Taher Prasetyo',
           phone: data.phone || '+62 812-8901-7721',
-          email: data.email || 'aldi.racer99@artnspeed.id',
+          email: data.email || 'aldi.racer99@wenspeed.my.id',
           racerId: racerUuid,
           racerUuid: racerUuid,
           tier: data.tier || 'ELITE MEMBER',
@@ -125,8 +126,31 @@ export const RacerProfile: React.FC = () => {
           bikes: data.bikes || [],
         });
       }
+      // Also fetch bookings for the logbook
+      try {
+        const bookingsRes = await apiClient.get('/bookings');
+        if (Array.isArray(bookingsRes)) {
+          const logs = bookingsRes
+            .filter((b: any) => b.status === 'COMPLETED' || b.status === 'IN_SERVICE')
+            .map((b: any) => ({
+              id: b.id,
+              serviceName: b.service?.name || b.servicePackage || 'Precision Service',
+              status: b.status,
+              date: b.bookingDate ? new Date(b.bookingDate).toLocaleDateString('id-ID', { month: 'short', day: 'numeric' }) : '10 Agu',
+              branch: b.branch || 'Bekasi HQ',
+              mechanic: b.assignedMechanic || 'Chief Tuner',
+              notes: b.notes || 'Full diagnostic and service completed according to manual standards.',
+              cost: Number(b.totalCost || b.estimatedCost || 385000),
+            }));
+          if (logs.length > 0) {
+            setServiceLogs(logs);
+          }
+        }
+      } catch {
+        // Continue
+      }
     } catch (err: any) {
-      console.warn('Could not fetch live profile from API, using fallback data:', err.message);
+      console.warn('Could not fetch live profile from API:', err.message);
     } finally {
       setIsLoading(false);
     }
@@ -205,12 +229,12 @@ export const RacerProfile: React.FC = () => {
   };
 
   const handleDownloadInvoice = (logName: string) => {
-    const invoiceText = `ART N SPEED PRECISION WORKSHOP\nOfficial Digital Service Receipt\nCustomer: ${profile.name} (${profile.racerId})\nVehicle: ${profile.primaryBike?.model || 'Yamaha Racing Machine'} (${profile.primaryBike?.plate || profile.primaryBike?.plateNumber || 'B 4101 ANS'})\nService: ${logName}\nStatus: PAID & COMPLETED\nWorkshop HQ: Bekasi Branch (Precision Tuning Center)`;
+    const invoiceText = `WE N SPEED PRECISION WORKSHOP\nOfficial Digital Service Receipt\nCustomer: ${profile.name} (${profile.racerId})\nVehicle: ${profile.primaryBike?.model || 'Yamaha Racing Machine'} (${profile.primaryBike?.plate || profile.primaryBike?.plateNumber || 'B 4101 ANS'})\nService: ${logName}\nStatus: PAID & COMPLETED\nWorkshop HQ: Bekasi Branch (Precision Tuning Center)`;
     const blob = new Blob([invoiceText], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `Invoice_ANS_${logName.replace(/\s+/g, '_')}.txt`;
+    link.download = `Invoice_WNS_${logName.replace(/\s+/g, '_')}.txt`;
     link.click();
     URL.revokeObjectURL(url);
   };
@@ -374,39 +398,43 @@ export const RacerProfile: React.FC = () => {
             <FileText className="w-4 h-4 text-[#FFE01B]" />
             Digital Workshop Maintenance Logbook
           </span>
-          <span className="text-xs text-[#cec6ab]">{INITIAL_SERVICE_LOGS.length} Certified Records</span>
+          <span className="text-xs text-[#cec6ab]">{serviceLogs.length} Certified Records</span>
         </div>
 
         <div className="divide-y divide-[#1E293B]">
-          {INITIAL_SERVICE_LOGS.map((log) => (
-            <div key={log.id} className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <div className="space-y-0.5">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-white">{log.serviceName}</span>
-                  <span className="text-[10px] bg-[#22C55E]/10 border border-[#22C55E]/30 text-[#22C55E] px-2 py-0.5 rounded font-bold uppercase">
-                    {log.status}
-                  </span>
+          {serviceLogs.length === 0 ? (
+            <p className="text-xs font-mono text-[#cec6ab] py-4 text-center">Belum ada riwayat service yang selesai.</p>
+          ) : (
+            serviceLogs.map((log) => (
+              <div key={log.id} className="py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-white">{log.serviceName}</span>
+                    <span className="text-[10px] bg-[#22C55E]/10 border border-[#22C55E]/30 text-[#22C55E] px-2 py-0.5 rounded font-bold uppercase">
+                      {log.status}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-[#cec6ab]">
+                    {log.date} • {log.branch} • Tuner: {log.mechanic}
+                  </p>
+                  <p className="text-[11px] text-[#cec6ab] italic">{log.notes}</p>
                 </div>
-                <p className="text-[11px] text-[#cec6ab]">
-                  {log.date}, 2026 • {log.branch} • Tuner: {log.mechanic}
-                </p>
-                <p className="text-[11px] text-[#cec6ab] italic">{log.notes}</p>
-              </div>
 
-              <div className="flex items-center gap-3 self-end sm:self-center">
-                <span className="text-xs font-bold text-[#FFE01B]">
-                  Rp {log.cost.toLocaleString('id-ID')}
-                </span>
-                <button
-                  onClick={() => handleDownloadInvoice(log.serviceName)}
-                  className="p-1.5 rounded bg-[#131313] hover:bg-[#FFE01B] hover:text-black text-[#FFE01B] border border-[#1E293B] transition cursor-pointer"
-                  title="Download Digital Invoice"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                </button>
+                <div className="flex items-center gap-3 self-end sm:self-center">
+                  <span className="text-xs font-bold text-[#FFE01B]">
+                    Rp {Number(log.cost || 0).toLocaleString('id-ID')}
+                  </span>
+                  <button
+                    onClick={() => handleDownloadInvoice(log.serviceName)}
+                    className="p-1.5 rounded bg-[#131313] hover:bg-[#FFE01B] hover:text-black text-[#FFE01B] border border-[#1E293B] transition cursor-pointer"
+                    title="Download Digital Invoice"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
 
@@ -472,7 +500,7 @@ export const RacerProfile: React.FC = () => {
                     required
                     value={editForm.email}
                     onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                    placeholder="aldi.racer99@artnspeed.id"
+                    placeholder="aldi.racer99@wenspeed.my.id"
                     className="w-full bg-[#131313] border border-[#1E293B] rounded p-2.5 text-xs text-[#e5e2e1] focus:border-[#FFE01B] focus:outline-none"
                   />
                 </div>

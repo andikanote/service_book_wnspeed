@@ -69,7 +69,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
         <div className="absolute inset-0 z-0">
           <img
             src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=1600&q=80"
-            alt="Art N Speed Mechanical Workshop"
+            alt="We n Speed Mechanical Workshop"
             className="w-full h-full object-cover object-center brightness-[0.25] contrast-125"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#131313] via-[#131313]/85 to-transparent"></div>
@@ -180,7 +180,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             </div>
 
             <p className="text-xs sm:text-sm text-[#cec6ab] leading-relaxed font-sans">
-              Di Art N Speed, setiap pengerjaan dilakukan dengan standar yang jelas, terukur, dan bisa dipertanggungjawabkan. Customer bisa melihat langsung semua proses pengerjaan, bertanya langsung ke tim kami, serta mendapatkan penjelasan dengan bahasa yang mudah dipahami.
+              Di We n Speed, setiap pengerjaan dilakukan dengan standar yang jelas, terukur, dan bisa dipertanggungjawabkan. Customer bisa melihat langsung semua proses pengerjaan, bertanya langsung ke tim kami, serta mendapatkan penjelasan dengan bahasa yang mudah dipahami.
             </p>
 
             {/* 3 Pillars */}

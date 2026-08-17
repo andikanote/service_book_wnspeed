@@ -23,14 +23,14 @@ export const RacerMembership: React.FC = () => {
     },
     {
       id: 3,
-      title: 'ART N SPEED Titanium Bolt Dress-up Set',
+      title: 'WE N SPEED Titanium Bolt Dress-up Set',
       pointsCost: 5000,
       category: 'Merch & Hardware',
       desc: 'Grade 5 GR5 Titanium crankcase bolt kit (Gold or Burnt Titanium finish).',
     },
     {
       id: 4,
-      title: 'Official ART N SPEED Team Hoodie (Limited)',
+      title: 'Official WE N SPEED Team Hoodie (Limited)',
       pointsCost: 6500,
       category: 'Apparel',
       desc: 'Heavyweight cotton racing hoodie with embroidered Japanese cyber patch.',
@@ -52,7 +52,7 @@ export const RacerMembership: React.FC = () => {
         <div>
           <div className="flex items-center gap-1.5 text-xs text-[#FFE01B] font-bold uppercase tracking-wider mb-1">
             <Star className="w-4 h-4 fill-[#FFE01B] text-[#FFE01B]" />
-            <span>ART N SPEED RACING CLUB</span>
+            <span>WE N SPEED RACING CLUB</span>
           </div>
           <h2 className="text-2xl font-bold text-white tracking-tight font-display uppercase">
             Elite Membership & Rewards Store

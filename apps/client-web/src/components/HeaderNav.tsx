@@ -53,7 +53,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-bold tracking-tight text-[#e5e2e1] text-base md:text-lg font-display uppercase group-hover:text-[#FFE01B] transition-colors">
-                  ART N SPEED
+                  WE N SPEED
                 </span>
                 <span className="text-[10px] bg-[#FFE01B]/10 text-[#FFE01B] border border-[#FFE01B]/30 px-2 py-0.5 rounded font-mono font-semibold">
                   LAB
@@ -185,7 +185,7 @@ export const HeaderNav: React.FC<HeaderNavProps> = ({
           {onOpenPortal && (
             <button
               onClick={onOpenPortal}
-              title="Masuk ke Portal ART N SPEED (Admin CMS & Racer Portal)"
+              title="Masuk ke Portal WE N SPEED (Admin CMS & Racer Portal)"
               className="flex items-center gap-1.5 bg-[#1c1b1b] hover:bg-[#2a2a2a] border border-[#1E293B] hover:border-[#FFE01B]/40 text-[#FFE01B] font-bold text-xs px-3.5 py-2 rounded transition-all cursor-pointer font-mono uppercase tracking-wider"
             >
               <LogIn className="w-3.5 h-3.5 text-[#FFE01B]" />

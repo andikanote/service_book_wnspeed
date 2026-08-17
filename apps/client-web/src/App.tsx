@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-// Types & Mock Data
 import { AppRole, AdminTab, RacerTab, Booking, InventoryItem } from './types';
-import { INITIAL_BOOKINGS, INITIAL_INVENTORY } from './data/mockData';
 import { ServicePackage, SERVICE_PACKAGES } from './data/workshopData';
 import { runGeminiDiagnosis, DiagnosisResult } from './services/aiDiagnosis';
 
@@ -47,28 +45,99 @@ import { EmergencySupportModal } from './components/racer/EmergencySupportModal'
 // Icons
 import { HelpCircle, PhoneCall, X } from 'lucide-react';
 
+function getInitialClientSection(): 'public' | 'login' | 'admin' | 'racer' {
+  if (typeof window === 'undefined') return 'public';
+  let path = window.location.pathname.toLowerCase().trim();
+  const hash = window.location.hash.toLowerCase().trim();
+  if (hash.startsWith('#/')) path = hash.replace(/^#/, '');
+
+  if (path.startsWith('/admin')) return 'admin';
+  if (path.startsWith('/racer')) return 'racer';
+  if (path.startsWith('/login') || path.startsWith('/masuk')) return 'login';
+  return 'public';
+}
+
+function getInitialPublicView(): 'dashboard' | 'landing' | 'booking' | 'telemetry' | 'membership' {
+  if (typeof window === 'undefined') return 'landing';
+  let path = window.location.pathname.toLowerCase().trim();
+  const hash = window.location.hash.toLowerCase().trim();
+  if (hash.startsWith('#/')) path = hash.replace(/^#/, '');
+
+  if (path.startsWith('/services') || path.startsWith('/dashboard') || path.startsWith('/service')) return 'dashboard';
+  if (path.startsWith('/booking')) return 'booking';
+  if (path.startsWith('/telemetry')) return 'telemetry';
+  if (path.startsWith('/membership')) return 'membership';
+  return 'landing';
+}
+
+function getInitialAdminTab(): AdminTab {
+  if (typeof window === 'undefined') return 'overview';
+  let path = window.location.pathname.toLowerCase().trim();
+  const hash = window.location.hash.toLowerCase().trim();
+  if (hash.startsWith('#/')) path = hash.replace(/^#/, '');
+
+  if (path.includes('/booking')) return 'bookings';
+  if (path.includes('/service')) return 'services';
+  if (path.includes('/inventory') || path.includes('/spare')) return 'inventory';
+  if (path.includes('/user') || path.includes('/crm')) return 'users';
+  if (path.includes('/setting')) return 'settings';
+  return 'overview';
+}
+
+function getInitialRacerTab(): RacerTab {
+  if (typeof window === 'undefined') return 'dashboard';
+  let path = window.location.pathname.toLowerCase().trim();
+  const hash = window.location.hash.toLowerCase().trim();
+  if (hash.startsWith('#/')) path = hash.replace(/^#/, '');
+
+  if (path.includes('/bike') || path.includes('/motor') || path.includes('/garage')) return 'bikes';
+  if (path.includes('/booking')) return 'bookings';
+  if (path.includes('/membership') || path.includes('/reward')) return 'membership';
+  if (path.includes('/profile') || path.includes('/account')) return 'profile';
+  return 'dashboard';
+}
+
+function getInitialClientRole(): AppRole | null {
+  if (typeof window === 'undefined') return null;
+  let path = window.location.pathname.toLowerCase().trim();
+  const hash = window.location.hash.toLowerCase().trim();
+  if (hash.startsWith('#/')) path = hash.replace(/^#/, '');
+
+  if (path.startsWith('/admin')) return 'admin';
+  if (path.startsWith('/racer')) return 'racer';
+
+  try {
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      const parsed = JSON.parse(savedUser);
+      if (parsed.role === 'admin' || parsed.role === 'racer') return parsed.role;
+    }
+  } catch (e) {}
+  return null;
+}
+
 export function App() {
   // Top-level Section: 'public' | 'login' | 'admin' | 'racer'
-  const [activeSection, setActiveSection] = useState<'public' | 'login' | 'admin' | 'racer'>('public');
+  const [activeSection, setActiveSection] = useState<'public' | 'login' | 'admin' | 'racer'>(getInitialClientSection);
 
   // Client Web Sub-view: 'landing' (Default for http://localhost:3000/) | 'dashboard' | 'booking' | 'telemetry' | 'membership'
-  const [publicView, setPublicView] = useState<'dashboard' | 'landing' | 'booking' | 'telemetry' | 'membership'>('landing');
+  const [publicView, setPublicView] = useState<'dashboard' | 'landing' | 'booking' | 'telemetry' | 'membership'>(getInitialPublicView);
   const [sidebarTab, setSidebarTab] = useState<'diagnostics' | 'services' | 'performance' | 'garage' | 'support'>('services');
 
   // Admin & Racer Sub-tabs
-  const [adminTab, setAdminTab] = useState<AdminTab>('overview');
-  const [racerTab, setRacerTab] = useState<RacerTab>('dashboard');
+  const [adminTab, setAdminTab] = useState<AdminTab>(getInitialAdminTab);
+  const [racerTab, setRacerTab] = useState<RacerTab>(getInitialRacerTab);
 
   // Authentication State
-  const [currentUserRole, setCurrentUserRole] = useState<AppRole | null>(null);
+  const [currentUserRole, setCurrentUserRole] = useState<AppRole | null>(getInitialClientRole);
   const [, setCurrentUserEmail] = useState<string>('');
 
   // Selected Service Package for Client Web booking flow
   const [selectedPackage, setSelectedPackage] = useState<ServicePackage | null>(SERVICE_PACKAGES[1]);
 
   // Shared Data States
-  const [bookings, setBookings] = useState<Booking[]>(INITIAL_BOOKINGS);
-  const [inventory, setInventory] = useState<InventoryItem[]>(INITIAL_INVENTORY);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [inventory, setInventory] = useState<InventoryItem[]>([]);
   const [adminSearchQuery, setAdminSearchQuery] = useState('');
 
   // Client Web Modals
@@ -240,18 +309,85 @@ export function App() {
     handlePublicNavigate('booking');
   };
 
-  // Admin state modifiers
-  const handleUpdateBookingStatus = (id: string, newStatus: Booking['status']) => {
+  // Fetch live bookings and inventory from backend API on mount / role change
+  useEffect(() => {
+    const fetchSharedData = async () => {
+      try {
+        const [bookingsRes, invRes] = await Promise.allSettled([
+          apiClient.get('/bookings'),
+          apiClient.get('/inventory'),
+        ]);
+
+        if (bookingsRes.status === 'fulfilled' && Array.isArray(bookingsRes.value) && bookingsRes.value.length > 0) {
+          const mapped = bookingsRes.value.map((b: any) => ({
+            id: b.id,
+            customerName: b.user?.name || b.customerName || 'Customer',
+            customerPhone: b.user?.phone || b.customerPhone || '-',
+            bikeModel: b.bike?.model || b.bikeModel || 'Motor Matic',
+            plateNumber: b.bike?.plateNumber || b.plateNumber || 'B 1234 XXX',
+            servicePackage: b.service?.name || b.servicePackage || 'General Service',
+            bookingDate: b.bookingDate ? new Date(b.bookingDate).toISOString().slice(0, 10) : '2026-08-17',
+            time: b.bookingTime || b.time || '10:00 AM',
+            status: b.status || 'PENDING',
+            bayNumber: b.bayNumber,
+            assignedMechanic: b.assignedMechanic || b.mechanic || 'Chief Tech',
+            estimatedCost: Number(b.totalCost || b.estimatedCost || 0),
+            notes: b.notes,
+            branch: b.branch || 'Bekasi Branch',
+          }));
+          setBookings(mapped);
+        }
+
+        if (invRes.status === 'fulfilled' && Array.isArray(invRes.value) && invRes.value.length > 0) {
+          setInventory(invRes.value.map((i: any) => ({
+            id: i.id,
+            sku: i.sku,
+            name: i.name,
+            category: i.category,
+            stock: i.stock,
+            minThreshold: i.minThreshold,
+            price: Number(i.price),
+            supplier: i.supplier || '',
+            location: i.location || 'Rack A-01',
+            status: i.status === 'Critical_Out' || i.status === 'Critical Out' ? 'Critical Out' : i.status === 'Low_Stock' || i.status === 'Low Stock' ? 'Low Stock' : 'In Stock',
+          })));
+        }
+      } catch (err) {
+        console.warn('Could not load shared data from backend:', err);
+      }
+    };
+
+    fetchSharedData();
+  }, [currentUserRole]);
+
+  // Admin state modifiers with backend API sync
+  const handleUpdateBookingStatus = async (id: string, newStatus: Booking['status']) => {
     setBookings((prev) =>
       prev.map((b) => (b.id === id ? { ...b, status: newStatus } : b))
     );
+    try {
+      await apiClient.patch(`/bookings/${id}/status`, { status: newStatus });
+    } catch (e) {
+      console.warn('Could not sync booking status to backend:', e);
+    }
   };
 
-  const handleAddBooking = (newBooking: Booking) => {
+  const handleAddBooking = async (newBooking: Booking) => {
     setBookings([newBooking, ...bookings]);
+    try {
+      await apiClient.post('/bookings', {
+        branch: newBooking.branch,
+        bookingDate: newBooking.bookingDate,
+        bookingTime: newBooking.time,
+        notes: newBooking.notes,
+        totalCost: newBooking.estimatedCost,
+      });
+    } catch (e) {
+      console.warn('Could not sync new booking to backend:', e);
+    }
   };
 
-  const handleRestockItem = (id: string, amount: number) => {
+  const handleRestockItem = async (id: string, amount: number) => {
     setInventory((prev) =>
       prev.map((item) => {
         if (item.id === id) {
@@ -265,10 +401,20 @@ export function App() {
         return item;
       })
     );
+    try {
+      await apiClient.patch(`/inventory/${id}/stock`, { amount, action: 'add' });
+    } catch (e) {
+      console.warn('Could not sync inventory restock to backend:', e);
+    }
   };
 
-  const handleAddInventoryItem = (newItem: InventoryItem) => {
+  const handleAddInventoryItem = async (newItem: InventoryItem) => {
     setInventory([newItem, ...inventory]);
+    try {
+      await apiClient.post('/inventory', newItem);
+    } catch (e) {
+      console.warn('Could not save inventory item to backend:', e);
+    }
   };
 
   // ==========================================
@@ -279,7 +425,7 @@ export function App() {
   }
 
   // ==========================================
-  // SECTION 2: ART N SPEED WORKSHOP CMS (ADMIN)
+  // SECTION 2: WE N SPEED WORKSHOP CMS (ADMIN)
   // ==========================================
   if (activeSection === 'admin' && currentUserRole === 'admin') {
     return (
@@ -320,6 +466,8 @@ export function App() {
                   onNavigateTab={handleAdminTabChange}
                   onOpenReport={() => setIsReportModalOpen(true)}
                   onQuickAddBooking={() => handleAdminTabChange('bookings')}
+                  bookings={bookings}
+                  inventory={inventory}
                 />
               )}
               {adminTab === 'bookings' && (
@@ -343,7 +491,7 @@ export function App() {
 
             {/* Admin Footer */}
             <footer className="border-t border-[#1E293B] px-6 py-4 text-center text-xs font-mono text-[#cec6ab] flex flex-col sm:flex-row items-center justify-between gap-2 bg-[#131313]">
-              <p>&copy; {new Date().getFullYear()} ART N SPEED Precision Engineering. All rights reserved.</p>
+              <p>&copy; {new Date().getFullYear()} WE N SPEED Precision Engineering. All rights reserved.</p>
               <div className="flex items-center gap-4 text-[#cec6ab]">
                 <span className="text-[#CCFF00]">Workshop Dyno Link: ACTIVE</span>
                 <span>•</span>
@@ -365,7 +513,7 @@ export function App() {
               <div className="flex items-center justify-between border-b border-[#1E293B] pb-3">
                 <h3 className="font-bold text-[#e5e2e1] text-sm flex items-center gap-2 font-display uppercase">
                   <HelpCircle className="w-4 h-4 text-[#FFE01B]" />
-                  ART N SPEED CMS Documentation
+                  WE N SPEED CMS Documentation
                 </h3>
                 <button onClick={() => setIsHelpModalOpen(false)} className="text-[#cec6ab] hover:text-white cursor-pointer">
                   <X className="w-5 h-5" />
@@ -373,7 +521,7 @@ export function App() {
               </div>
               <div className="space-y-3 text-[#cec6ab]">
                 <p>
-                  Welcome to <strong className="text-white">ART N SPEED Precision Workshop CMS</strong>. This software coordinates workshop bays, live telemetry from client motorcycles, inventory replenishment, and customer loyalty rewards.
+                  Welcome to <strong className="text-white">WE N SPEED Precision Workshop CMS</strong>. This software coordinates workshop bays, live telemetry from client motorcycles, inventory replenishment, and customer loyalty rewards.
                 </p>
                 <div className="p-3 bg-[#131313] rounded border border-[#1E293B] space-y-1.5 text-[11px] font-mono">
                   <p>• <strong className="text-[#FFE01B]">Overview:</strong> High-level financial KPIs, active bays, and critical restock warnings.</p>
@@ -409,7 +557,7 @@ export function App() {
                 <div className="p-3 bg-[#131313] rounded border border-[#1E293B] space-y-1 text-[#e5e2e1] font-mono">
                   <p><strong>Hotline:</strong> 021-8899-SPEED (021-8899-7733)</p>
                   <p><strong>WhatsApp:</strong> +62 812-9900-8800</p>
-                  <p><strong>Email:</strong> support@artnspeed.id</p>
+                  <p><strong>Email:</strong> support@wenspeed.my.id</p>
                 </div>
               </div>
               <button
@@ -456,7 +604,7 @@ export function App() {
 
             {/* Racer Footer */}
             <footer className="border-t border-[#1E293B] px-6 py-4 text-center text-xs font-mono text-[#cec6ab] flex flex-col sm:flex-row items-center justify-between gap-2 bg-[#131313]">
-              <p>&copy; {new Date().getFullYear()} ART N SPEED Precision Engineering. All rights reserved.</p>
+              <p>&copy; {new Date().getFullYear()} WE N SPEED Precision Engineering. All rights reserved.</p>
               <div className="flex items-center gap-4 text-[#cec6ab]">
                 <span className="text-[#CCFF00]">Workshop Dyno Link: ACTIVE</span>
                 <span>•</span>

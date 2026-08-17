@@ -15,7 +15,6 @@ import {
   Trash2,
   X
 } from 'lucide-react';
-import { SERVICE_CATALOG } from '../../data/mockData';
 import { apiClient } from '../../services/api';
 import { MemberBike } from '../../types';
 import confetti from 'canvas-confetti';
@@ -124,32 +123,9 @@ export const RacerBookings: React.FC = () => {
         }));
         setServices(mapped);
         setSelectedServiceId((prev) => (prev ? prev : mapped[0].id));
-      } else {
-        const fallback = SERVICE_CATALOG.map((s) => ({
-          id: s.id,
-          name: s.name,
-          category: s.category,
-          durationMinutes: s.durationMinutes,
-          price: s.price,
-          isPopular: s.popular,
-          description: s.description,
-        }));
-        setServices(fallback);
-        setSelectedServiceId((prev) => (prev ? prev : fallback[0].id));
       }
     } catch (err: any) {
-      console.warn('Could not fetch services API, using catalog fallback:', err.message);
-      const fallback = SERVICE_CATALOG.map((s) => ({
-        id: s.id,
-        name: s.name,
-        category: s.category,
-        durationMinutes: s.durationMinutes,
-        price: s.price,
-        isPopular: s.popular,
-        description: s.description,
-      }));
-      setServices(fallback);
-      setSelectedServiceId((prev) => (prev ? prev : fallback[0].id));
+      console.warn('Could not fetch services API:', err.message);
     } finally {
       setIsLoadingServices(false);
     }
@@ -336,7 +312,7 @@ export const RacerBookings: React.FC = () => {
             Reserve Maintenance Bay
           </h2>
           <p className="text-xs text-[#cec6ab] mt-0.5">
-            Jam Operasional 09:00 - 18:30 WIB • Book dedicated dyno tuning, overhaul, atau service berkala di ART N SPEED
+            Jam Operasional 09:00 - 18:30 WIB • Book dedicated dyno tuning, overhaul, atau service berkala di WE N SPEED
           </p>
         </div>
 

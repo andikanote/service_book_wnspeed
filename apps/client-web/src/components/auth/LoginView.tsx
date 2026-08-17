@@ -9,11 +9,11 @@ interface LoginViewProps {
 
 // Fallback user credentials and role mapping for offline/standalone mode
 const USER_DATABASE: Record<string, { role: AppRole; name: string }> = {
-  'admin@artnspeed.id': { role: 'admin', name: 'Workshop Chief Admin' },
+  'admin@wenspeed.my.id': { role: 'admin', name: 'Workshop Chief Admin' },
   'admin': { role: 'admin', name: 'Master Administrator' },
-  'bambang.wijaya@artnspeed.id': { role: 'admin', name: 'Bambang Wijaya (Chief Tuner)' },
-  'rian.pratama@artnspeed.id': { role: 'admin', name: 'Rian Pratama (Dyno Specialist)' },
-  'aldi.racer99@artnspeed.id': { role: 'racer', name: 'Aldi Taher Prasetyo' },
+  'bambang.wijaya@wenspeed.my.id': { role: 'admin', name: 'Bambang Wijaya (Chief Tuner)' },
+  'rian.pratama@wenspeed.my.id': { role: 'admin', name: 'Rian Pratama (Dyno Specialist)' },
+  'aldi.racer99@wenspeed.my.id': { role: 'racer', name: 'Aldi Taher Prasetyo' },
   'racer': { role: 'racer', name: 'Racer Demo Account' },
   'reza.zx25@gmail.com': { role: 'racer', name: 'Reza Fahlevi' },
   'dimas.cbr@yahoo.com': { role: 'racer', name: 'Dimas Setiawan' },
@@ -21,7 +21,7 @@ const USER_DATABASE: Record<string, { role: AppRole; name: string }> = {
 };
 
 export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
-  const [email, setEmail] = useState('admin@artnspeed.id');
+  const [email, setEmail] = useState('admin@wenspeed.my.id');
   const [password, setPassword] = useState('password123');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -92,11 +92,11 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
       <header className="border-b border-[#1E293B] bg-[#131313]/95 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded bg-[#FFE01B] flex items-center justify-center text-black font-black text-sm shadow-md shadow-[#FFE01B]/20">
-            AS
+            WS
           </div>
           <div>
             <h1 className="text-base font-black tracking-wider text-[#e5e2e1] font-display uppercase">
-              ART N SPEED
+              WE N SPEED
             </h1>
             <p className="text-[10px] font-mono text-[#cec6ab] tracking-tight">
               Precision Workshop & Racing Telemetry CMS
@@ -151,7 +151,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="name@artnspeed.id"
+                    placeholder="name@wenspeed.my.id"
                     className="w-full bg-[#131313] border border-[#1E293B] rounded pl-10 pr-3.5 py-2.5 text-xs font-mono text-[#e5e2e1] placeholder-slate-500 focus:outline-none focus:border-[#FFE01B] transition"
                   />
                 </div>
@@ -205,7 +205,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
-                  onClick={() => handleQuickFill('admin@artnspeed.id')}
+                  onClick={() => handleQuickFill('admin@wenspeed.my.id')}
                   className="flex items-center gap-2 p-2 rounded border border-[#1E293B] hover:border-[#FFE01B]/40 hover:bg-[#131313] text-left transition cursor-pointer group"
                 >
                   <div className="w-6 h-6 rounded bg-[#FFE01B] text-black flex items-center justify-center text-[10px] font-bold font-mono">
@@ -213,13 +213,13 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
                   </div>
                   <div className="min-w-0">
                     <p className="text-[11px] font-bold text-[#e5e2e1] truncate font-mono">Admin CMS</p>
-                    <p className="text-[9px] text-[#cec6ab] font-mono truncate">admin@artnspeed.id</p>
+                    <p className="text-[9px] text-[#cec6ab] font-mono truncate">admin@wenspeed.my.id</p>
                   </div>
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => handleQuickFill('aldi.racer99@artnspeed.id')}
+                  onClick={() => handleQuickFill('aldi.racer99@wenspeed.my.id')}
                   className="flex items-center gap-2 p-2 rounded border border-[#1E293B] hover:border-[#FFE01B]/40 hover:bg-[#131313] text-left transition cursor-pointer group"
                 >
                   <div className="w-6 h-6 rounded bg-[#CCFF00] text-black flex items-center justify-center text-[10px] font-bold font-mono">
@@ -238,7 +238,7 @@ export const LoginView: React.FC<LoginViewProps> = ({ onLogin }) => {
 
       {/* Footer */}
       <footer className="border-t border-[#1E293B] px-6 py-4 text-center text-xs font-mono text-[#cec6ab] flex flex-col sm:flex-row items-center justify-between gap-2">
-        <p>&copy; {new Date().getFullYear()} ART N SPEED Precision Engineering. All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} WE N SPEED Precision Engineering. All rights reserved.</p>
         <div className="flex items-center gap-4 text-[#cec6ab]">
           <span className="text-[#CCFF00]">Workshop Dyno Link: ACTIVE</span>
           <span>•</span>

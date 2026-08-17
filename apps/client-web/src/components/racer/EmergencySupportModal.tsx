@@ -33,7 +33,7 @@ export const EmergencySupportModal: React.FC<EmergencySupportModalProps> = ({ is
               <h3 className="font-bold text-sm text-[#e5e2e1] font-display uppercase tracking-wider">
                 Emergency Towing & SOS Support
               </h3>
-              <p className="text-xs text-rose-400 font-mono">24/7 ART N SPEED Elite Roadside Unit</p>
+              <p className="text-xs text-rose-400 font-mono">24/7 WE N SPEED Elite Roadside Unit</p>
             </div>
           </div>
           <button onClick={onClose} className="text-[#cec6ab] hover:text-white cursor-pointer">

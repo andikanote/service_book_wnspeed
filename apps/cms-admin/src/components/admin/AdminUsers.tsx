@@ -1,63 +1,97 @@
-import React, { useState } from 'react';
-import { Users, Search, Bike, Phone, Mail } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Users, Search, Bike, Phone, Mail, Loader2 } from 'lucide-react';
+import { apiClient } from '../../services/api';
+
+const DEFAULT_RACERS = [
+  {
+    id: 'racer-01',
+    name: 'Aldi Taher Prasetyo',
+    racerId: 'WNS-849201',
+    tier: 'ELITE MEMBER',
+    points: 12450,
+    phone: '+62 812-8901-7721',
+    email: 'aldi.racer99@wenspeed.my.id',
+    bike: 'Yamaha Aerox 155 VVA (B 4992 ELA)',
+    totalSpent: 'Rp 14.850.000',
+    visits: 12,
+    lastVisit: 'Oct 20, 2026',
+  },
+  {
+    id: 'racer-02',
+    name: 'Reza Fahlevi',
+    racerId: 'WNS-772019',
+    tier: 'PRO RACER',
+    points: 8200,
+    phone: '+62 813-4412-9900',
+    email: 'reza.zx25@gmail.com',
+    bike: 'Kawasaki Ninja ZX-25R SE (B 3012 SAA)',
+    totalSpent: 'Rp 28.400.000',
+    visits: 8,
+    lastVisit: 'Oct 25, 2026',
+  },
+  {
+    id: 'racer-03',
+    name: 'Dimas Setiawan',
+    racerId: 'WNS-551092',
+    tier: 'PRO RACER',
+    points: 5400,
+    phone: '+62 878-1200-8341',
+    email: 'dimas.cbr@yahoo.com',
+    bike: 'Honda CBR250RR SP (B 6211 KTL)',
+    totalSpent: 'Rp 11.200.000',
+    visits: 6,
+    lastVisit: 'Sep 18, 2026',
+  },
+  {
+    id: 'racer-04',
+    name: 'Fajar Nugraha',
+    racerId: 'WNS-449102',
+    tier: 'ROOKIE',
+    points: 2150,
+    phone: '+62 856-9912-3456',
+    email: 'fajar.vespa@gmail.com',
+    bike: 'Vespa Sprint 150 i-Get ABS (B 3488 WRE)',
+    totalSpent: 'Rp 6.300.000',
+    visits: 4,
+    lastVisit: 'Aug 14, 2026',
+  },
+];
 
 export const AdminUsers: React.FC = () => {
   const [search, setSearch] = useState('');
+  const [racers, setRacers] = useState<any[]>(DEFAULT_RACERS);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const racers = [
-    {
-      id: 'racer-01',
-      name: 'Aldi Taher Prasetyo',
-      racerId: 'AX-9924',
-      tier: 'ELITE MEMBER',
-      points: 12450,
-      phone: '+62 812-8901-7721',
-      email: 'aldi.racer99@artnspeed.id',
-      bike: 'Yamaha Aerox 155 VVA (B 4992 ELA)',
-      totalSpent: 'Rp 14.850.000',
-      visits: 12,
-      lastVisit: 'Oct 20, 2026',
-    },
-    {
-      id: 'racer-02',
-      name: 'Reza Fahlevi',
-      racerId: 'AX-8812',
-      tier: 'PRO RACER',
-      points: 8200,
-      phone: '+62 813-4412-9900',
-      email: 'reza.zx25@gmail.com',
-      bike: 'Kawasaki Ninja ZX-25R SE (B 3012 SAA)',
-      totalSpent: 'Rp 28.400.000',
-      visits: 8,
-      lastVisit: 'Oct 25, 2026',
-    },
-    {
-      id: 'racer-03',
-      name: 'Dimas Setiawan',
-      racerId: 'AX-7741',
-      tier: 'PRO RACER',
-      points: 5400,
-      phone: '+62 878-1200-8341',
-      email: 'dimas.cbr@yahoo.com',
-      bike: 'Honda CBR250RR SP (B 6211 KTL)',
-      totalSpent: 'Rp 11.200.000',
-      visits: 6,
-      lastVisit: 'Sep 18, 2026',
-    },
-    {
-      id: 'racer-04',
-      name: 'Fajar Nugraha',
-      racerId: 'AX-6502',
-      tier: 'ROOKIE',
-      points: 2150,
-      phone: '+62 856-9912-3456',
-      email: 'fajar.vespa@gmail.com',
-      bike: 'Vespa Sprint 150 i-Get ABS (B 3488 WRE)',
-      totalSpent: 'Rp 6.300.000',
-      visits: 4,
-      lastVisit: 'Aug 14, 2026',
-    },
-  ];
+  useEffect(() => {
+    const fetchRacers = async () => {
+      setIsLoading(true);
+      try {
+        const data = await apiClient.get('/racers');
+        if (Array.isArray(data) && data.length > 0) {
+          const mapped = data.map((r: any) => ({
+            id: r.id,
+            name: r.user?.name || r.name || 'Racer Member',
+            racerId: r.user?.racerUuid || r.racerIdCode || 'WNS-990011',
+            tier: r.tier?.replace('_', ' ') || 'ROOKIE',
+            points: Number(r.points || 0),
+            phone: r.user?.phone || r.phone || '-',
+            email: r.user?.email || r.email || '-',
+            bike: r.bikes?.[0] ? `${r.bikes[0].brand} ${r.bikes[0].model} (${r.bikes[0].plateNumber})` : 'Yamaha Aerox 155 (B 4992 ELA)',
+            totalSpent: `Rp ${Number(r.totalSpent || 0).toLocaleString('id-ID')}`,
+            visits: Number(r.visits || 1),
+            lastVisit: 'Aug 2026',
+          }));
+          setRacers(mapped);
+        }
+      } catch (err) {
+        console.warn('Could not load live racers list:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRacers();
+  }, []);
 
   const filteredRacers = racers.filter(
     (r) =>

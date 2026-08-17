@@ -102,7 +102,7 @@ export class RacersService {
       userId: racer.userId,
       name: racer.user?.name || 'Aldi Taher Prasetyo',
       phone: racer.user?.phone || '+62 812-8901-7721',
-      email: racer.user?.email || 'aldi.racer99@artnspeed.id',
+      email: racer.user?.email || 'aldi.racer99@wenspeed.my.id',
       avatarUrl: racer.user?.avatarUrl || null,
       racerUuid: racerUuid,
       racerId: racerUuid,

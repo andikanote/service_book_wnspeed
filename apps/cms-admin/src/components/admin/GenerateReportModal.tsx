@@ -30,12 +30,12 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({ isOpen
   };
 
   const handleDownload = () => {
-    const reportData = `ART N SPEED - PRECISION WORKSHOP REPORT\nType: ${reportType.toUpperCase()}\nDate: ${new Date().toLocaleDateString()}\nBranch: ${branch}\nTotal Revenue: Rp 142,500,000\nActive Bookings: 48\nCSAT Rating: 4.9/5.0\nCritical Items: V-Belts (2 units), Brake Pads (3 units)`;
+    const reportData = `WE N SPEED - PRECISION WORKSHOP REPORT\nType: ${reportType.toUpperCase()}\nDate: ${new Date().toLocaleDateString()}\nBranch: ${branch}\nTotal Revenue: Rp 142,500,000\nActive Bookings: 48\nCSAT Rating: 4.9/5.0\nCritical Items: V-Belts (2 units), Brake Pads (3 units)`;
     const blob = new Blob([reportData], { type: 'text/plain;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `ART_N_SPEED_Report_${reportType}_${new Date().toISOString().slice(0, 10)}.txt`;
+    link.download = `WE_N_SPEED_Report_${reportType}_${new Date().toISOString().slice(0, 10)}.txt`;
     link.click();
     URL.revokeObjectURL(url);
   };
@@ -51,7 +51,7 @@ export const GenerateReportModal: React.FC<GenerateReportModalProps> = ({ isOpen
             </div>
             <div>
               <h3 className="font-bold text-base text-[#e5e2e1] font-display uppercase tracking-wider">Generate Workshop Report</h3>
-              <p className="text-xs text-[#cec6ab]">ART N SPEED Analytics & Intelligence Engine</p>
+              <p className="text-xs text-[#cec6ab]">WE N SPEED Analytics & Intelligence Engine</p>
             </div>
           </div>
           <button

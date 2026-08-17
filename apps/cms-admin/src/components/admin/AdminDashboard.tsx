@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Banknote, 
   Calendar, 
@@ -14,21 +14,118 @@ import {
   Flame,
   Plus,
   Car,
-  FileCheck
+  FileCheck,
+  Loader2
 } from 'lucide-react';
-import { WORKSHOP_STATS, INITIAL_BOOKINGS, INITIAL_INVENTORY } from '../../data/mockData';
+import { Booking, InventoryItem } from '../../types';
+import { apiClient } from '../../services/api';
+
+const DEFAULT_STATS = {
+  totalRevenue: 84500000,
+  revenueGrowth: 14.2,
+  activeBookings: 8,
+  criticalLowStock: 2,
+  avgSatisfaction: 4.9,
+  workshopBays: [
+    { bayNumber: '01', status: 'In Service', currentBike: 'Yamaha Aerox 155 (B 4992 ELA)', mechanic: 'Chief Tech (Bay 01)', progress: 75 },
+    { bayNumber: '02', status: 'In Service', currentBike: 'Kawasaki ZX-25R (B 3012 SAA)', mechanic: 'Bay 2 Tuner', progress: 40 },
+    { bayNumber: '03', status: 'Available', currentBike: null, mechanic: null, progress: 0 },
+    { bayNumber: '04', status: 'Available', currentBike: null, mechanic: null, progress: 0 },
+  ],
+};
 
 interface AdminDashboardProps {
   onNavigateTab: (tab: any) => void;
   onOpenReport: () => void;
   onQuickAddBooking: () => void;
+  bookings?: Booking[];
+  inventory?: InventoryItem[];
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onNavigateTab,
   onOpenReport,
   onQuickAddBooking,
+  bookings: propBookings,
+  inventory: propInventory,
 }) => {
+  const [stats, setStats] = useState<any>(DEFAULT_STATS);
+  const [liveBookings, setLiveBookings] = useState<Booking[]>(propBookings || []);
+  const [liveInventory, setLiveInventory] = useState<InventoryItem[]>(propInventory || []);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (propBookings && propBookings.length > 0) {
+      setLiveBookings(propBookings);
+    }
+  }, [propBookings]);
+
+  useEffect(() => {
+    if (propInventory && propInventory.length > 0) {
+      setLiveInventory(propInventory);
+    }
+  }, [propInventory]);
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      setIsLoading(true);
+      try {
+        const [statsRes, bookingsRes, invRes] = await Promise.allSettled([
+          apiClient.get('/workshop/stats'),
+          apiClient.get('/bookings'),
+          apiClient.get('/inventory'),
+        ]);
+
+        if (statsRes.status === 'fulfilled' && statsRes.value) {
+          setStats(statsRes.value);
+        }
+        if (bookingsRes.status === 'fulfilled' && Array.isArray(bookingsRes.value) && bookingsRes.value.length > 0) {
+          const mapped = bookingsRes.value.map((b: any) => ({
+            id: b.id,
+            customerName: b.user?.name || b.customerName || 'Customer',
+            customerPhone: b.user?.phone || b.customerPhone || '-',
+            bikeModel: b.bike?.model || b.bikeModel || 'Motor Matic',
+            plateNumber: b.bike?.plateNumber || b.plateNumber || 'B 1234 XXX',
+            servicePackage: b.service?.name || b.servicePackage || 'General Service',
+            bookingDate: b.bookingDate ? new Date(b.bookingDate).toISOString().slice(0, 10) : '2026-08-17',
+            time: b.bookingTime || b.time || '10:00 AM',
+            status: b.status || 'PENDING',
+            bayNumber: b.bayNumber,
+            assignedMechanic: b.assignedMechanic || b.mechanic || 'Chief Tech',
+            estimatedCost: Number(b.totalCost || b.estimatedCost || 0),
+            notes: b.notes,
+            branch: b.branch || 'Bekasi Branch',
+          }));
+          setLiveBookings(mapped);
+        }
+        if (invRes.status === 'fulfilled' && Array.isArray(invRes.value) && invRes.value.length > 0) {
+          setLiveInventory(invRes.value.map((i: any) => ({
+            id: i.id,
+            sku: i.sku,
+            name: i.name,
+            category: i.category,
+            stock: i.stock,
+            minThreshold: i.minThreshold,
+            price: Number(i.price),
+            supplier: i.supplier || '',
+            location: i.location || 'Rack A-01',
+            status: i.status === 'Critical_Out' || i.status === 'Critical Out' ? 'Critical Out' : i.status === 'Low_Stock' || i.status === 'Low Stock' ? 'Low Stock' : 'In Stock',
+          })));
+        }
+      } catch (err) {
+        console.warn('Could not fetch live dashboard stats:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  const criticalItems = liveInventory.filter(
+    (i) => i.status === 'Critical Out' || i.stock <= i.minThreshold
+  );
+
   return (
     <div className="p-6 md:p-8 space-y-6 bg-[#131313] min-h-screen text-[#e5e2e1] font-sans">
       {/* 4 High Density Hero Metric Cards */}
@@ -42,12 +139,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 TOTAL REVENUE
               </span>
               <span className="text-[#22C55E] bg-[#22C55E]/10 border border-[#22C55E]/30 px-1.5 py-0.5 rounded text-[11px] font-bold font-mono">
-                {WORKSHOP_STATS.revenueGrowth}
+                {stats.revenueGrowth || '+18.4%'}
               </span>
             </div>
             <div className="mt-2">
               <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight font-display">
-                {WORKSHOP_STATS.totalRevenue}
+                {stats.totalRevenue || 'Rp 142.500.000'}
               </h3>
             </div>
           </div>
@@ -71,7 +168,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
             <div className="mt-2">
               <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight font-display">
-                {WORKSHOP_STATS.activeBookings}
+                {stats.activeBookings || liveBookings.length}
               </h3>
             </div>
           </div>
@@ -101,13 +198,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
             <div className="mt-2">
               <h3 className="text-2xl md:text-3xl font-black text-rose-400 tracking-tight font-display">
-                {WORKSHOP_STATS.lowStockCount} Parts
+                {criticalItems.length} Parts
               </h3>
             </div>
           </div>
 
           <div className="text-xs text-[#cec6ab] pt-2 border-t border-[#1E293B] font-mono flex items-center justify-between">
-            <span className="truncate">V-Belts, Brake Pads</span>
+            <span className="truncate">
+              {criticalItems.map((c) => c.name.split(' ')[0]).slice(0, 2).join(', ') || 'Semua Stock Terpenuhi'}
+            </span>
             <span className="text-[#FFE01B] font-bold underline cursor-pointer" onClick={() => onNavigateTab('inventory')}>
               Restock
             </span>
@@ -175,7 +274,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
           {/* Bays Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {WORKSHOP_STATS.bays.map((bay) => (
+            {(stats.bays || WORKSHOP_STATS.bays).map((bay: any) => (
               <div
                 key={bay.bayNumber}
                 className="p-4 rounded bg-[#131313] border border-[#1E293B] hover:border-[#FFE01B]/40 transition space-y-3"
@@ -202,11 +301,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 <div className="text-xs font-mono space-y-1.5">
                   <div className="flex justify-between">
                     <span className="text-[#cec6ab]">Current Bike:</span>
-                    <span className="text-[#FFE01B] font-bold">{bay.currentBike}</span>
+                    <span className="text-[#FFE01B] font-bold">{bay.currentBikePlate || bay.currentBike || '-'}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-[#cec6ab]">Chief Tech:</span>
-                    <span className="text-white">{bay.mechanic}</span>
+                    <span className="text-white">{bay.assignedMechanic || bay.mechanic || 'Staff Tech'}</span>
                   </div>
                 </div>
 
@@ -270,12 +369,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 </span>
               </div>
               <span className="text-[10px] font-mono text-rose-300 bg-rose-500/20 px-2 py-0.5 rounded border border-rose-500/30 font-bold">
-                2 Items
+                {criticalItems.length} Items
               </span>
             </div>
 
             <div className="space-y-2.5">
-              {INITIAL_INVENTORY.filter((i) => i.status === 'Critical Out').map((item) => (
+              {criticalItems.slice(0, 3).map((item) => (
                 <div
                   key={item.id}
                   className="p-3 rounded bg-[#131313] border border-rose-500/30 flex items-center justify-between"
@@ -296,6 +395,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </div>
                 </div>
               ))}
+              {criticalItems.length === 0 && (
+                <p className="text-xs text-[#cec6ab] font-mono py-2 text-center">Semua suku cadang aman / mencukupi.</p>
+              )}
             </div>
 
             <button
@@ -317,12 +419,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 onClick={() => onNavigateTab('bookings')}
                 className="text-[11px] font-mono text-[#FFE01B] hover:underline font-semibold cursor-pointer"
               >
-                View 48 Active
+                View {liveBookings.length} Active
               </button>
             </div>
 
             <div className="space-y-2.5">
-              {INITIAL_BOOKINGS.slice(0, 3).map((b) => (
+              {liveBookings.slice(0, 3).map((b) => (
                 <div
                   key={b.id}
                   className="p-3 rounded bg-[#131313] border border-[#1E293B] flex items-center justify-between"
@@ -342,6 +444,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   </span>
                 </div>
               ))}
+              {liveBookings.length === 0 && (
+                <p className="text-xs text-[#cec6ab] font-mono py-2 text-center">Belum ada booking aktif.</p>
+              )}
             </div>
           </div>
 

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { SERVICE_CATALOG } from '../../data/mockData';
 import { ServicePackage } from '../../types';
 import { apiClient } from '../../services/api';
 import { 
@@ -19,7 +18,7 @@ import {
 import confetti from 'canvas-confetti';
 
 export const AdminServices: React.FC = () => {
-  const [services, setServices] = useState<ServicePackage[]>(SERVICE_CATALOG);
+  const [services, setServices] = useState<ServicePackage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [isBackendSynced, setIsBackendSynced] = useState(false);

@@ -1,20 +1,36 @@
 import React, { useState } from 'react';
 import { Wrench, CheckCircle2, X } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { INITIAL_UPCOMING_SERVICE } from '../../data/mockData';
 
 interface ManageServiceModalProps {
   isOpen: boolean;
   onClose: () => void;
   mode?: 'manage' | 'details';
+  booking?: any;
 }
 
-export const ManageServiceModal: React.FC<ManageServiceModalProps> = ({ isOpen, onClose, mode = 'manage' }) => {
+export const ManageServiceModal: React.FC<ManageServiceModalProps> = ({ 
+  isOpen, 
+  onClose, 
+  mode = 'manage',
+  booking 
+}) => {
   const [scheduleTime, setScheduleTime] = useState('Oct 25, 10:00 AM');
-  const [branch, setBranch] = useState('Depok Branch');
+  const [branch, setBranch] = useState('Bekasi Branch');
   const [updated, setUpdated] = useState(false);
 
   if (!isOpen) return null;
+
+  const serviceName = booking?.service?.name || booking?.servicePackage || '21-Point Precision Lab Service';
+  const bikePlate = booking?.bike?.plateNumber || 'B 4992 ELA';
+  const mechanic = booking?.assignedMechanic || 'Chief Tech (Bay 01)';
+  const cost = Number(booking?.totalCost || booking?.estimatedCost || 385000);
+  const items = [
+    '21-Point Digital Scanning & Dyno Baseline',
+    'High Performance Synthetic Oil & Filter Replacement',
+    'Throttle Body Ultrasonic Deep Cleaning',
+    'CVT Roller, Pulley, and Belt Inspection'
+  ];
 
   const handleUpdate = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +55,7 @@ export const ManageServiceModal: React.FC<ManageServiceModalProps> = ({ isOpen, 
               <h3 className="font-bold text-sm text-[#e5e2e1] font-display uppercase tracking-wider">
                 {mode === 'manage' ? 'Manage Upcoming Service' : 'Service Order Details'}
               </h3>
-              <p className="text-[11px] text-[#cec6ab]">Regular Plus Service • B 4992 ELA</p>
+              <p className="text-[11px] text-[#cec6ab]">{serviceName} • {bikePlate}</p>
             </div>
           </div>
           <button onClick={onClose} className="text-[#cec6ab] hover:text-white cursor-pointer">
@@ -54,7 +70,7 @@ export const ManageServiceModal: React.FC<ManageServiceModalProps> = ({ isOpen, 
               Scheduled Procedures & Parts:
             </span>
             <ul className="space-y-1 text-[11px]">
-              {INITIAL_UPCOMING_SERVICE.items.map((item, idx) => (
+              {items.map((item, idx) => (
                 <li key={idx} className="flex items-center gap-2 text-[#cec6ab]">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#22C55E] shrink-0" />
                   <span>{item}</span>
@@ -66,11 +82,11 @@ export const ManageServiceModal: React.FC<ManageServiceModalProps> = ({ isOpen, 
           <div className="grid grid-cols-2 gap-3 text-xs">
             <div className="p-3 bg-[#131313] rounded border border-[#1E293B]">
               <span className="text-[#cec6ab] block text-[10px] uppercase font-semibold">ASSIGNED TUNER</span>
-              <span className="font-bold text-white mt-0.5 block">{INITIAL_UPCOMING_SERVICE.mechanic}</span>
+              <span className="font-bold text-white mt-0.5 block">{mechanic}</span>
             </div>
             <div className="p-3 bg-[#131313] rounded border border-[#1E293B]">
               <span className="text-[#cec6ab] block text-[10px] uppercase font-semibold">ESTIMATED COST</span>
-              <span className="font-bold text-[#FFE01B] mt-0.5 block">Rp {INITIAL_UPCOMING_SERVICE.estimatedCost.toLocaleString('id-ID')}</span>
+              <span className="font-bold text-[#FFE01B] mt-0.5 block">Rp {cost.toLocaleString('id-ID')}</span>
             </div>
           </div>
 

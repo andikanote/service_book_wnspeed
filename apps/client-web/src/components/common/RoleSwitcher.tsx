@@ -18,10 +18,10 @@ export const RoleSwitcher: React.FC<RoleSwitcherProps> = ({ currentRole, onChang
               ? 'bg-[#FFE01B] text-black shadow-md shadow-[#FFE01B]/20 font-mono'
               : 'text-[#cec6ab] hover:text-white hover:bg-[#201f1f] font-mono'
           }`}
-          title="Switch to ART N SPEED Workshop CMS (Admin Dashboard)"
+          title="Switch to WE N SPEED Workshop CMS (Admin Dashboard)"
         >
           <ShieldCheck className="w-3.5 h-3.5" />
-          <span>ART N SPEED (Admin CMS)</span>
+          <span>WE N SPEED (Admin CMS)</span>
         </button>
 
         <button

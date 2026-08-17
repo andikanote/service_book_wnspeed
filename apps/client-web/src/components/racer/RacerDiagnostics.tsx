@@ -1,22 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Cpu, Activity, Zap, Thermometer, Battery, Disc, AlertTriangle, CheckCircle2, RefreshCw } from 'lucide-react';
-import { INITIAL_RACER } from '../../data/mockData';
+import { apiClient } from '../../services/api';
 import confetti from 'canvas-confetti';
+
+const DEFAULT_DIAGNOSTICS = {
+  oilHealth: 65,
+  vbeltCond: 88,
+  brakePads: 15,
+  batteryVoltage: 12.8,
+  tirePressureFront: 29.5,
+  tirePressureRear: 33.0,
+  afrRatio: 12.9,
+  engineTemp: 86,
+  lastUpdated: 'Just Now',
+};
 
 export const RacerDiagnostics: React.FC = () => {
   const [scanning, setScanning] = useState(false);
   const [, setScanComplete] = useState(false);
-  const [diagnostics] = useState(INITIAL_RACER.diagnostics);
+  const [diagnostics, setDiagnostics] = useState(DEFAULT_DIAGNOSTICS);
   const [rpm] = useState(1650); // Idle RPM
 
-  const handleRunScan = () => {
+  const fetchLiveDiagnostics = async () => {
+    try {
+      const bike = await apiClient.get('/racer/bikes/primary');
+      if (bike && bike.diagnostics) {
+        setDiagnostics({
+          oilHealth: Number(bike.diagnostics.oilHealth || 100),
+          vbeltCond: Number(bike.diagnostics.vbeltCond || 100),
+          brakePads: Number(bike.diagnostics.brakePads || 100),
+          batteryVoltage: Number(bike.diagnostics.batteryVoltage || 12.8),
+          tirePressureFront: Number(bike.diagnostics.tirePressureFront || 29.5),
+          tirePressureRear: Number(bike.diagnostics.tirePressureRear || 33.0),
+          afrRatio: Number(bike.diagnostics.afrRatio || 12.9),
+          engineTemp: Number(bike.diagnostics.engineTemp || 85),
+          lastUpdated: bike.diagnostics.lastUpdated || 'Just Now',
+        });
+      }
+    } catch (e) {
+      console.warn('Could not load primary bike diagnostics:', e);
+    }
+  };
+
+  useEffect(() => {
+    fetchLiveDiagnostics();
+  }, []);
+
+  const handleRunScan = async () => {
     setScanning(true);
     setScanComplete(false);
-    setTimeout(() => {
-      setScanning(false);
-      setScanComplete(true);
-      confetti({ particleCount: 30, spread: 50 });
-    }, 1200);
+    await fetchLiveDiagnostics();
+    setScanning(false);
+    setScanComplete(true);
+    confetti({ particleCount: 30, spread: 50 });
   };
 
   return (

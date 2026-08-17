@@ -24,7 +24,7 @@ export const MembershipView: React.FC<MembershipViewProps> = ({ onBookService })
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#1E293B] pb-5">
         <div>
           <div className="text-[11px] font-bold text-[#FFE01B] tracking-widest uppercase mb-1 font-mono">
-            ART N SPEED VIP PROGRAM
+            WE N SPEED VIP PROGRAM
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-[#e5e2e1] font-display tracking-tight uppercase">
             Elite Mechanical Membership
@@ -50,7 +50,7 @@ export const MembershipView: React.FC<MembershipViewProps> = ({ onBookService })
           
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="text-[#FFE01B] text-xl font-display font-bold">⚡ ART N SPEED</span>
+              <span className="text-[#FFE01B] text-xl font-display font-bold">⚡ WE N SPEED</span>
               <span className="text-[9px] bg-[#FFE01B] text-black px-1.5 py-0.5 rounded font-bold font-mono">
                 PASS
               </span>

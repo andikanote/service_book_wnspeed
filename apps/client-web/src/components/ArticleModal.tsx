@@ -57,7 +57,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({ article, onClose }) 
               <span>{article.readTime}</span>
             </span>
             <span className="text-[#CCFF00] font-semibold">
-              Art N Speed Lab Editorial
+              We n Speed Lab Editorial
             </span>
           </div>
 
@@ -69,7 +69,7 @@ export const ArticleModal: React.FC<ArticleModalProps> = ({ article, onClose }) 
               Motor matic memerlukan perhatian khusus terutama pada sistem pendinginan (radiator cairan coolant) dan elastisitas karet V-belt transmisi CVT saat temperatur jalanan meningkat drastis.
             </p>
             <p>
-              Di Art N Speed Mechanical Lab, tim kami melakukan pengecekan 21 titik presisi, termasuk ketebalan kampas ganda, kebersihan ruang CVT dari kontaminasi debu friksi, serta kalibrasi debit injektor agar mesin tidak mengalami knocking (ngelitik) dan boros bensin.
+              Di We n Speed Mechanical Lab, tim kami melakukan pengecekan 21 titik presisi, termasuk ketebalan kampas ganda, kebersihan ruang CVT dari kontaminasi debu friksi, serta kalibrasi debit injektor agar mesin tidak mengalami knocking (ngelitik) dan boros bensin.
             </p>
           </div>
         </div>

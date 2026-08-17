@@ -576,7 +576,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
 
       </div>
 
-      {/* Bottom Section: WHY BOOK WITH ART N SPEED? */}
+      {/* Bottom Section: WHY BOOK WITH WE N SPEED? */}
       <section className="pt-10 border-t border-[#1E293B] space-y-6">
         
         <div>
@@ -585,7 +585,7 @@ export const BookingFlow: React.FC<BookingFlowProps> = ({
           </span>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <h2 className="text-2xl sm:text-3xl font-bold text-[#e5e2e1] font-display tracking-tight uppercase">
-              WHY BOOK WITH ART N SPEED?
+              WHY BOOK WITH WE N SPEED?
             </h2>
             <p className="text-xs text-[#cec6ab] max-w-md font-sans">
               Our lab uses the latest telemetry data to ensure your vehicle performs at peak efficiency.

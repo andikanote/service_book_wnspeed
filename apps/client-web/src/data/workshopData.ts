@@ -226,7 +226,7 @@ export const ARTICLES_DATA = [
     id: 'news-1',
     category: 'NEWS',
     date: '18 Jul 2026',
-    title: 'Art N Speed Membuka Cabang Ke-5 di Ciledug',
+    title: 'We n Speed Membuka Cabang Ke-5 di Ciledug',
     summary: 'Pembukaan cabang di Ciledug bukan tanpa alasan. Berdasarkan data, permintaan masyarakat Kota Tangerang sangat tinggi untuk standar lab.',
     imageUrl: 'https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80',
     readTime: '3 min baca'

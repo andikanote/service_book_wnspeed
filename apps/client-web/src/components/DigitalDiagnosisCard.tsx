@@ -264,7 +264,7 @@ export const DigitalDiagnosisCard: React.FC<DigitalDiagnosisCardProps> = ({
           <div className="absolute inset-0 z-0">
             <img
               src="https://images.unsplash.com/photo-1558981403-c5f9899a28bc?auto=format&fit=crop&w=900&q=80"
-              alt="Art N Speed Mechanical Workshop"
+              alt="We n Speed Mechanical Workshop"
               className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 brightness-75 contrast-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#131313] via-[#131313]/70 to-transparent"></div>
@@ -274,7 +274,7 @@ export const DigitalDiagnosisCard: React.FC<DigitalDiagnosisCardProps> = ({
           <div className="absolute top-4 right-4 z-10 opacity-90 font-mono">
             <div className="text-right">
               <span className="text-xs font-bold text-[#FFE01B] tracking-wider">
-                ART N SPEED
+                WE N SPEED
               </span>
               <p className="text-[9px] text-[#cec6ab]">BAY #01 INSPECTION</p>
             </div>

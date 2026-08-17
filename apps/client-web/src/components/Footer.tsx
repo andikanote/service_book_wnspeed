@@ -35,7 +35,7 @@ export const Footer: React.FC<FooterProps> = ({
               </div>
               <div>
                 <span className="font-bold text-[#e5e2e1] text-lg tracking-wide block leading-none font-display uppercase">
-                  ART N SPEED
+                  WE N SPEED
                 </span>
                 <span className="text-[9px] text-[#cec6ab] font-mono tracking-widest uppercase">
                   MECHANICAL LAB
@@ -161,7 +161,7 @@ export const Footer: React.FC<FooterProps> = ({
         {/* Bottom copyright */}
         <div className="pt-8 border-t border-[#1E293B] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#cec6ab] font-mono">
           <div>
-            © {new Date().getFullYear()} ART N SPEED MECHANICAL LAB. ALL RIGHTS RESERVED.
+            © {new Date().getFullYear()} WE N SPEED MECHANICAL LAB. ALL RIGHTS RESERVED.
           </div>
           <div className="flex items-center gap-4">
             <span className="text-[11px]">SOP Certified • Precision Standards</span>

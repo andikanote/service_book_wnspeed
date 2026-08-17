@@ -32,7 +32,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className="px-1">
           <div className="flex items-center gap-2">
             <span className="font-bold text-[#e5e2e1] text-lg font-display tracking-tight uppercase">
-              ART N SPEED
+              WE N SPEED
             </span>
           </div>
           <p className="text-[10px] text-[#cec6ab] font-mono tracking-widest uppercase">

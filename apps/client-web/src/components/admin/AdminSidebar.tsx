@@ -33,11 +33,11 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         <div className="p-5 border-b border-[#1E293B] flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded bg-[#FFE01B] flex items-center justify-center text-black font-black text-sm shadow-md shadow-[#FFE01B]/20">
-              AS
+              WS
             </div>
             <div>
               <h1 className="text-base font-black tracking-wider text-[#e5e2e1] font-display uppercase">
-                ART N SPEED
+                WE N SPEED
               </h1>
               <p className="text-[10px] font-mono text-[#cec6ab] tracking-tight">
                 High Density CMS v2.4
